@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae Admin</title>
+
+    <link rel="stylesheet" href="{% static 'css/analysis_style.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="container">
+
+        {% include 'sidebar.html' %}
+
+        <main class="main">
+
+            {% include 'topbar.html' %}
+
+            <div class="header">
+                <div class="header-left">
+                    <h1>Analysis</h1>
+                    <p>Turn data into clear insights.</p>
+                </div>
+            </div>
+
+            <div id="chart-box">
+                <div id="chart_top">
+                    <h3>Temporal AQI Analysis</h3>
+
+                    <div>
+                        <!-- pollutant select -->
+                        <label for="pollutants"><b>Pollutant:</b></label>
+                        <select name="poluttants" id="pollutants"
+                            onchange="toPHP(document.getElementById('location').value)">
+                            <option value="aqi">AQI</option>
+                            <option value="so2">SO2</option>
+                            <option value="co">CO</option>
+                            <option value="o3">O3</option>
+                            <option value="nox">NOX</option>
+                            <option value="no2">NO2</option>
+                            <option value="no">NO</option>
+                        </select>
+
+
+                        <label for="Location"><b>Location: </b></label>
+                        <select name="Location" id="location" onchange="toPHP(value)">
+                            <option value="0">Select Location</option>
+                            {% for site_id, site_name in location_options %}
+                            <option value="{{ site_id }}">{{ site_name }}</option>
+                            {% empty %}
+                            <!-- This line will only show if your database returned zero rows -->
+                            <option value="">[No records found or column name error]</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- graoh pollutant level -->
+                <div class="chart-placeholder">
+                    <canvas id="dbChart" style="position: relative; width: 100%; height: 100%;">
+
+
+                    </canvas>
+
+                </div>
+
+
+            </div><br>
+
+
+            <div class="bottom-section">
+
+                <div class="map-box">
+                    <h3>48 Areas in Pangasinan</h3>
+                    <div class="map-placeholder">
+
+                        <img src="{% static 'image/pangasinan_map.png' %}" alt="pangasinan map" id="pang_map">
+
+                    </div>
+                </div>
+
+
+                <div class="actions">
+                    <button id="download_graph">Download Graph</button>
+                    <button id="date_range">Date Range</button>
+                    <button id="reset">Reset</button>
+
+                    <dialog id="date_range_dialog">
+                        <input type="date" id="min">
+                        <input type="date" id="max">
+
+                        <button id="date_submit">submit</button>
+                    </dialog>
+
+
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="{% static 'js/toggle_sidebar.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+
+        document.getElementById('date_range').addEventListener('click', function () {
+            document.getElementById('date_range_dialog').showModal();
+        });
+
+
+    </script>
+
+
+    <script>
+        function toPHP(value) {
+            const selectedLoc = document.getElementById('location').value
+            const pollutantSelect = document.getElementById('pollutants');
+            const selectedPollutant = pollutantSelect ? pollutantSelect.value.toLowerCase() : 'aqi';
+
+            if (!selectedLoc || selectedLoc === 'Select Location') return;
+
+            chart = document.getElementById('chart-box')
+            if (chart) {
+                chart.classList.add("expanded");
+
+            }
+
+
+
+
+            fetch(`?location=${encodeURIComponent(selectedLoc)}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const canvasElement = document.getElementById('dbChart');
+                        const ctx = canvasElement.getContext('2d');
+                        // remove current chart
+                        const existingChart = Chart.getChart(canvasElement);
+                        let myChartInstance = null;
+                        if (existingChart) {
+                            existingChart.destroy();
+
+                        }
+                        if (myChartInstance) {
+                            myChartInstance.destroy();
+                        }
+
+
+                        const chartLabels = result.data.map(item => item.date);
+                        const chartValues = result.data.map(item => parseFloat(item[selectedPollutant]) || 0);
+
+
+                        myChartInstance = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    label: selectedPollutant.toUpperCase() + ' Level',
+                                    data: chartValues,
+                                    borderColor: 'rgb(75, 192, 192)',
+                                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                    borderWidth: 2,
+                                    tension: 0.2,
+                                    fill: true,
+                                    pointBackgroundColor: function (context) {
+                                        const value = context.dataset.data[context.dataIndex];
+                                        if (value <= 50) return 'rgb(76, 175, 80)';
+                                        if (value <= 100) return 'rgb(255, 152, 0)';
+                                        return 'rgb(244, 67, 54)';
+                                    },
+                                    pointBorderColor: function (context) {
+                                        const value = context.dataset.data[context.dataIndex];
+                                        if (value <= 50) return 'rgb(56, 142, 60)';
+                                        if (value <= 100) return 'rgb(245, 124, 0)';
+                                        return 'rgb(211, 47, 47)';
+                                    }
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+
+
+                    }
+
+
+                })
+
+
+        }
+
+    </script>
+
+</body>

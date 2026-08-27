@@ -1,0 +1,39 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/global.css' %}">
+
+
+<body>
+
+    <div class="topbar">
+
+        <button id="toggleSidebar" class="menu-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search task">
+        </div>
+
+        <div class="user">
+            <div class="icons">
+                <i class="fas fa-envelope"></i>
+                <i class="fas fa-bell"></i>
+            </div>
+
+            <div class="avatar"></div>
+
+            <div class="user-info">
+                {% if user.is_authenticated %}
+                <!-- Display username and email when logged in -->
+                <span class="name">{{ user.username }}</span>
+                <span class="email">{{ user.email }}</span>
+                {% else %}
+                <!-- Fallback if the user is not logged in -->
+                <a href="{% url 'login' %}">Log In</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</body>

@@ -1,0 +1,161 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae Admin</title>
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <style>
+        body::before {
+            background-image: url("{% static 'image/aurae_pic.png' %}");
+        }
+    </style>
+</head>
+
+<body>
+    <div id="login_form">
+        <form class="form-box {% if active_form != 'signUp_form' %}active{% endif %}" id="logIn_form" method="POST">
+            {% csrf_token %}
+
+            <div class="logo">
+                <img src="{% static 'image/logo_aurae.png' %}">
+            </div>
+
+            <h2>Aurae Login</h2>
+
+            <p>Enter your email to login for this app</p>
+
+            {% if messages and active_form == 'login_form' %}
+            <div id="login_error_box"
+                style="color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 14px; border: 1px solid #f5c6cb;">
+                {% for message in messages %}
+                {% if 'error' in message.tags %}
+                <p style="margin: 2px 0;">{{ message }}</p>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {% if messages and active_form == 'login_form' %}
+            <div id="login_success_box"
+                style="color: #155724; background: #d4edda; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 14px; border: 1px solid #c3e6cb;">
+                {% for message in messages %}
+                {% if 'success' in message.tags %}
+                <p style="margin: 2px 0;">{{ message }}</p>
+                {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <input type="text" class="log_email" id="email" name="email" placeholder="username@gmail.com" required>
+
+            <input type="password" class="log_password" id="password" name="password" placeholder="password" required>
+
+
+            <button type="submit" id="login_but" name="login_submit">
+                Login
+            </button>
+
+            <p class="divider">or continue with</p>
+
+            <button type="button" class="google" id="google_btn">
+                Google
+            </button>
+
+            <button type="button" onclick="showForm('signUp_form')">
+
+                Sign up
+            </button>
+
+            <p class="terms">
+                By clicking login, you agree to our
+                <span class="link">Terms of Service</span> and
+                <span class="link">Privacy Policy</span>
+            </p>
+
+        </form>
+    </div>
+
+
+
+    <!-- register form -->
+    <div>
+
+        <form class="form-box {% if active_form == 'signUp_form' %}active{% endif %}" id="signUp_form" method="POST">
+            {% csrf_token %}
+            <div class="logo">
+                <img src="{% static 'image/logo_aurae.png' %}">
+            </div>
+
+            <h2>Aurae Sign Up</h2>
+
+            <h3>Create an account</h3>
+            <p>Enter your credentials to sign up for this app</p>
+            {% if form.errors and active_form == 'signUp_form' %}
+            <div id="signup_error_box"
+                style="color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: left;">
+
+                {% for field, errors in form.errors.items %}
+                {% if forloop.first %}
+                <p style="margin: 2px 0;">{{ errors.0 }}</p>
+                {% endif %}
+                {% endfor %}
+
+
+            </div>
+            {% endif %}
+
+            <input type="text" id="username" name="username" placeholder="Username"
+                value="{{ form.username.value|default:'' }}" required>
+
+            <input type="text" id="fname" name="first_name" placeholder="First Name"
+                value="{{ form.first_name.value|default:'' }}" required>
+
+            <input type="text" id="lname" name="last_name" placeholder="Last Name"
+                value="{{ form.last_name.value|default:'' }}" required>
+
+            <input type="email" class="reg_email" id="signUp_email" name="email" placeholder="@gmail.com"
+                value="{{ form.email.value|default:'' }}" required>
+
+            <input type="password" class="reg_password" id="signUp_password" name="password" placeholder="Password"
+                minlength="8" required>
+            <input type="password" class="con_password" id="con_password" name="con_password"
+                placeholder="Confirm password" minlength="8" required>
+            <button type="submit" id="submits_btn" name="register_submit">
+                Sign up
+            </button>
+
+            <button type="button" onclick="showForm('logIn_form')">
+                Login
+            </button>
+
+            <p class="terms">
+                By clicking continue, you agree to our
+                <span class="link">Terms of Service</span> and
+                <span class="link">Privacy Policy</span>
+            </p>
+
+        </form>
+
+</body>
+<script>
+    function showForm(formId) {
+        document.querySelectorAll(".form-box").forEach(form => form.classList.remove("active"));
+        const target = document.getElementById(formId);
+        if (target) {
+            target.classList.add("active");
+
+
+        }
+        const loginError = document.getElementById("logIn_error_box");
+        const signupError = document.getElementById("signup_error_box");
+
+        if (formId === 'logIn_form' && signupError) signupError.style.display = "none";
+        if (formId === 'signUp_form' && loginError) loginError.style.display = "none";
+    }
+</script>
+
+</html>

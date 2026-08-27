@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f3f4f6;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+
+
+#container {
+    display: flex;
+    height: 100vh;
+    padding-left: 240px;
+    transition: all 0.3s ease;
+}
+
+#container.expand {
+    padding-left: 90px;
+}
+
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+
+.header {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.header-left h1 {
+    font-size: 22px;
+}
+
+.header-left p {
+    color: gray;
+    font-size: 14px;
+}
+
+.settings-box {
+
+    background: #AFCBBA;
+    padding: 20px;
+    border-radius: 12px;
+
+}
+
+
+.setting-item {
+
+    height: 50px;
+    display: flex;
+
+    align-items: top;
+    padding: 16px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    overflow: hidden;
+    text-align: left;
+
+}
+
+
+.setting-item button {
+
+    position: fixed;
+
+
+    background-color: #AFCBBA;
+    border: none;
+    color: #5d6a62;
+}
+
+.fas {
+    left: 95%;
+}
+
+
+.setting-item:last-child {
+    border-bottom: none;
+}
+
+.setting-item span {
+    font-size: 14px;
+}
+
+.setting-item i {
+    color: gray;
+}
+
+.content_hidden {
+    display: none;
+}
+
+.content_hidden.show {
+    display: block;
+}
+
+.expand {
+
+    height: fit-content !important;
+
+}
+
+
+
+
+dialog {
+    border: 1px #a6c8b4;
+    background-color: #AFCBBA;
+    margin: auto;
+    position: fixed;
+    width: 20%;
+    height: 80%;
+    padding: 20px;
+}
+
+dialog::backdrop {
+    background-color: rgba(43, 42, 42, 0.6);
+    backdrop-filter: blur(1px);
+}
+
+#account_overlay {
+
+    justify-content: space-between;
+    align-self: center;
+}
+
+.profile {
+    color: #222724;
+}

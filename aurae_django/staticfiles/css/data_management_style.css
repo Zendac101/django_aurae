@@ -1,0 +1,82 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f3f4f6;
+
+
+}
+
+#container {
+    display: flex;
+    height: 100vh;
+
+    transition: all 0.3s ease;
+}
+
+#container.expand {
+    padding-left: 90px;
+}
+
+
+
+
+.header {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.header-left h1 {
+    font-size: 22px;
+}
+
+.header-left p {
+    color: gray;
+    font-size: 14px;
+}
+
+.data-table {
+
+    background-color: #AFCBBA;
+
+    padding: 0;
+
+    margin-bottom: 10px;
+    height: 62%;
+}
+
+
+
+
+.good {
+    color: green;
+    font-weight: bold;
+}
+
+.moderate {
+    color: orange;
+    font-weight: bold;
+}
+
+
+
+
+.table-actions button {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.green {
+    background: #7ca982;
+    color: white;
+}
+
+.light {
+    background: #e5e7eb;
+}

@@ -1,0 +1,189 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f3f4f6;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+#container {
+    display: flex;
+    height: 100vh;
+    padding-left: 240px;
+    transition: all 0.3s ease;
+}
+
+#container.expand {
+    padding-left: 90px;
+}
+
+
+.circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+
+
+.main {
+    flex: 1;
+    padding: 20px;
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+.header-left h1 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.header-left p {
+    color: gray;
+    font-size: 14px;
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+}
+
+.header-right button {
+    border: none;
+    width: 140px;
+    padding: 10px 0;
+    border-radius: 20px;
+}
+
+
+
+
+
+.cards {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+
+    flex: 1;
+    background: #AFCBBA;
+    padding: 20px;
+
+}
+
+.content {
+    display: flex;
+    gap: 20px;
+    height: 300px;
+}
+
+.chart {
+    flex: 3;
+
+    background: #AFCBBA;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+#top_chart {
+    width: 90%;
+    height: 10%;
+    padding-top: 10px;
+    align-content: center;
+    display: flex;
+    justify-content: space-between;
+
+}
+
+#devices {
+    background-color: #AFCBBA;
+    border: none;
+}
+
+
+#bottom_chart {
+
+    margin-top: 20px;
+
+    width: 90%;
+    height: 90%;
+
+}
+
+.sidepanel {
+    flex: 1;
+
+}
+
+.contacts {
+    background: #AFCBBA;
+    padding: 15px;
+    border-radius: 12px;
+
+
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar-small {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ccc;
+}
+
+.contact-item p {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.contact-item span {
+    font-size: 11px;
+    color: gray;
+}
+
+.sidepanel button {
+    padding: 8px 15px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.green {
+    background-color: rgb(122, 216, 155);
+}
+
+.light {
+    background-color: #ccc;
+}

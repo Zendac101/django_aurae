@@ -1,0 +1,146 @@
+{% load static %}
+
+<!DOCTYPE php>
+<php lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aurae Admin</title>
+
+
+        <link rel="stylesheet" href="{% static 'css/data_management_style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/data_table_style.css' %}">
+
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+
+        <div id="container">
+
+            {% include 'sidebar.html' %}
+
+            <main class="main">
+                {% include 'topbar.html' %}
+
+                <div class="header">
+                    <div class="header-left">
+                        <h1>Data Management</h1>
+                        <p>Easily manage and organize air quality data.</p>
+                    </div>
+                </div>
+
+                <div class="data-table">
+
+
+                    <div>
+
+                        <table id="pollutant_table">
+                            <thead>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>
+                                    <label for="location">Location</label>
+                                    <select name="location" id="location">
+                                        <option value="">Select Location</option>
+                                        {% for site_id, site_name in location_options %}
+                                        <option value="{{ site_id }}">{{ site_name }}</option>
+                                        {% empty %}
+                                        <!-- This line will only show if your database returned zero rows -->
+                                        <option value="">[No records found or column name error]</option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+
+                                </th>
+                                <th>AQI</th>
+                                <th>Status</th>
+                                <th>So2</th>
+                                <th>O3</th>
+                                <th>Co</th>
+                                <th>No2</th>
+                                <th>NoX</th>
+                                <th>No</th>
+
+
+                            </thead>
+
+
+                            <tbody id="table_pollutant">
+
+
+
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+
+                <div class="table-actions">
+                    <button class="green">Upload Data</button>
+                    <button class="light">Download Data</button>
+                    <button class="light">Delete Data</button>
+                </div>
+
+            </main>
+
+        </div>
+
+        <script src="{% static 'js/toggle_sidebar.js' %}">
+
+        </script>
+
+        <script>
+
+            document.getElementById('location').addEventListener('change', function (event) {
+                const selectedLoc = this.value;
+                const tbody = document.getElementById('table_pollutant');
+                const selectloc = document.getElementById("location");
+                const selectedText = selectloc.options[selectloc.selectedIndex].text;
+
+                tbody.innerHTML = "";
+
+
+
+                fetch(`?location=${encodeURIComponent(selectedLoc)}`, {
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            result.data.forEach(row => {
+                                const tr = document.createElement('tr');
+
+
+                                const columnOrder = [
+                                    row[0], row[1], selectedText, row[3], row[4],
+                                    row[5], row[6], row[7], row[8], row[9], row[10]
+                                ];
+
+
+                                let cellsHtml = '';
+                                columnOrder.forEach(col => {
+                                    cellsHtml += `<td>${col !== null && col !== undefined ? col : ''}</td>`;
+                                });
+
+                                tr.innerHTML = cellsHtml;
+                                tbody.appendChild(tr);
+
+                            });
+
+                        }
+
+                    })
+                    .catch(error => console.error('Error fetching data:', error));
+            });
+
+
+        </script>
+
+
+    </body>
+</php>
