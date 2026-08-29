@@ -22,9 +22,12 @@ def analysis_view(request):
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
+
+# get the requeest from the fetch in javascript
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
         selected_location = request.GET.get('location', '')
+
         fields = ['date', 'time', 'site_id', 'aqi',
                   'status', 'so2', 'co', 'o3', 'no', 'no2', 'nox']
         if selected_location and selected_location != 'Select Location':

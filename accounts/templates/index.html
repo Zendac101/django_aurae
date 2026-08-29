@@ -29,22 +29,12 @@
             <p>Enter your email to login for this app</p>
 
             {% if messages and active_form == 'login_form' %}
-            <div id="login_error_box"
-                style="color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 14px; border: 1px solid #f5c6cb;">
+            <div id="login_error_box">
                 {% for message in messages %}
-                {% if 'error' in message.tags %}
-                <p style="margin: 2px 0;">{{ message }}</p>
-                {% endif %}
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% if messages and active_form == 'login_form' %}
-            <div id="login_success_box"
-                style="color: #155724; background: #d4edda; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 14px; border: 1px solid #c3e6cb;">
-                {% for message in messages %}
-                {% if 'success' in message.tags %}
-                <p style="margin: 2px 0;">{{ message }}</p>
+                {% if forloop.first and 'error' in message.tags %}
+                <p style="margin: 2px 0; color: #721c24;">{{ message }}</p>
+                {% elif forloop.first and 'success' in message.tags %}
+                <p style="margin: 2px 0; color: #1c7247;">{{ message }}</p>
                 {% endif %}
                 {% endfor %}
             </div>

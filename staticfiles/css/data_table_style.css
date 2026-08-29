@@ -1,8 +1,9 @@
-#data-table {
+#pollutant_table {
 
+    border-radius: 10px;
     max-height: 400px;
 
-    background: #AFCBBA;
+
 
     border-radius: 5px;
     overflow-y: auto;
@@ -13,11 +14,11 @@
 
 
 table {
-
+    padding: 2px;
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-
+    background-color: #5d876d;
 
 }
 
@@ -28,15 +29,19 @@ td {
     width: 7%;
     padding: 10px;
     font-size: 13px;
-    border: #91bfa4 solid;
-    border-top: 1px;
-    border-left: 1px;
+
+    border-left: 2px #436e54 solid;
+    border-right: 2px #436e54 solid;
+
+    border-radius: 2px;
 
 }
 
 th {
     text-align: center;
     font-weight: 600;
+
+
 
 }
 
@@ -54,29 +59,19 @@ html {
 
 }
 
-.good {
-    color: green;
-    font-weight: bold;
-}
 
-.moderate {
-    color: orange;
-    font-weight: bold;
-}
-
-.unhealthy-for-sensitive-groups {
-    color: rgb(189, 18, 18);
-    font-weight: bold;
-}
 
 thead th {
     position: sticky;
-    background-color: #5fb081;
+    background-color: #8dbca1;
     top: 0;
     z-index: 1;
+
 }
 
-select {
-    background-color: #5fb081;
-    border: none;
+#location {
+    background-color: #97cdac;
+    border: 1px #31693c solid;
+    border-radius: 5px;
+    margin-top: 2px;
 }

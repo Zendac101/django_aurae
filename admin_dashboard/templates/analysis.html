@@ -94,7 +94,7 @@
                         <input type="date" id="min">
                         <input type="date" id="max">
 
-                        <button id="date_submit">submit</button>
+                        <button type="button" id="date_submit" onchange="toPHP(value)">submit</button>
                     </dialog>
 
 
@@ -125,6 +125,15 @@
             const selectedLoc = document.getElementById('location').value
             const pollutantSelect = document.getElementById('pollutants');
             const selectedPollutant = pollutantSelect ? pollutantSelect.value.toLowerCase() : 'aqi';
+
+            const minDateInput = document.getElementById('min')?.value || '2000-01-01';
+            const maxDateInput = document.getElementById('max')?.value || '2199-12-31';
+
+            if (minDateInput > maxDateInput) {
+                minDateInput, maxDateInput = maxDateInput, minDateInput
+            }
+
+
 
             if (!selectedLoc || selectedLoc === 'Select Location') return;
 
@@ -204,6 +213,20 @@
                 })
 
 
+
+
+
+
+
+
+            submit_date = document.getElementById("date_submit");
+            submit_date.value = value;
+
+            //close overlay
+            submit_date.addEventListener('click', function () {
+
+                document.getElementById("date_range_dialog").close();
+            })
         }
 
     </script>

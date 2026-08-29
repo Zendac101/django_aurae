@@ -8,18 +8,26 @@
 body {
     background: #f3f4f6;
 
-
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 #container {
     display: flex;
     height: 100vh;
-
+    padding-left: 240px;
     transition: all 0.3s ease;
 }
 
 #container.expand {
     padding-left: 90px;
+}
+
+
+.main {
+    flex: 1;
+    padding: 20px;
 }
 
 
@@ -41,12 +49,12 @@ body {
 
 .data-table {
 
-    background-color: #AFCBBA;
-
-    padding: 0;
-
+    background-color: #bad3c4;
+    border: 1px;
+    border-radius: 10px;
     margin-bottom: 10px;
     height: 62%;
+    overflow: scroll;
 }
 
 
@@ -61,8 +69,6 @@ body {
     color: orange;
     font-weight: bold;
 }
-
-
 
 
 .table-actions button {
