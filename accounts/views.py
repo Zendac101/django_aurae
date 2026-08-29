@@ -36,8 +36,10 @@ def LogRes(request):
                         user.is_active = False
                         user.save()
 
-                        UserProfile.objects.create(
-                            user=user, is_verified=False)
+                        UserProfile.objects.update_or_create(
+                            user=user,
+                            defaults={'is_verified': False}
+                        )
                         ActivityHistory.objects.create(
                             user=user, activity_log="Account initialized via registration."
                         )
@@ -49,13 +51,16 @@ def LogRes(request):
                                     'uidb64': uid, 'token': token})
                         )
 
-                        send_mail(
-                            subject="Activate Your Account",
-                            message=f"Hello {user.username},\n\nPlease click the link to verify your account:\n{activation_url}",
-                            from_email=None,
-                            recipient_list=[user.email],
-                            fail_silently=False,
-                        )
+                        try:
+                            send_mail(
+                                subject="Activate Your Account",
+                                message=f"Hello {user.username},\n\nPlease click the link to verify your account:\n{activation_url}",
+                                from_email=None,
+                                recipient_list=[user.email],
+                                fail_silently=False,
+                            )
+                        except Exception as mail_err:
+                            print(f"SMTP Error: {mail_err}")
 
                     messages.success(
                         request, "Account created! Please check your email to verify.")
@@ -111,10 +116,9 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
 
-        # Update profile verification flag using the correct related_name
-        if hasattr(user, 'profile'):
-            user.profile.is_verified = True
-            user.profile.save()
+        if hasattr(user, 'userprofile'):
+            user.userprofile.is_verified = True
+            user.userprofile.save()
 
         messages.success(
             request, "Your email has been verified! You can now log in."
