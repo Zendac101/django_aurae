@@ -167,13 +167,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = '/'
 if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    DEFAULT_FROM_EMAIL = 'aurae <no-reply@aurae-ipto.onrender.com>'
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = env('EMAIL_ADDRESS')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    DEFAULT_FROM_EMAIL = f"aurae <{env('EMAIL_ADDRESS')}>"
+    # DEFAULT_FROM_EMAIL = f"aurae <{env('EMAIL_ADDRESS')}>"
     ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 
 else:
