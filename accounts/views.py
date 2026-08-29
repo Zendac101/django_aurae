@@ -57,7 +57,7 @@ def LogRes(request):
                                 message=f"Hello {user.username},\n\nPlease click the link to verify your account:\n{activation_url}",
                                 from_email=None,
                                 recipient_list=[user.email],
-                                fail_silently=False,
+                                fail_silently=True,
                             )
                         except Exception as mail_err:
                             print(f"SMTP Error: {mail_err}")
