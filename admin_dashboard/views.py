@@ -8,7 +8,7 @@ from django.http import JsonResponse
 def home_view(request):
     if not request.user.is_authenticated:
 
-        return redirect('/accounts/registerUser')
+        return redirect('/')
 
     return render(request, 'home.html')
 
@@ -16,13 +16,21 @@ def home_view(request):
 def analysis_view(request):
     if not request.user.is_authenticated:
 
-        return redirect('/accounts/registerUser')
+        return redirect('/')
 
     dropdown_options = locationData.objects.using('sensor_data_db') \
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
+    context = {
+        'location_options': dropdown_options,
 
+    }
+
+    return render(request, 'analysis.html', context)
+
+
+"""
 # get the requeest from the fetch in javascript
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
@@ -55,17 +63,27 @@ def analysis_view(request):
     }
 
     return render(request, 'analysis.html', context)
+"""
 
 
 def data_management_view(request):
     if not request.user.is_authenticated:
 
-        return redirect('/accounts/registerUser')
+        return redirect('/')
 
     dropdown_options = locationData.objects.using('sensor_data_db') \
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
+    context = {
+        'location_options': dropdown_options,
+
+    }
+
+    return render(request, 'data_management.html', context)
+
+
+"""
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         selected_location = request.GET.get('location', '')
 
@@ -89,12 +107,13 @@ def data_management_view(request):
     }
 
     return render(request, 'data_management.html', context)
+"""
 
 
 def report_view(request):
     if not request.user.is_authenticated:
 
-        return redirect('/accounts/registerUser')
+        return redirect('/')
 
     return render(request, 'reports.html')
 
@@ -102,7 +121,7 @@ def report_view(request):
 def settings_view(request):
     if not request.user.is_authenticated:
 
-        return redirect('/accounts/registerUser')
+        return redirect('/')
 
     return render(request, 'settings.html')
 
@@ -110,6 +129,6 @@ def settings_view(request):
 def support_view(request):
     if not request.user.is_authenticated:
 
-        return redirect('/accounts/registerUser')
+        return redirect('/')
 
     return render(request, 'support.html')
