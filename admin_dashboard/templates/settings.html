@@ -40,18 +40,41 @@
                             <div class="content_hidden" id="account_hidden">
                                 {% if user.is_authenticated %}
                                 <!-- credentials of the user-->
-                                <span class="profile">Username: {{ user.username }}</span><br>
-                                <span class="profile">Email: {{ user.email }}</span><br>
+                                <span class="profile important_txt">Username :{{ user.username }}
+                                </span><br><br>
+                                <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span><br><br>
+                                <span class="profile">Email : {{ user.email }}</span><br><br>
+
+                                {% if user.is_staff %}
+                                <span class="profile">Role : admin</span><br><br>
+                                {% endif %}
+                                <span class="profile">Account Created at : {{ user.date_joined }}</span><br><br>
+
                                 {% else %}
                                 <!-- go back to login if not registered -->
-                                <a href="{% url 'login' %}">Log In</a>
+                                <a href="{% url '' %}">Log In</a>
                                 {% endif %}
 
 
                                 <button id="edit_account">Edit</button><br>
 
                                 <dialog id="account_overlay">
-                                    <h5>edit account</h5>
+                                    <h2 class="center_txt">Edit Information</h2><br>
+
+
+                                    {% if user.is_authenticated %}
+                                    <!-- credentials of the user-->
+                                    <span class="profile important_txt">Username :{{ user.username }}
+                                    </span><br><br>
+                                    <span class="profile">First Name : {{ user.first_name }}</span><br><br>
+                                    <span class="profile">Last Name : {{user.last_name}}</span><br><br>
+                                    <span class="profile">Email : {{ user.email }}</span><br><br>
+                                    <span class="profile">Account Created at : {{ user.date_joined }}</span><br><br>
+                                    {% else %}
+                                    <!-- go back to login if not registered -->
+                                    <a href="{% url '' %}">Log In</a>
+                                    {% endif %}
+
                                     <button id="close_but">close</button>
                                 </dialog>
 
@@ -90,7 +113,9 @@
                     <div class="setting-item" id="setting-activity_log">
                         <div>
                             <h5><span>Activity Log</span></h5>
-                            <div class="content_hidden" id="">
+                            <div class="content_hidden" id="activity_hidden">
+                                {% for act in activity_log %}
+                                <!-- finish this activity log -->
 
                             </div>
                         </div>

@@ -56,13 +56,15 @@ INSTALLED_APPS = [
     'accounts',
     'client_dashboard',
     'admin_dashboard',
-    'sensors'
+    'sensors',
+
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware', #uncomment this when deployed in render
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -114,7 +116,7 @@ DATABASES = {
 }
 
 # web server database
-POSTGRES_LOCALLY = False
+POSTGRES_LOCALLY = True
 if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
     DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
 
@@ -165,19 +167,22 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# if want to use email verification
 LOGIN_REDIRECT_URL = '/'
 if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
-    # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    DEFAULT_FROM_EMAIL = 'aurae <no-reply@aurae-ipto.onrender.com>'
+
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = env('EMAIL_ADDRESS')
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    # DEFAULT_FROM_EMAIL = f"aurae <{env('EMAIL_ADDRESS')}>"
+    DEFAULT_FROM_EMAIL = f"aurae <{env('EMAIL_ADDRESS')}>"
     ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 
+# email verification using the console
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
