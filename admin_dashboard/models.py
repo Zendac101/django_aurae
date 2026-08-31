@@ -3,6 +3,16 @@ from django.db import models
 # Create your models here.
 
 
+class activityHistory(models.Model):
+    activity_log = models.CharField(max_length=255)
+    log_datetime = models.DateTimeField()
+    user_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'firstapp_activityhistory'
+
+
 class locationData(models.Model):
 
     site_id = models.IntegerField(primary_key=True, db_column='site_id')
@@ -12,7 +22,7 @@ class locationData(models.Model):
     county = models.CharField(max_length=45, db_column='county')
 
     class Meta:
-        managed = False       # Prevents Django from managing migrations for this table
+        managed = False
         db_table = 'location'  # The exact table name in your schema
 
 
