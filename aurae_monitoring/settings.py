@@ -64,9 +64,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    # uncomment this when deployed in render
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,7 +115,7 @@ DATABASES = {
 }
 
 # web server database
-POSTGRES_LOCALLY = False
+POSTGRES_LOCALLY = True
 if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
     DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
 
@@ -156,7 +153,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+
 STATIC_URL = 'static/'
+
+
+# render static files in production render.com
+if ENVIRONMENT == 'production':
+    MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
 
 
 # The directory where static files are collected for production (Do not map this inside STATICFILES_DIRS)
