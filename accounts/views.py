@@ -72,13 +72,14 @@ def LogRes(request):
             else:
                 return render(request, 'index.html', {'form': form, 'active_form': 'signUp_form'})
 
-        # 2. Login Branch
+        # Login
         elif 'login_submit' in request.POST:
             login_identifier = request.POST.get('email', '').strip()
             password = request.POST.get('password', '')
 
-            user_obj = User.objects.filter(email__iexact=login_identifier).first() or \
-                User.objects.filter(username__iexact=login_identifier).first()
+            user_obj = User.objects.filter(
+                email__iexact=login_identifier).first()
+           # or User.objects.filter(username__iexact=login_identifier).first()
 
             if user_obj:
                 if not user_obj.is_active:

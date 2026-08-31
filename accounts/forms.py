@@ -15,7 +15,7 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         # These are the fields Django checks during form.is_valid()
-        fields = ['email', 'first_name', 'last_name', 'password']
+        fields = ['username', 'email',  'first_name', 'last_name', 'password']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
@@ -35,8 +35,8 @@ class RegisterForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        # Set username identical to email behind the scenes
-        user.username = self.cleaned_data["email"]
+
+        user.username = self.cleaned_data["username"]
         user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()
