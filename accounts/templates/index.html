@@ -32,9 +32,13 @@
             <div id="login_error_box">
                 {% for message in messages %}
                 {% if forloop.first and 'error' in message.tags %}
-                <p style="margin: 2px 0; color: #721c24;">{{ message }}</p>
+                <p
+                    style="margin: 2px 0; color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: left;">
+                    {{ message }}</p>
                 {% elif forloop.first and 'success' in message.tags %}
-                <p style="margin: 2px 0; color: #1c7247;">{{ message }}</p>
+                <p
+                    style="margin: 2px 0; color: #1c721c; background: #d7f8dd; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: left;">
+                    {{ message }}</p>
                 {% endif %}
                 {% endfor %}
             </div>
@@ -85,12 +89,13 @@
             <h3>Create an account</h3>
             <p>Enter your credentials to sign up for this app</p>
             {% if form.errors and active_form == 'signUp_form' %}
-            <div id="signup_error_box"
-                style="color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: left;">
+            <div id="signup_error_box">
 
                 {% for field, errors in form.errors.items %}
                 {% if forloop.first %}
-                <p style="margin: 2px 0;">{{ errors.0 }}</p>
+                <p
+                    style="margin: 2px 0;color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: left;">
+                    {{ errors.0 }}</p>
                 {% endif %}
                 {% endfor %}
 
