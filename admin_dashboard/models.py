@@ -4,13 +4,14 @@ from django.db import models
 
 
 class activityHistory(models.Model):
-    activity_log = models.CharField(max_length=255)
+    id = models.BigAutoField(primary_key=True)
+    activity_log = models.TextField(max_length=255)
     log_datetime = models.DateTimeField()
     user_id = models.IntegerField()
 
     class Meta:
         managed = False
-        db_table = 'firstapp_activityhistory'
+        db_table = '"public"."user_activityhistory"'
 
 
 class locationData(models.Model):
@@ -23,7 +24,7 @@ class locationData(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'location'  # The exact table name in your schema
+        db_table = '"pollutant_data"."location"'  # The exact table name in your schema
 
 
 class site_ids(models.Model):
@@ -47,4 +48,4 @@ class pollutant_data(models.Model):
 
     class Meta:
         managed = False
-        db_table = 'pollutant_values'
+        db_table = '"pollutant_data"."pollutant_values"'

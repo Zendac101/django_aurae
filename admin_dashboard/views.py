@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import locationData, pollutant_data
+from .models import locationData, pollutant_data, activityHistory
 from django.http import JsonResponse
 
 
@@ -18,19 +18,11 @@ def analysis_view(request):
 
         return redirect('/')
 
-    dropdown_options = locationData.objects.using('sensor_data_db') \
+    dropdown_options = locationData.objects.using('default') \
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
-    context = {
-        'location_options': dropdown_options,
 
-    }
-
-    return render(request, 'analysis.html', context)
-
-
-"""
 # get the requeest from the fetch in javascript
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
@@ -63,7 +55,6 @@ def analysis_view(request):
     }
 
     return render(request, 'analysis.html', context)
-"""
 
 
 def data_management_view(request):
@@ -71,19 +62,10 @@ def data_management_view(request):
 
         return redirect('/')
 
-    dropdown_options = locationData.objects.using('sensor_data_db') \
+    dropdown_options = locationData.objects.using('default') \
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
-    context = {
-        'location_options': dropdown_options,
-
-    }
-
-    return render(request, 'data_management.html', context)
-
-
-"""
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         selected_location = request.GET.get('location', '')
 
@@ -93,7 +75,7 @@ def data_management_view(request):
                 .order_by('date', 'time')
 
         else:
-            pollutant_values_show = pollutant_data.objects.using('sensor_data_db') \
+            pollutant_values_show = pollutant_data.objects.using('default') \
                 .values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
                 .order_by('date', 'time')[:100]
 
@@ -107,7 +89,6 @@ def data_management_view(request):
     }
 
     return render(request, 'data_management.html', context)
-"""
 
 
 def report_view(request):
@@ -123,7 +104,13 @@ def settings_view(request):
 
         return redirect('/')
 
-    return render(request, 'settings.html')
+    act_history = activityHistory.objects.using('default').all()
+
+    context = {
+        "activity_log": act_history
+    }
+
+    return render(request, 'settings.html', context)
 
 
 def support_view(request):
