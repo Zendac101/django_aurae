@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'client_dashboard',
     'admin_dashboard',
     'sensors',
+    'anymail',
 
 ]
 
@@ -175,12 +176,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# resend
+ANYMAIL = {
+    "RESEND_API_KEY": env('RESEND_API'),
+}
 
 # if want to use email verification
 LOGIN_REDIRECT_URL = '/'
 if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
 
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
 
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = env('EMAIL_ADDRESS')
