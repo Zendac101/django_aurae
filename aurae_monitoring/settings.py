@@ -102,6 +102,9 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': '127.0.0.1',
         'PORT': '5432',
+        'OPTIONS': {
+            'options': '-c search_path=pollutant_data,public'
+        }
     },
     'sensor_data_db': {
         'ENGINE': 'django.db.backends.postgresql',
