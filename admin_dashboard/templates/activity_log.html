@@ -1,0 +1,81 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae Admin</title>
+
+
+
+    <link rel="stylesheet" href="{% static 'css/activityLog_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div id="container">
+
+        {% include 'sidebar.html' %}
+
+        <main class="main">
+
+            {% include 'topbar.html' %}
+
+            <div class="header">
+                <div class="header-left">
+                    <h1>Activity Log</h1>
+                    <p>Know the recent activities.</p>
+                </div>
+            </div>
+
+            <br>
+            <h1>User Logs</h1>
+            <div id="table_useractivity">
+
+                <table id="activity_table">
+                    <thead>
+                        <th>Activity Log</th>
+                        <th>Date and Time</th>
+                        <th>Username</th>
+                        <th>Full Name</th>
+                    </thead>
+
+                    <tbody>
+                    <tbody>
+                        {% for item in activity_log %}
+                        <tr>
+                            <td>{{ item.activity_log }}</td>
+                            <td>{{ item.log_datetime }}</td>
+                            <td>{{ item.user.username }}</td>
+                            <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3">no rec</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+
+
+
+
+
+        </main>
+
+    </div>
+
+    <script src="{% static 'js/toggle_sidebar.js' %}">
+
+    </script>
+
+
+</body>
+</php>
