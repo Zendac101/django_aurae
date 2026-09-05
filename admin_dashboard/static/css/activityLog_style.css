@@ -1,6 +1,6 @@
 #activity_table {
 
-    margin-top: 15px;
+    border-radius: 5px;
     width: 100%;
 
 
@@ -25,7 +25,6 @@ html {
 
     scrollbar-width: thin;
 
-
 }
 
 
@@ -39,7 +38,7 @@ td {
 
 thead th {
     position: sticky;
-    background-color: #649479;
+    background-color: #537b65;
     top: 0;
     z-index: 1;
     border: 2px #436e54 solid;
@@ -60,4 +59,16 @@ td {
 
 tr:nth-child(odd) {
     background: rgb(124, 173, 142);
+}
+
+option {
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+#logs {
+
+    background-color: #f3f4f6;
+    margin-bottom: 15px;
+    border: none;
+    font-size: x-large;
 }
