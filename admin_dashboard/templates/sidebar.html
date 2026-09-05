@@ -1,5 +1,5 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/global.css' %}">
+<link rel="stylesheet" href="{% static 'css/component.css' %}">
 
 <body>
 
@@ -10,10 +10,15 @@
         </div>
 
         <ul class="menu">
+
+
+
+
             <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Dashboard</a></li>
             <li><a href="{% url 'dataManagement' %}"><i class="fas fa-database"></i> Data Management</a></li>
             <li><a href="{% url 'analysis' %}"><i class="fas fa-chart-line"></i> Analysis</a></li>
             <li><a href="{% url 'reports' %}"><i class="fas fa-file-alt"></i> Reports</a></li>
+            <li><a href="{% url 'activityLog' %}"><i class="fas fa-calendar"></i> Activity Log</a></li>
             <li><a href="{% url 'settings' %}"><i class="fas fa-cog"></i> Settings</a></li>
             <li><a href="{% url 'support' %}"><i class="fas fa-life-ring"></i> Support / Help</a></li>
         </ul>

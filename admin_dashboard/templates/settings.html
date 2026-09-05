@@ -9,6 +9,7 @@
         <title>Aurae Admin</title>
 
         <link rel="stylesheet" href="{% static 'css/settings_style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/global.css' %}">
 
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
@@ -33,10 +34,9 @@
                 <div class="settings-box">
 
                     <div class="setting-item" id="setting-account">
-                        <div>
-
-
+                        <div class="setting_header">
                             <h5><span>Account</span></h5><br>
+
                             <div class="content_hidden" id="account_hidden">
                                 {% if user.is_authenticated %}
                                 <!-- credentials of the user-->
@@ -56,7 +56,7 @@
                                 {% endif %}
 
 
-                                <button id="edit_account">Edit</button><br>
+                                <button class="edit_info" id="edit_account">Edit</button><br>
 
                                 <dialog id="account_overlay">
                                     <h2 class="center_txt">Edit Information</h2><br>
@@ -78,82 +78,109 @@
                                     <button id="close_but">close</button>
                                 </dialog>
 
-                                <button id="change_pass">Change Password</button>
+                                <button class="edit_info" id="change_pass">Change Password</button>
                             </div>
                         </div>
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-account','account_hidden')"></button>
+                        <div class="setting_action">
+
+
+                            <button class="fas fa-ellipsis-h"
+                                onclick="expansion('setting-account','account_hidden')"></button>
+                        </div>
+
                     </div>
 
 
 
 
                     <div class="setting-item" id="setting-data_source">
-                        <div>
+                        <div class="setting_header">
                             <h5><span>Data Source Settings</span></h5>
                             <div class="content_hidden" id="">
 
                             </div>
                         </div>
 
-                        <button class="fas fa-ellipsis-h" onclick="expansion('setting-data_source')"></button>
+                        <div class="setting_action">
+
+
+                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-data_source','')"></button>
+                        </div>
                     </div>
 
+
+
                     <div class="setting-item" id="setting-threshold">
-                        <div>
+                        <div class="setting_header">
                             <h5><span>Air Quality Threshold Rules</span></h5>
                             <div class="content_hidden" id="">
 
                             </div>
                         </div>
 
-                        <button class="fas fa-ellipsis-h" onclick="expansion('setting-threshold')"></button>
-                    </div>
+                        <div class="setting_action">
 
-                    <div class="setting-item" id="setting-activity_log">
-                        <div>
-                            <h5><span>Activity Log</span></h5>
-                            <div class="content_hidden" id="activity_hidden">
-                                {% for act in activity_log %}
-                                <!-- finish this activity log -->
-                                {% endfor %}
-                            </div>
+
+                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-threshold','')"></button>
                         </div>
-
-                        <button class="fas fa-ellipsis-h" onclick="expansion('setting-activity_log')"></button>
                     </div>
+
+
+
+
+
+
+
+
 
                     <div class="setting-item" id="setting-report_format">
-                        <div>
+                        <div class="setting_header">
                             <h5><span>Report Format Settings</span></h5>
                             <div class="content_hidden" id="">
 
                             </div>
                         </div>
 
-                        <button class="fas fa-ellipsis-h" onclick="expansion('setting-report_format')"></button>
+                        <div class="setting_action">
+
+
+                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-report_format','')"></button>
+                        </div>
                     </div>
 
+
+
+
                     <div class="setting-item" id="setting-backup">
-                        <div>
+                        <div class="setting_header">
                             <h5><span>Backup & Restore</span></h5>
                             <div class="content_hidden" id="">
 
                             </div>
                         </div>
 
-                        <button class="fas fa-ellipsis-h" onclick="expansion('setting-backup')"></button>
+                        <div class="setting_action">
+
+
+                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-backup','')"></button>
+                        </div>
                     </div>
 
+
+
                     <div class="setting-item" id="setting-notification">
-                        <div>
+                        <div class="setting_header">
                             <h5><span>Email Notification Settings</span></h5>
                             <div class="content_hidden" id="">
 
                             </div>
                         </div>
 
-                        <button class="fas fa-ellipsis-h" onclick="expansion('setting-notification')"></button>
+                        <div class="setting_action">
+
+
+                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-notification','')"></button>
+                        </div>
                     </div>
 
                 </div>
