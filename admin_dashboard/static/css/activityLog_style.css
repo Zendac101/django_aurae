@@ -1,0 +1,63 @@
+#activity_table {
+
+    margin-top: 15px;
+    width: 100%;
+
+
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #6a9b7d;
+    border: #11522b 2px solid;
+}
+
+#table_useractivity {
+    width: 100%;
+    max-height: 400px;
+
+    overflow-y: scroll;
+
+}
+
+html {
+
+    scrollbar-color: #728175 #AFCBBA;
+
+
+    scrollbar-width: thin;
+
+
+}
+
+
+th,
+td {
+
+    width: 25%;
+    padding: 20px;
+}
+
+
+thead th {
+    position: sticky;
+    background-color: #649479;
+    top: 0;
+    z-index: 1;
+    border: 2px #436e54 solid;
+
+}
+
+th {
+    text-align: center;
+    font-weight: 600;
+
+
+
+}
+
+td {
+    border: 2px #436e54 solid;
+}
+
+tr:nth-child(odd) {
+    background: rgb(124, 173, 142);
+}

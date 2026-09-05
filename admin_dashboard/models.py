@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User  # Points to the auth_user table
 
 # Create your models here.
 
@@ -7,11 +8,12 @@ class activityHistory(models.Model):
     id = models.BigAutoField(primary_key=True)
     activity_log = models.TextField(max_length=255)
     log_datetime = models.DateTimeField()
-    user_id = models.IntegerField()
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, db_column='user_id', related_name='activity_logs')
 
     class Meta:
         managed = False
-        db_table = '"public"."user_activityhistory"'
+        db_table = 'user_activityhistory'
 
 
 class locationData(models.Model):
