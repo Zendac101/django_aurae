@@ -1,51 +1,3 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-
-body {
-    background: #f3f4f6;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-}
-
-
-
-#container {
-    display: flex;
-    height: 100vh;
-    padding-left: 240px;
-    transition: all 0.3s ease;
-}
-
-#container.expand {
-    padding-left: 90px;
-}
-
-.main {
-    flex: 1;
-    padding: 20px;
-}
-
-
-.header {
-    margin-top: 30px;
-    margin-bottom: 20px;
-}
-
-.header-left h1 {
-    font-size: 22px;
-}
-
-.header-left p {
-    color: gray;
-    font-size: 14px;
-}
-
 .settings-box {
 
     background: #AFCBBA;
@@ -54,12 +6,21 @@ body {
 
 }
 
+.setting_header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+
+
+}
 
 .setting-item {
 
     height: 50px;
     display: flex;
-
+    width: 100%;
     align-items: top;
     padding: 16px 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.4);
@@ -69,11 +30,8 @@ body {
 }
 
 
-.setting-item button {
-
-    position: fixed;
-
-
+.setting-item .fas,
+.edit_info {
     background-color: #AFCBBA;
     border: none;
     color: #5d6a62;
@@ -98,12 +56,14 @@ body {
 
 .content_hidden {
     display: none;
+
 }
 
 .content_hidden.show {
     display: block;
     padding-bottom: 20px;
     margin-left: 3px;
+    width: 100%;
 
 }
 
