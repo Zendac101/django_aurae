@@ -13,12 +13,23 @@ def home_view(request):
     return render(request, 'home.html')
 
 
+def activityLog_view(request):
+    if not request.user.is_authenticated:
+
+        return redirect('/')
+
+    act_history = activityHistory.objects.select_related(
+        'user').all()
+
+    return render(request, 'activity_log.html', {'activity_log': act_history})
+
+
 def analysis_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
 
-    dropdown_options = locationData.objects.using('default') \
+    dropdown_options = locationData.objects \
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
@@ -31,11 +42,11 @@ def analysis_view(request):
         fields = ['date', 'time', 'site_id', 'aqi',
                   'status', 'so2', 'co', 'o3', 'no', 'no2', 'nox']
         if selected_location and selected_location != 'Select Location':
-            pollutant_values_show = pollutant_data.objects.using('sensor_data_db') \
+            pollutant_values_show = pollutant_data.objects \
                 .filter(site_id=selected_location).values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
                 .order_by('date', 'time')
         else:
-            pollutant_values_show = pollutant_data.objects.using('sensor_data_db') \
+            pollutant_values_show = pollutant_data.objects \
                 .values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
                 .order_by('date', 'time')[:100]
 
@@ -62,7 +73,7 @@ def data_management_view(request):
 
         return redirect('/')
 
-    dropdown_options = locationData.objects.using('default') \
+    dropdown_options = locationData.objects \
         .values_list('site_id', 'site_name') \
         .order_by('site_name')
 
@@ -70,12 +81,12 @@ def data_management_view(request):
         selected_location = request.GET.get('location', '')
 
         if selected_location and selected_location != 'Select Location':
-            pollutant_values_show = pollutant_data.objects.using('sensor_data_db') \
+            pollutant_values_show = pollutant_data.objects \
                 .filter(site_id=selected_location).values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
                 .order_by('date', 'time')
 
         else:
-            pollutant_values_show = pollutant_data.objects.using('default') \
+            pollutant_values_show = pollutant_data.objects \
                 .values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
                 .order_by('date', 'time')[:100]
 
@@ -104,13 +115,7 @@ def settings_view(request):
 
         return redirect('/')
 
-    act_history = activityHistory.objects.using('default').all()
-
-    context = {
-        "activity_log": act_history
-    }
-
-    return render(request, 'settings.html', context)
+    return render(request, 'settings.html')
 
 
 def support_view(request):

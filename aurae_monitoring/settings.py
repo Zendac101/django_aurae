@@ -120,6 +120,7 @@ DATABASES = {
 
 # web server database
 POSTGRES_LOCALLY = True
+
 if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
     DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
 
@@ -186,7 +187,7 @@ LOGIN_REDIRECT_URL = '/'
 if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
 
     # EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
     EMAIL_HOST = 'smtp.gmail.com'
     EMAIL_HOST_USER = env('EMAIL_ADDRESS')
