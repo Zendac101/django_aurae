@@ -23,3 +23,7 @@ class ActivityHistory(models.Model):
         User, on_delete=models.CASCADE, related_name='activity_histories')
     activity_log = models.TextField()
     log_datetime = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        managed = False
+        db_table = 'user_activityhistory'
