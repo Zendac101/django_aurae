@@ -25,5 +25,5 @@ class ActivityHistory(models.Model):
     log_datetime = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'user_activityhistory'

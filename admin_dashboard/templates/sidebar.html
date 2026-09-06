@@ -4,23 +4,38 @@
 <body>
 
     <aside class="sidebar">
-        <div class="logo">
-            <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
-            <h2>Aurae Admin</h2>
+        <div>
+            <div class="logo">
+                <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                <h2>Aurae Admin</h2>
+            </div>
+
+            <ul class="menu">
+
+
+
+
+                <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'dataManagement' %}"><i class="fas fa-database"></i> Data Management</a></li>
+                <li><a href="{% url 'analysis' %}"><i class="fas fa-chart-line"></i> Analysis</a></li>
+                <li><a href="{% url 'reports' %}"><i class="fas fa-file-alt"></i> Reports</a></li>
+                <li><a href="{% url 'activityLog' %}"><i class="fas fa-calendar"></i> Activity Log</a></li>
+                <li><a href="{% url 'settings' %}"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="{% url 'support' %}"><i class="fas fa-life-ring"></i> Support / Help</a></li>
+            </ul>
         </div>
 
-        <ul class="menu">
 
+        <div>
+            {% if user.is_authenticated %}
 
-
-
-            <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="{% url 'dataManagement' %}"><i class="fas fa-database"></i> Data Management</a></li>
-            <li><a href="{% url 'analysis' %}"><i class="fas fa-chart-line"></i> Analysis</a></li>
-            <li><a href="{% url 'reports' %}"><i class="fas fa-file-alt"></i> Reports</a></li>
-            <li><a href="{% url 'activityLog' %}"><i class="fas fa-calendar"></i> Activity Log</a></li>
-            <li><a href="{% url 'settings' %}"><i class="fas fa-cog"></i> Settings</a></li>
-            <li><a href="{% url 'support' %}"><i class="fas fa-life-ring"></i> Support / Help</a></li>
-        </ul>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">Log Out</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">Log In</a>
+            {% endif %}
+        </div>
     </aside>
 </body>

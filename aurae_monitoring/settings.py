@@ -119,7 +119,7 @@ DATABASES = {
 }
 
 # web server database
-POSTGRES_LOCALLY = True
+POSTGRES_LOCALLY = False
 
 if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
     DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
@@ -154,6 +154,9 @@ USE_I18N = True
 
 USE_TZ = True
 
+
+# logout
+LOGOUT_REDIRECT_URL = '/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/

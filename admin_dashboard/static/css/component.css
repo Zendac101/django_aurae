@@ -77,6 +77,9 @@
 .sidebar {
     transition: width 0.3s ease, margin-left 0.3s ease;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .sidebar.collapsed {
@@ -179,4 +182,16 @@
     background: white;
     padding: 8px;
     border-radius: 50%;
+}
+
+.btn-logout {
+    position: relative;
+    left: 70%;
+    background-color: #b0d9b5;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.btn-logout:hover {
+    background-color: #8fbf96;
 }
