@@ -37,21 +37,21 @@ def analysis_view(request):
 # get the requeest from the fetch in javascript
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
-        selected_location = request.GET.get('location', '')
+        selected_location = request.GET.get('location', '').strip()
+        mindate = request.GET.get('mindate', "%Y-%m-%d").strip()
+        maxdate = request.GET.get('maxdate', "%Y-%m-%d").strip()
 
         fields = ['date', 'time', 'site_id', 'aqi',
                   'status', 'so2', 'co', 'o3', 'no', 'no2', 'nox']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
-                .filter(site_id=selected_location).values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
-                .order_by('date', 'time')
+                .filter(site_id=selected_location)
         else:
-            pollutant_values_show = pollutant_data.objects \
-                .values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
-                .order_by('date', 'time')[:100]
+            pollutant_values_show = pollutant_data.objects
 
-        records = pollutant_values_show.values(
-            *fields).order_by('date', 'time')[:100]
+        records = pollutant_values_show.filter(date__range=[mindate, maxdate]).order_by('date', 'time').values(
+            *fields)
+
         serializable_data = [
             {key: (str(val) if val is not None else '')
              for key, val in item.items()}

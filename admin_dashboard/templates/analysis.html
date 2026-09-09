@@ -95,7 +95,8 @@
                         <input type="date" id="min">
                         <input type="date" id="max">
 
-                        <button type="button" id="date_submit" onchange="toPHP(value)">submit</button>
+                        <button type="button" id="date_submit"
+                            onclick="toPHP(document.getElementById('location').value)">submit</button>
                     </dialog>
 
 
@@ -127,8 +128,8 @@
             const pollutantSelect = document.getElementById('pollutants');
             const selectedPollutant = pollutantSelect ? pollutantSelect.value.toLowerCase() : 'aqi';
 
-            const minDateInput = document.getElementById('min')?.value || '2000-01-01';
-            const maxDateInput = document.getElementById('max')?.value || '2199-12-31';
+            const minDateInput = document.getElementById('min').value || '2000-01-01';
+            const maxDateInput = document.getElementById('max').value || '2199-12-31';
 
             if (minDateInput > maxDateInput) {
                 minDateInput, maxDateInput = maxDateInput, minDateInput
@@ -147,7 +148,7 @@
 
 
 
-            fetch(`?location=${encodeURIComponent(selectedLoc)}`, {
+            fetch(`?location=${encodeURIComponent(selectedLoc)}&mindate=${encodeURIComponent(minDateInput)}&maxdate=${encodeURIComponent(maxDateInput)}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             }).then(response => response.json())
                 .then(result => {
@@ -168,6 +169,8 @@
 
                         const chartLabels = result.data.map(item => item.date);
                         const chartValues = result.data.map(item => parseFloat(item[selectedPollutant]) || 0);
+
+
 
 
                         myChartInstance = new Chart(ctx, {
@@ -209,6 +212,8 @@
 
 
                     }
+
+
 
 
                 })
