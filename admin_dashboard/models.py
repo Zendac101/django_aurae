@@ -19,7 +19,8 @@ class activityHistory(models.Model):
 
 class locationData(models.Model):
 
-    site_id = models.IntegerField(primary_key=True, db_column='site_id')
+    site_id = models.IntegerField(
+        primary_key=True, db_column='site_id', unique=True)
 
     site_name = models.CharField(max_length=255, db_column='site_name')
 
@@ -36,7 +37,7 @@ class site_ids(models.Model):
 
 class pollutant_data(models.Model):
     site_id = models.ForeignKey(
-        site_ids, on_delete=models.CASCADE, db_column='site_id')
+        locationData, on_delete=models.CASCADE, db_column='site_id')
 
     date = models.DateField(db_column='date')
     time = models.IntegerField(db_column='time')
