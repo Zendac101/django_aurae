@@ -98,13 +98,13 @@ WSGI_APPLICATION = 'aurae_monitoring.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'django_aurae',
+        'NAME': 'Aurae_user_database',
         'USER': 'postgres',
         'PASSWORD': 'password',
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'OPTIONS': {
-            'options': '-c search_path=pollutant_data,public'
+            'options': '-c search_path=public,pollutant_data'
         }
     },
     'sensor_data_db': {
@@ -117,6 +117,8 @@ DATABASES = {
 
     }
 }
+
+AUTH_USER_MODEL = 'accounts.Core_userProfile'
 
 # web server database
 POSTGRES_LOCALLY = False
@@ -207,3 +209,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'accounts', 'profile', 'category',
                               'post', 'inbox', 'superuser', 'aurae_monitoring', 'aurae', 'admin_dashboard', 'bossbaby']
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]

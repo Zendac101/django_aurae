@@ -1,22 +1,22 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.contrib.auth.hashers import make_password
 from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
-
 from .tokens import account_activation_token
-# Import your specific database schema models here
-from .models import ActivityHistory, UserProfile
+
+
+from .models import ActivityHistory, Core_userProfile, UserProfile_history, UserProfile_role
+
+
+User = get_user_model()
 
 
 @ensure_csrf_cookie
@@ -26,22 +26,30 @@ def LogRes(request):
         pass
 
     if request.method == 'POST':
-        # 1. Registration Branch
+        # register
         if 'register_submit' in request.POST:
             form = RegisterForm(request.POST)
             if form.is_valid():
                 try:
                     with transaction.atomic():
+
                         user = form.save(commit=False)
                         user.is_active = False
                         user.save()
 
-                        UserProfile.objects.update_or_create(
+                        UserProfile_history.objects.update_or_create(
                             user=user,
                             defaults={'is_verified': False}
                         )
+                        UserProfile_role.objects.update_or_create(
+                            user=user,
+                            defaults={'is_staff': False,
+                                      'is_superuser': False, 'is_verified': False}
+                        )
+
                         ActivityHistory.objects.create(
-                            user=user, activity_log="Account initialized via registration."
+                            user=user,
+                            activity_log="Account initialized via registration."
                         )
 
                         uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -72,14 +80,13 @@ def LogRes(request):
             else:
                 return render(request, 'index.html', {'form': form, 'active_form': 'signUp_form'})
 
-        # Login
+        # login
         elif 'login_submit' in request.POST:
             login_identifier = request.POST.get('email', '').strip()
             password = request.POST.get('password', '')
 
             user_obj = User.objects.filter(
                 email__iexact=login_identifier).first()
-           # or User.objects.filter(username__iexact=login_identifier).first()
 
             if user_obj:
                 if not user_obj.is_active:
@@ -88,13 +95,14 @@ def LogRes(request):
                     return render(request, 'index.html', {'form': RegisterForm(), 'active_form': 'login_form'})
 
                 user = authenticate(
-                    request, username=user_obj.username, password=password)
+                    request, username=user_obj.email, password=password)
             else:
                 user = None
 
             if user is not None:
                 login(request, user)
-                if user.is_superuser or user.is_staff:
+
+                if hasattr(user, 'roles') and (user.roles.is_superuser or user.roles.is_staff):
                     return redirect('/admin_dashboard/home')
                 return redirect('/client_dashboard/home')
             else:
@@ -106,7 +114,6 @@ def LogRes(request):
 
 
 def activate(request, uidb64, token):
-    User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
@@ -117,16 +124,18 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
 
-        if hasattr(user, 'userprofile'):
-            user.userprofile.is_verified = True
-            user.userprofile.save()
+        if hasattr(user, 'profile_history'):
+            user.profile_history.is_verified = True
+            user.profile_history.save()
+
+        if hasattr(user, 'roles'):
+            user.roles.is_verified = True
+            user.roles.save()
 
         messages.success(
-            request, "Your email has been verified! You can now log in."
-        )
+            request, "Your email has been verified! You can now log in.")
         return redirect('registerUser')
     else:
         messages.error(
-            request, "The activation link is invalid or has expired."
-        )
+            request, "The activation link is invalid or has expired.")
         return redirect('registerUser')

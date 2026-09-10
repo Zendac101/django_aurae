@@ -1,6 +1,9 @@
 # forms.py
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm
+
+User = get_user_model()
 
 
 class RegisterForm(forms.ModelForm):
@@ -15,7 +18,7 @@ class RegisterForm(forms.ModelForm):
     class Meta:
         model = User
         # These are the fields Django checks during form.is_valid()
-        fields = ['username', 'email',  'first_name', 'last_name', 'password']
+        fields = ['username', 'email',  'first_name', 'last_name']
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

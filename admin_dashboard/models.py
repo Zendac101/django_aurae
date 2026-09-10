@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User  # Points to the auth_user table
 
@@ -9,7 +10,7 @@ class activityHistory(models.Model):
     activity_log = models.TextField(max_length=255)
     log_datetime = models.DateTimeField()
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, db_column='user_id', related_name='activity_logs')
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, db_column='user_id', related_name='activity_logs')
 
     class Meta:
         managed = False
