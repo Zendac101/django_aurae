@@ -18,7 +18,7 @@
 
     <body>
 
-        <div id="container">
+        <div id="container" class="expand">
 
             {% include 'sidebar.html' %}
 
@@ -40,9 +40,8 @@
                         <table id="pollutant_table">
                             <thead>
                                 <th>Date</th>
-                                <th>Time</th>
                                 <th>
-                                    <label for="location">Location</label>
+                                    <label for="location">Location:</label>
                                     <select name="location" id="location">
                                         <option value="">Select Location</option>
                                         {% for site_id, site_name in location_options %}
@@ -58,13 +57,14 @@
 
                                 </th>
                                 <th>AQI</th>
-                                <th>Status</th>
                                 <th>So2</th>
-                                <th>O3</th>
                                 <th>Co</th>
-                                <th>No2</th>
+                                <th>O3</th>
                                 <th>NoX</th>
-                                <th>No</th>
+                                <th>Pm2.5</th>
+                                <th>Pm10</th>
+
+
 
 
                             </thead>
@@ -118,8 +118,8 @@
 
 
                                 const columnOrder = [
-                                    row[0], row[1], selectedText, row[3], row[4],
-                                    row[5], row[6], row[7], row[8], row[9], row[10]
+                                    row[0], selectedText, row[2], row[3],
+                                    row[4], row[5], row[6], row[7], row[8]
                                 ];
 
 

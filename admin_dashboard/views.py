@@ -41,15 +41,15 @@ def analysis_view(request):
         mindate = request.GET.get('mindate', "%Y-%m-%d").strip()
         maxdate = request.GET.get('maxdate', "%Y-%m-%d").strip()
 
-        fields = ['date', 'time', 'site_id', 'aqi',
-                  'status', 'so2', 'co', 'o3', 'no', 'no2', 'nox']
+        fields = ['date', 'site_id', 'aqi', 'so2',
+                  'co', 'o3', 'nox', 'pm25', 'pm10']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
                 .filter(site_id=selected_location)
         else:
             pollutant_values_show = pollutant_data.objects
 
-        records = pollutant_values_show.filter(date__range=[mindate, maxdate]).order_by('date', 'time').values(
+        records = pollutant_values_show.filter(date__range=[mindate, maxdate]).order_by('date').values(
             *fields)
 
         serializable_data = [
@@ -80,17 +80,22 @@ def data_management_view(request):
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         selected_location = request.GET.get('location', '')
 
+        fields = ['date', 'site_id', 'aqi', 'so2',
+                  'co', 'o3', 'nox', 'pm25', 'pm10']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
-                .filter(site_id=selected_location).values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
-                .order_by('date', 'time')
-
+                .filter(site_id=selected_location)
         else:
-            pollutant_values_show = pollutant_data.objects \
-                .values_list('date', 'time', 'site_id', 'aqi', 'status', 'so2', 'co', 'o3', 'no2', 'nox', 'no') \
-                .order_by('date', 'time')[:100]
+            pollutant_values_show = pollutant_data.objects
 
-        serializable_data = [list(row) for row in pollutant_values_show]
+        records = pollutant_values_show.order_by('date').values(
+            *fields)[:100]
+
+        serializable_data = [
+            {key: (str(val) if val is not None else '')
+             for key, val in item.items()}
+            for item in records
+        ]
 
         return JsonResponse({'success': True, 'data': serializable_data})
 
