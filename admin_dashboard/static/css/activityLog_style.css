@@ -72,3 +72,7 @@ option {
     border: none;
     font-size: x-large;
 }
+
+.hidden {
+    display: none;
+}

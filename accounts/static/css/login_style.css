@@ -112,7 +112,8 @@ input {
 
 }
 
-button {
+#sign_but,
+#login_but {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
@@ -127,7 +128,8 @@ button {
 
 
 
-button:hover {
+#sign_but:hover,
+#login_but:hover {
     background: #5d8854;
 }
 
@@ -144,9 +146,7 @@ button:hover {
 
 
 
-.google img {
-    width: 18px;
-}
+
 
 .divider {
     font-size: 12px;
@@ -161,4 +161,27 @@ button:hover {
 .link {
     font-weight: 600;
     color: #000;
+}
+
+.terms_popup {
+    border: none;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.92);
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
+
+}
+
+.term_dialog {
+    margin: auto;
+    width: 400px;
+    height: 500px;
+    text-align: left;
+    padding: 10px;
+    position: fixed;
+}
+
+.term_dialog p {
+    font-size: 13px;
 }

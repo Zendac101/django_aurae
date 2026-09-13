@@ -89,10 +89,10 @@ def data_management_view(request):
             pollutant_values_show = pollutant_data.objects
 
         records = pollutant_values_show.order_by('date').values(
-            *fields)[:100]
+            *fields)[:300]
 
         serializable_data = [
-            {key: (str(val) if val is not None else '')
+            {key: (str(val) if val is not None else 'NaN')
              for key, val in item.items()}
             for item in records
         ]

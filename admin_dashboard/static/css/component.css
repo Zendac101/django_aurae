@@ -86,9 +86,7 @@
     width: 90px;
 }
 
-.sidebar.collapsed .btn-logout {
-    display: none;
-}
+
 
 .sidebar.collapsed h2 {
     display: none;
@@ -112,8 +110,12 @@
 
 }
 
+.sidebar.collapsed .btn-logout {
+    display: none;
+}
+
 .btn-logout:hover {
-    background-color: #8fbf96;
+    background-color: #96bb9c;
 }
 
 .active {

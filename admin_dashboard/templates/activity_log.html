@@ -34,36 +34,48 @@
             </div>
 
             <br>
-            <select name="logs" id="logs">
+            <select name="logs" id="logs" onchange="activity_change(value)">
                 <option value="user">User Logs</option>
                 <option value="admin">Admin Logs</option>
             </select>
             <div id="table_useractivity">
 
-                <table id="activity_table">
-                    <thead>
-                        <th>Activity</th>
-                        <th>Date and Time</th>
-                        <th>Username</th>
-                        <th>Full Name</th>
-                    </thead>
 
-                    <tbody>
-                    <tbody>
-                        {% for item in activity_log %}
-                        <tr>
-                            <td>{{ item.activity_log }}</td>
-                            <td>{{ item.log_datetime }}</td>
-                            <td>{{ item.user.username }}</td>
-                            <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4">no rec</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+
+                <div id="user_activity" class="act_log_table">
+                    <table id="activity_table">
+
+                        <thead>
+                            <th>Activity</th>
+                            <th>Date and Time</th>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                        </thead>
+
+                        <tbody>
+                        <tbody>
+                            {% for item in activity_log %}
+                            <tr>
+                                <td>{{ item.activity_log }}</td>
+                                <td>{{ item.log_datetime }}</td>
+                                <td>{{ item.user.username }}</td>
+                                <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4">no rec</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <div id="admin_activity" class="act_log_table hidden">
+
+                    <h1>gaga</h1>
+                </div>
+
             </div>
 
 
@@ -76,6 +88,28 @@
     </div>
 
     <script src="{% static 'js/toggle_sidebar.js' %}">
+
+    </script>
+
+    <script>
+
+        function activity_change(value) {
+            if (value == 'admin') {
+                document.querySelectorAll('.act_log_table').forEach(element => {
+                    element.classList.add('hidden')
+                });
+
+                document.getElementById('admin_activity').classList.remove('hidden');
+            }
+
+            else if (value == 'user') {
+                document.querySelectorAll('.act_log_table').forEach(element => {
+                    element.classList.add('hidden')
+                });
+
+                document.getElementById('user_activity').classList.remove('hidden');
+            }
+        }
 
     </script>
 

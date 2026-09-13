@@ -55,20 +55,22 @@
 
             <p class="divider">or continue with</p>
 
-            <button type="button" class="google" id="google_btn">
-                Google
-            </button>
 
-            <button type="button" onclick="showForm('signUp_form')">
+
+            <button type="button" id="sign_but" onclick="showForm('signUp_form')">
 
                 Sign up
             </button>
 
             <p class="terms">
                 By clicking login, you agree to our
-                <span class="link">Terms of Service</span> and
-                <span class="link">Privacy Policy</span>
+                <span class="link"><button type="button" class="terms_popup" id="service">Terms of
+                        Service</button></span> and
+                <span class="link"><button type="button" class="terms_popup" id="privacy">Privacy
+                        Policy</button></span>
             </p>
+
+            {% include 'term_dialog.html' %}
 
         </form>
     </div>

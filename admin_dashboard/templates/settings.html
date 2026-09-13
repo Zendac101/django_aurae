@@ -45,8 +45,12 @@
                                 <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span><br><br>
                                 <span class="profile">Email : {{ user.email }}</span><br><br>
 
-                                {% if user.is_staff %}
-                                <span class="profile">Role : admin</span><br><br>
+                                {% if user.is_superuser %}
+                                <span class="profile">Role : Superuser</span><br><br>
+                                {% elif user.is_staff %}
+                                <span class="profile">Role : Staff</span><br><br>
+                                {% else %}
+                                <span class="profile">Role : User</span><br><br>
                                 {% endif %}
                                 <span class="profile">Account Created at : {{ user.date_joined }}</span><br><br>
 
