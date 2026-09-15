@@ -202,3 +202,7 @@
     padding: 8px;
     border-radius: 50%;
 }
+
+.icons .fas {
+    border: darkgrey 1px solid;
+}

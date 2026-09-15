@@ -112,13 +112,13 @@ input {
 
 }
 
-#sign_but,
-#login_but {
+.buttons_register {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
     border: none;
     margin-bottom: 10px;
+    margin-top: 5px;
     cursor: pointer;
     background: rgb(127, 159, 133);
     color: rgb(35, 37, 36);
@@ -128,8 +128,7 @@ input {
 
 
 
-#sign_but:hover,
-#login_but:hover {
+.buttons_register:hover {
     background: #5d8854;
 }
 

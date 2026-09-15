@@ -79,19 +79,175 @@
 
 
 
-dialog {
-    border: 1px #a6c8b4;
-    background-color: #AFCBBA;
+
+dialog#account_overlay {
+    border: none;
+    border-radius: 12px;
+    padding: 0;
+    width: 90%;
+    max-width: 460px;
+    background-color: #ffffff;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
     margin: auto;
-    position: fixed;
-    width: 20%;
-    height: 80%;
-    padding: 20px;
 }
 
-dialog::backdrop {
-    background-color: rgba(43, 42, 42, 0.6);
-    backdrop-filter: blur(1px);
+dialog#account_overlay::backdrop {
+    background-color: rgba(17, 24, 39, 0.55);
+    backdrop-filter: blur(3px);
+}
+
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.close-icon {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #9ca3af;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.close-icon:hover {
+    color: #374151;
+}
+
+
+.modal-form {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    text-transform: capitalize;
+}
+
+
+.form-group input,
+.form-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    color: #1f2937;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-group input:focus,
+.form-input:focus {
+    border-color: #2e7d32;
+    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+.form-group input.input-disabled,
+.form-group input:disabled {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border-color: #e5e7eb;
+    cursor: not-allowed;
+}
+
+
+.errorlist {
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+    font-size: 0.75rem;
+    color: #dc2626;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+    margin-top: 6px;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn {
+    padding: 8px 16px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.15s ease;
+}
+
+.btn-secondary {
+    background-color: #ffffff;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.btn-secondary:hover {
+    background-color: #f9fafb;
+}
+
+.btn-primary {
+    background-color: #2e7d32;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #256628;
+}
+
+
+.alert {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+}
+
+.alert-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.alert-error {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
 }
 
 #account_overlay {
@@ -101,8 +257,20 @@ dialog::backdrop {
 }
 
 .profile {
-    color: #222724;
+    font-size: 0.95rem;
+    color: #264638;
+    display: block;
 
+
+}
+
+#profile_pic {
+
+    width: 100px;
+    height: 100px;
+    background-color: #3e4950;
+    border-radius: 50%;
+    margin-bottom: 10px;
 }
 
 .important_txt {

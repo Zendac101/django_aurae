@@ -38,12 +38,18 @@
                             <h5><span>Account</span></h5><br>
 
                             <div class="content_hidden" id="account_hidden">
+
+
                                 {% if user.is_authenticated %}
                                 <!-- credentials of the user-->
-                                <span class="profile important_txt">Username :{{ user.username }}
-                                </span><br><br>
-                                <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span><br><br>
+                                <div id="profile_pic"></div>
+                                <span class="profile important_txt"> {{ user.username }}</span><br><br>
+
                                 <span class="profile">Email : {{ user.email }}</span><br><br>
+
+                                <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span><br><br>
+
+
 
                                 {% if user.is_superuser %}
                                 <span class="profile">Role : Superuser</span><br><br>
@@ -52,36 +58,81 @@
                                 {% else %}
                                 <span class="profile">Role : User</span><br><br>
                                 {% endif %}
-                                <span class="profile">Account Created at : {{ user.date_joined }}</span><br><br>
+
+                                <span class="profile">Account Created at : {{ user.profile_history.date_joined }}
+                                </span><br><br>
 
                                 {% else %}
                                 <!-- go back to login if not registered -->
-                                <a href="{% url '' %}">Log In</a>
+                                <a href="{% url 'login' %}">Log In</a>
                                 {% endif %}
 
 
                                 <button class="edit_info" id="edit_account">Edit</button><br>
 
-                                <dialog id="account_overlay">
-                                    <h2 class="center_txt">Edit Information</h2><br>
+                                <dialog id="account_overlay" class="account-modal">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h2>Edit Information</h2>
+                                            <button type="button" class="close-icon"
+                                                onclick="document.getElementById('account_overlay').close()">&times;</button>
+                                        </div>
 
+                                        {% if user.is_authenticated %}
+                                        <form method="POST" action="{% url 'settings' %}" class="modal-form">
+                                            {% csrf_token %}
 
-                                    {% if user.is_authenticated %}
-                                    <!-- credentials of the user-->
-                                    <span class="profile important_txt">Username :{{ user.username }}
-                                    </span><br><br>
-                                    <span class="profile">First Name : {{ user.first_name }}</span><br><br>
-                                    <span class="profile">Last Name : {{user.last_name}}</span><br><br>
-                                    <span class="profile">Email : {{ user.email }}</span><br><br>
-                                    <span class="profile">Account Created at : {{ user.date_joined }}</span><br><br>
-                                    {% else %}
-                                    <!-- go back to login if not registered -->
-                                    <a href="{% url '' %}">Log In</a>
-                                    {% endif %}
+                                            <div class="form-group">
+                                                <label for="{{ form.username.id_for_label }}">Username</label>
+                                                {{ form.username }}
+                                                {{ form.username.errors }}
+                                            </div>
 
-                                    <button id="close_but">close</button>
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                                                    {{ form.first_name }}
+                                                    {{ form.first_name.errors }}
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                                    {{ form.last_name }}
+                                                    {{ form.last_name.errors }}
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="{{ form.email.id_for_label }}">Email</label>
+                                                <input type="text" value="{{ user.email}}" disabled
+                                                    class="input-disabled">
+                                            </div>
+
+                                            <!-- Linked table data -->
+                                            <div class="form-group">
+                                                <label>Account Created at</label>
+                                                <input type="text"
+                                                    value="{{ user.profile_history.date_joined|date:'M d, Y H:i'|default:'N/A' }}"
+                                                    disabled class="input-disabled">
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    onclick="document.getElementById('account_overlay').close()">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            </div>
+                                        </form>
+                                        {% endif %}
+                                    </div>
                                 </dialog>
 
+                                <!-- Automatically open dialog if form validation fails -->
+                                {% if form.errors %}
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        document.getElementById('account_overlay').showModal();
+                                    });
+                                </script>
+                                {% endif %}
                                 <button class="edit_info" id="change_pass">Change Password</button>
                             </div>
                         </div>

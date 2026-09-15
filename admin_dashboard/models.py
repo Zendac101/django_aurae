@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User  # Points to the auth_user table
+from django.contrib.auth.models import User
 
 # Create your models here.
 

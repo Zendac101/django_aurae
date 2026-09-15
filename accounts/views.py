@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
-from .tokens import account_activation_token
+from .tokens import account_activation_token, password_reset_token
 
 
 from .models import ActivityHistory, Core_userProfile, UserProfile_history, UserProfile_role
@@ -139,3 +139,101 @@ def activate(request, uidb64, token):
         messages.error(
             request, "The activation link is invalid or has expired.")
         return redirect('registerUser')
+
+
+def resetPassword(request):
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip()
+        users = User.objects.filter(email__iexact=email)
+
+        if users.exists():
+            for user in users:
+                token = password_reset_token.make_token(user)
+                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+
+                reset_path = reverse(
+                    "password_reset_confirm",
+                    kwargs={"uidb64": uidb64, "token": token},
+                )
+                reset_url = request.build_absolute_uri(reset_path)
+
+                try:
+                    send_mail(
+                        subject="Reset Your Aurae Password",
+                        message=(
+                            f"Hello {user.username},\n\n"
+                            f"We received a request to reset your password. Click the link below to set a new one:\n"
+                            f"{reset_url}\n\n"
+                            f"If you didn't request this, you can safely ignore this email."
+                        ),
+                        from_email=None,
+                        recipient_list=[user.email],
+                        fail_silently=False,
+                    )
+                except Exception as mail_err:
+                    print(f"SMTP Error: {mail_err}")
+                    messages.error(
+                        request,
+                        "Unable to send email right now. Please try again later.",
+                    )
+                    return render(request, "resetPassword.html")
+
+        messages.success(
+            request,
+            "If an account is associated with this email, we've sent reset instructions.",
+        )
+        return redirect("resetPassword")
+
+    return render(request, "resetPassword.html")
+
+
+def password_reset_confirm(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except Exception as e:
+        print(f"--> [DEBUG] Failed decoding UID or finding user: {e}")
+        user = None
+
+    print(f"--> [DEBUG] User: {user}")
+    print(f"--> [DEBUG] Is Active: {getattr(user, 'is_active', None)}")
+    print(f"--> [DEBUG] Token received: {token}")
+
+    is_valid = False
+    if user is not None:
+        is_valid = password_reset_token.check_token(user, token)
+        print(f"--> [DEBUG] check_token returned: {is_valid}")
+
+    if user is not None and is_valid:
+        if request.method == "POST":
+            new_password = request.POST.get("new_password")
+            confirm_password = request.POST.get("confirm_password")
+
+            if not new_password or not confirm_password:
+                messages.error(request, "Please enter all fields.")
+                return render(
+                    request, "password_reset_confirm.html", {"validlink": True}
+                )
+
+            if new_password != confirm_password:
+                messages.error(request, "Passwords do not match.")
+                return render(
+                    request, "password_reset_confirm.html", {"validlink": True}
+                )
+
+            user.set_password(new_password)
+            user.is_active = True  # Optional: activate account if they reset password
+            user.save()
+
+            ActivityHistory.objects.create(
+                user=user, activity_log="Password changed via reset link."
+            )
+
+            messages.success(
+                request, "Password updated successfully! You may now log in."
+            )
+            return redirect("registerUser")
+
+        return render(request, "password_reset_confirm.html", {"validlink": True})
+    else:
+        return render(request, "password_reset_confirm.html", {"validlink": False})

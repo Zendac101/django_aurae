@@ -46,10 +46,15 @@
 
             <input type="text" class="log_email" id="email" name="email" placeholder="username@gmail.com" required>
 
-            <input type="password" class="log_password" id="password" name="password" placeholder="password" required>
+            <input type="password" style="margin-bottom: 5px;" class=" log_password" id="password" name="password"
+                placeholder="password" required>
+
+            <a href="{% url 'resetPassword' %}"
+                style="position: relative; left: 30%;  font-size: 10px; color: gray;">Forgot
+                Password?</a>
 
 
-            <button type="submit" id="login_but" name="login_submit">
+            <button type="submit" class="buttons_register" id="login_but" name="login_submit">
                 Login
             </button>
 
@@ -57,7 +62,7 @@
 
 
 
-            <button type="button" id="sign_but" onclick="showForm('signUp_form')">
+            <button type="button" class="buttons_register" id="sign_but" onclick="showForm('signUp_form')">
 
                 Sign up
             </button>
@@ -121,19 +126,16 @@
                 minlength="8" required>
             <input type="password" class="con_password" id="con_password" name="con_password"
                 placeholder="Confirm password" minlength="8" required>
-            <button type="submit" id="submits_btn" name="register_submit">
+
+            <button type="submit" class="buttons_register" id="submits_btn" name="register_submit">
                 Sign up
             </button>
 
-            <button type="button" onclick="showForm('logIn_form')">
+            <button type="button" class="buttons_register" onclick="showForm('logIn_form')">
                 Login
             </button>
 
-            <p class="terms">
-                By clicking continue, you agree to our
-                <span class="link">Terms of Service</span> and
-                <span class="link">Privacy Policy</span>
-            </p>
+
 
         </form>
 

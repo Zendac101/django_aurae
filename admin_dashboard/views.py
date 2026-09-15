@@ -1,3 +1,5 @@
+from .forms import EditProfileForm
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import locationData, pollutant_data, activityHistory
@@ -115,12 +117,18 @@ def report_view(request):
     return render(request, 'reports.html')
 
 
+@login_required
 def settings_view(request):
-    if not request.user.is_authenticated:
+    if request.method == 'POST':
+        form = EditProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully.')
+            return redirect('settings')
+    else:
+        form = EditProfileForm(instance=request.user)
 
-        return redirect('/')
-
-    return render(request, 'settings.html')
+    return render(request, 'settings.html', {'form': form})
 
 
 def support_view(request):
