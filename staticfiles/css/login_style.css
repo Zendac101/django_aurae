@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .form-box {
@@ -112,26 +112,24 @@ input {
 
 }
 
-button {
+.buttons_register {
     width: 100%;
     padding: 10px;
     border-radius: 6px;
     border: none;
     margin-bottom: 10px;
+    margin-top: 5px;
     cursor: pointer;
-    background: black;
-    color: white;
+    background: #509854;
+    color: rgb(35, 37, 36);
+    font-weight: bolder;
+    border: #555 1px solid;
 }
 
-
-
-button:hover {
-    background: #3e433d;
+.buttons_register:hover {
+    background: rgb(95, 162, 81);
 }
 
-#signUp_email {
-    width: 80%;
-}
 
 #but_verify {
     width: 17%;
@@ -142,9 +140,7 @@ button:hover {
 
 
 
-.google img {
-    width: 18px;
-}
+
 
 .divider {
     font-size: 12px;
@@ -159,4 +155,27 @@ button:hover {
 .link {
     font-weight: 600;
     color: #000;
+}
+
+.terms_popup {
+    border: none;
+    color: #000;
+    background-color: rgba(255, 255, 255, 0.92);
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
+
+}
+
+.term_dialog {
+    margin: auto;
+    width: 400px;
+    height: 500px;
+    text-align: left;
+    padding: 10px;
+    position: fixed;
+}
+
+.term_dialog p {
+    font-size: 13px;
 }
