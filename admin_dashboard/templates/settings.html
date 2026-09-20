@@ -42,8 +42,11 @@
 
                                 {% if user.is_authenticated %}
                                 <!-- credentials of the user-->
-                                <div id="profile_pic"></div>
-                                <span class="profile important_txt"> {{ user.username }}</span><br><br>
+                                <div>
+                                    <div id="profile_pic"></div>
+                                    <span class="profile important_txt"> {{ user.username}}</span><br><br>
+                                </div>
+
 
                                 <span class="profile">Email : {{ user.email }}</span><br><br>
 

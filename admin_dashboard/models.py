@@ -28,7 +28,7 @@ class locationData(models.Model):
 
     class Meta:
         managed = False
-        db_table = '"pollutant_data"."location"'  # The exact table name in your schema
+        db_table = '"pollutant_data"."location"'  
 
 
 class site_ids(models.Model):

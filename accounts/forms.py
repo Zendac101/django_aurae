@@ -2,6 +2,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -21,7 +23,10 @@ class RegisterForm(forms.ModelForm):
         fields = ['username', 'email',  'first_name', 'last_name']
 
     def clean_email(self):
+
         email = self.cleaned_data.get('email')
+        if not email.endswith('@gmail.com'):
+            raise forms.ValidationError("Only Gmail addresses are allowed.")
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError(
                 "An account with this email already exists.")

@@ -123,7 +123,7 @@ AUTH_USER_MODEL = 'accounts.Core_userProfile'
 # web server database
 POSTGRES_LOCALLY = True
 
-if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == True:
+if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == False:
     DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
 
 # Password validation
@@ -191,7 +191,7 @@ ANYMAIL = {
 LOGIN_REDIRECT_URL = '/'
 if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
 
-    # EMAIL_BACKEND = "anymail.backends.resend.EmailBackend"
+    # to send an email
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
     EMAIL_HOST = 'smtp.gmail.com'

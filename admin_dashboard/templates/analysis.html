@@ -99,8 +99,6 @@
                             onclick="toPHP(document.getElementById('location').value)">submit</button>
                     </dialog>
 
-
-
                 </div>
 
             </div>
@@ -118,9 +116,7 @@
             document.getElementById('date_range_dialog').showModal();
         });
 
-
     </script>
-
 
     <script>
         function toPHP(value) {
@@ -135,8 +131,6 @@
                 minDateInput, maxDateInput = maxDateInput, minDateInput
             }
 
-
-
             if (!selectedLoc || selectedLoc === 'Select Location') return;
 
             chart = document.getElementById('chart-box')
@@ -144,9 +138,6 @@
                 chart.classList.add("expanded");
 
             }
-
-
-
 
             fetch(`?location=${encodeURIComponent(selectedLoc)}&mindate=${encodeURIComponent(minDateInput)}&maxdate=${encodeURIComponent(maxDateInput)}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
@@ -166,12 +157,8 @@
                             myChartInstance.destroy();
                         }
 
-
                         const chartLabels = result.data.map(item => item.date);
                         const chartValues = result.data.map(item => parseFloat(item[selectedPollutant]) || 0);
-
-
-
 
                         myChartInstance = new Chart(ctx, {
                             type: 'line',
@@ -210,20 +197,9 @@
                             }
                         });
 
-
                     }
 
-
-
-
                 })
-
-
-
-
-
-
-
 
             submit_date = document.getElementById("date_submit");
             submit_date.value = value;
