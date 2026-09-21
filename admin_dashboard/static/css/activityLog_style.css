@@ -6,7 +6,7 @@
 
     border-collapse: separate;
     border-spacing: 0;
-    background-color: #6a9b7d;
+    background-color: #AFCBBA;
     border: #11522b 2px solid;
 }
 
@@ -38,7 +38,8 @@ td {
 
 thead th {
     position: sticky;
-    background-color: #537b65;
+    background-color: #649479;
+
     top: 0;
     z-index: 1;
     border: 2px #436e54 solid;
@@ -54,11 +55,11 @@ th {
 }
 
 td {
-    border: 2px #436e54 solid;
+    border: 2px #528065 solid;
 }
 
 tr:nth-child(odd) {
-    background: rgb(124, 173, 142);
+    background: #a1bfaa;
 }
 
 option {

@@ -1,256 +1,230 @@
 {% load static %}
-
 <!DOCTYPE html>
-<phhtmlp lang="en">
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Aurae Admin</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae Admin</title>
 
-        <link rel="stylesheet" href="{% static 'css/settings_style.css' %}">
-        <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/settings_style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
 
+<body>
+    <div id="container" class="expand">
+        {% include 'sidebar.html' %}
 
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-    </head>
+        <main class="main">
+            {% include 'topbar.html' %}
 
-    <body>
-
-        <div id="container" class="expand">
-
-            {% include 'sidebar.html' %}
-
-            <main class="main">
-
-                {% include 'topbar.html' %}
-                <div class="header">
-                    <div class="header-left">
-                        <h1>Settings</h1>
-                        <p>Control, configure, and manage everything in one place.</p>
-                    </div>
+            <div class="header">
+                <div class="header-left">
+                    <h1>Settings</h1>
+                    <p>Control, configure, and manage everything in one place.</p>
                 </div>
+            </div>
 
-                <div class="settings-box">
+            <div class="settings-box">
 
-                    <div class="setting-item" id="setting-account">
-                        <div class="setting_header">
-                            <h5><span>Account</span></h5><br>
+                <!-- 1. Account Settings -->
+                <div class="setting-item" id="setting-account">
+                    <div class="setting_header">
+                        <h5><span>Account</span></h5>
+                        <div class="content_hidden" id="account_hidden">
+                            {% if user.is_authenticated %}
+                            <div>
+                                <div id="profile_pic"></div>
+                                <span class="profile important_txt">{{ user.username }}</span>
+                            </div>
 
-                            <div class="content_hidden" id="account_hidden">
+                            <span class="profile">Email : {{ user.email }}</span>
+                            <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span>
 
+                            {% if user.is_superuser %}
+                            <span class="profile">Role : Superuser</span>
+                            {% elif user.is_staff %}
+                            <span class="profile">Role : Staff</span>
+                            {% else %}
+                            <span class="profile">Role : User</span>
+                            {% endif %}
 
-                                {% if user.is_authenticated %}
-                                <!-- credentials of the user-->
-                                <div>
-                                    <div id="profile_pic"></div>
-                                    <span class="profile important_txt"> {{ user.username}}</span><br><br>
-                                </div>
+                            <span class="profile">Account Created at :
+                                {{ user.profile_history.date_joined|date:'M d, Y H:i'|default:'N/A' }}</span>
 
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="edit_info" id="edit_account" type="button"
+                                    onclick="document.getElementById('account_overlay').showModal()">Edit</button>
+                                <button class="edit_info" id="change_pass" type="button">Change Password</button>
+                            </div>
 
-                                <span class="profile">Email : {{ user.email }}</span><br><br>
+                            <dialog id="account_overlay" class="account-modal">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h2>Edit Information</h2>
+                                        <button type="button" class="close-icon"
+                                            onclick="document.getElementById('account_overlay').close()">&times;</button>
+                                    </div>
 
-                                <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span><br><br>
-
-
-
-                                {% if user.is_superuser %}
-                                <span class="profile">Role : Superuser</span><br><br>
-                                {% elif user.is_staff %}
-                                <span class="profile">Role : Staff</span><br><br>
-                                {% else %}
-                                <span class="profile">Role : User</span><br><br>
-                                {% endif %}
-
-                                <span class="profile">Account Created at : {{ user.profile_history.date_joined }}
-                                </span><br><br>
-
-                                {% else %}
-                                <!-- go back to login if not registered -->
-                                <a href="{% url 'login' %}">Log In</a>
-                                {% endif %}
-
-
-                                <button class="edit_info" id="edit_account">Edit</button><br>
-
-                                <dialog id="account_overlay" class="account-modal">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h2>Edit Information</h2>
-                                            <button type="button" class="close-icon"
-                                                onclick="document.getElementById('account_overlay').close()">&times;</button>
+                                    <form method="POST" action="{% url 'settings' %}" class="modal-form">
+                                        {% csrf_token %}
+                                        <div class="form-group">
+                                            <label for="{{ form.username.id_for_label }}">Username</label>
+                                            {{ form.username }}
+                                            {{ form.username.errors }}
                                         </div>
 
-                                        {% if user.is_authenticated %}
-                                        <form method="POST" action="{% url 'settings' %}" class="modal-form">
-                                            {% csrf_token %}
-
+                                        <div class="form-row">
                                             <div class="form-group">
-                                                <label for="{{ form.username.id_for_label }}">Username</label>
-                                                {{ form.username }}
-                                                {{ form.username.errors }}
+                                                <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                                                {{ form.first_name }}
+                                                {{ form.first_name.errors }}
                                             </div>
-
-                                            <div class="form-row">
-                                                <div class="form-group">
-                                                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
-                                                    {{ form.first_name }}
-                                                    {{ form.first_name.errors }}
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-                                                    {{ form.last_name }}
-                                                    {{ form.last_name.errors }}
-                                                </div>
-                                            </div>
-
                                             <div class="form-group">
-                                                <label for="{{ form.email.id_for_label }}">Email</label>
-                                                <input type="text" value="{{ user.email}}" disabled
-                                                    class="input-disabled">
+                                                <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                                                {{ form.last_name }}
+                                                {{ form.last_name.errors }}
                                             </div>
+                                        </div>
 
-                                            <!-- Linked table data -->
-                                            <div class="form-group">
-                                                <label>Account Created at</label>
-                                                <input type="text"
-                                                    value="{{ user.profile_history.date_joined|date:'M d, Y H:i'|default:'N/A' }}"
-                                                    disabled class="input-disabled">
-                                            </div>
+                                        <div class="form-group">
+                                            <label>Email</label>
+                                            <input type="text" value="{{ user.email }}" disabled class="input-disabled">
+                                        </div>
 
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    onclick="document.getElementById('account_overlay').close()">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                            </div>
-                                        </form>
-                                        {% endif %}
-                                    </div>
-                                </dialog>
+                                        <div class="form-group">
+                                            <label>Account Created at</label>
+                                            <input type="text" value="{{ user.date_joined|date:'M d, Y H:i' }}" disabled
+                                                class="input-disabled">
+                                        </div>
 
-                                <!-- Automatically open dialog if form validation fails -->
-                                {% if form.errors %}
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        document.getElementById('account_overlay').showModal();
-                                    });
-                                </script>
-                                {% endif %}
-                                <button class="edit_info" id="change_pass">Change Password</button>
-                            </div>
-                        </div>
-                        <div class="setting_action">
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                onclick="document.getElementById('account_overlay').close()">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </dialog>
 
+                            {% if form.errors %}
+                            <script>
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    document.getElementById('account_overlay').showModal();
+                                });
+                            </script>
+                            {% endif %}
 
-                            <button class="fas fa-ellipsis-h"
-                                onclick="expansion('setting-account','account_hidden')"></button>
-                        </div>
-
-                    </div>
-
-
-
-
-                    <div class="setting-item" id="setting-data_source">
-                        <div class="setting_header">
-                            <h5><span>Data Source Settings</span></h5>
-                            <div class="content_hidden" id="">
-
-                            </div>
-                        </div>
-
-                        <div class="setting_action">
-
-
-                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-data_source','')"></button>
+                            {% else %}
+                            <a href="{% url 'login' %}">Log In</a>
+                            {% endif %}
                         </div>
                     </div>
-
-
-
-                    <div class="setting-item" id="setting-threshold">
-                        <div class="setting_header">
-                            <h5><span>Air Quality Threshold Rules</span></h5>
-                            <div class="content_hidden" id="">
-
-                            </div>
-                        </div>
-
-                        <div class="setting_action">
-
-
-                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-threshold','')"></button>
-                        </div>
+                    <div class="setting_action">
+                        <button class="fas fa-ellipsis-h"
+                            onclick="expansion('setting-account','account_hidden')"></button>
                     </div>
-
-
-
-
-
-
-
-
-
-                    <div class="setting-item" id="setting-report_format">
-                        <div class="setting_header">
-                            <h5><span>Report Format Settings</span></h5>
-                            <div class="content_hidden" id="">
-
-                            </div>
-                        </div>
-
-                        <div class="setting_action">
-
-
-                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-report_format','')"></button>
-                        </div>
-                    </div>
-
-
-
-
-                    <div class="setting-item" id="setting-backup">
-                        <div class="setting_header">
-                            <h5><span>Backup & Restore</span></h5>
-                            <div class="content_hidden" id="">
-
-                            </div>
-                        </div>
-
-                        <div class="setting_action">
-
-
-                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-backup','')"></button>
-                        </div>
-                    </div>
-
-
-
-                    <div class="setting-item" id="setting-notification">
-                        <div class="setting_header">
-                            <h5><span>Email Notification Settings</span></h5>
-                            <div class="content_hidden" id="">
-
-                            </div>
-                        </div>
-
-                        <div class="setting_action">
-
-
-                            <button class="fas fa-ellipsis-h" onclick="expansion('setting-notification','')"></button>
-                        </div>
-                    </div>
-
                 </div>
 
-            </main>
+                <!-- 2. Data Source Settings -->
+                <div class="setting-item" id="setting-data_source">
+                    <div class="setting_header">
+                        <h5><span>Data Source Settings</span></h5>
+                        <div class="content_hidden" id="data_source_hidden">
 
-        </div>
-        <script src="{% static 'js/setting_expand.js' %}"> </script>
-        <script src="{% static 'js/toggle_sidebar.js' %}">
+                            <div style="display: flex; gap: 8px;">
+                                <button class="edit_info" id="edit_account" type="button">Update Broker</button>
+                                <button class="edit_info" id="change_pass" type="button">Test Connection</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting_action">
+                        <button class="fas fa-ellipsis-h"
+                            onclick="expansion('setting-data_source','data_source_hidden')"></button>
+                    </div>
+                </div>
+
+                <!-- 3. Air Quality Threshold Rules -->
+                <div class="setting-item" id="setting-threshold">
+                    <div class="setting_header">
+                        <h5><span>Air Quality Threshold Rules</span></h5>
+                        <div class="content_hidden" id="threshold_hidden">
 
 
-        </script>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="edit_info" id="edit_account" type="button">Configure Thresholds</button>
+                                <button class="edit_info" id="change_pass" type="button">Reset to Standard</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting_action">
+                        <button class="fas fa-ellipsis-h"
+                            onclick="expansion('setting-threshold','threshold_hidden')"></button>
+                    </div>
+                </div>
+
+                <!-- 4. Report Format Settings -->
+                <div class="setting-item" id="setting-report_format">
+                    <div class="setting_header">
+                        <h5><span>Report Format Settings</span></h5>
+                        <div class="content_hidden" id="report_format_hidden">
+
+                            <div style="display: flex; gap: 8px;">
+                                <button class="edit_info" id="edit_account" type="button">Change Schedule</button>
+                                <button class="edit_info" id="change_pass" type="button">Edit Template</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting_action">
+                        <button class="fas fa-ellipsis-h"
+                            onclick="expansion('setting-report_format','report_format_hidden')"></button>
+                    </div>
+                </div>
+
+                <!-- 5. Backup & Restore -->
+                <div class="setting-item" id="setting-backup">
+                    <div class="setting_header">
+                        <h5><span>Backup &amp; Restore</span></h5>
+                        <div class="content_hidden" id="backup_hidden">
 
 
-    </body>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="edit_info" id="edit_account" type="button">Create Backup Now</button>
+                                <button class="edit_info" id="change_pass" type="button">Upload Restore File</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting_action">
+                        <button class="fas fa-ellipsis-h"
+                            onclick="expansion('setting-backup','backup_hidden')"></button>
+                    </div>
+                </div>
+
+                <!-- 6. Email Notification Settings -->
+                <div class="setting-item" id="setting-notification">
+                    <div class="setting_header">
+                        <h5><span>Email Notification Settings</span></h5>
+                        <div class="content_hidden" id="notification_hidden">
+
+                            <div style="display: flex; gap: 8px;">
+                                <button class="edit_info" id="edit_account" type="button">Edit Recipients</button>
+                                <button class="edit_info" id="change_pass" type="button">Send Test Alert</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting_action">
+                        <button class="fas fa-ellipsis-h"
+                            onclick="expansion('setting-notification','notification_hidden')"></button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="{% static 'js/setting_expand.js' %}"></script>
+    <script src="{% static 'js/toggle_sidebar.js' %}"></script>
+</body>
+
+</html>

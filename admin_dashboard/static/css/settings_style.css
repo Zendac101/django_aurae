@@ -1,133 +1,244 @@
+/* --- Exact Dashboard Theme Palette --- */
+:root {
+    --dash-sage-card: #AFCBBA;
+    --dash-sage-hover: #a1bfaa;
+    --dash-sage-dark: #273b30;
+    --dash-text-title: #14241b;
+    --dash-text-sub: #2e4337;
+    --dash-divider: rgba(0, 0, 0, 0.08);
+    --dash-pill-bg: rgba(255, 255, 255, 0.45);
+    --dash-btn-primary: #5cb884;
+    --dash-btn-secondary: #cde0d5;
+}
+
+/* Outer Card Container */
 .settings-box {
-
-    background: #AFCBBA;
-    padding: 20px;
-    border-radius: 12px;
-
-}
-
-.setting_header {
+    background-color: var(--dash-sage-card);
+    border-radius: 20px;
+    padding: 8px 0;
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    flex: 1;
-
-
-}
-
-.setting-item {
-
-    height: 50px;
-    display: flex;
-    width: 100%;
-    align-items: top;
-    padding: 16px 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-    overflow: hidden;
-    text-align: left;
-
-}
-
-
-.setting-item .fas,
-.edit_info {
-    background-color: #AFCBBA;
     border: none;
-    color: #5d6a62;
+    box-shadow: none;
+    overflow: hidden;
 }
 
-.fas {
-    left: 95%;
+/* Setting Row Container */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    /* Keeps the toggle button pinned at top-right */
+    padding: 20px 28px;
+    border-bottom: 1px solid var(--dash-divider);
+    background: transparent;
+    transition: background-color 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
 }
-
 
 .setting-item:last-child {
     border-bottom: none;
 }
 
-.setting-item h5 {
-    font-size: 17px;
+.setting-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
-.setting-item i {
-    color: gray;
+/* Header & Text */
+.setting_header {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    /* Prevents overflow issues */
 }
 
+.setting_header h5 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--dash-text-title);
+    letter-spacing: -0.01em;
+    line-height: 36px;
+    /* Matches the toggle button height */
+}
+
+.setting_header>br {
+    display: none;
+}
+
+/* Toggle Ellipsis Button */
+.setting_action {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    flex-shrink: 0;
+}
+
+.setting_action button.fas {
+    background: rgba(255, 255, 255, 0.35);
+    color: var(--dash-text-title);
+    border: none;
+    border-radius: 10px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+}
+
+.setting_action button.fas:hover {
+    background: rgba(255, 255, 255, 0.65);
+}
+
+/* Expanded Content Area */
 .content_hidden {
     display: none;
-
 }
 
 .content_hidden.show {
-    display: block;
-    padding-bottom: 20px;
-    margin-left: 3px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 14px;
+    padding-top: 16px;
+    border-top: 1px solid var(--dash-divider);
     width: 100%;
-
+    max-width: 620px;
+    /* Constrains details to a clean, readable width */
+    box-sizing: border-box;
 }
 
+.content_hidden br {
+    display: none;
+}
 
+/* Avatar Pill */
+#profile_pic {
+    width: 58px;
+    height: 58px;
+    background-color: var(--dash-pill-bg);
+    border-radius: 50%;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+#profile_pic::before {
+    content: "\f007";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: var(--dash-text-sub);
+}
+
+/* Username Header */
+.important_txt {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dash-text-title);
+    display: block;
+    margin-bottom: 14px;
+}
+
+/* Compact Frosted Info Rows */
+.profile {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--dash-text-sub);
+    background: var(--dash-pill-bg);
+    padding: 10px 16px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+/* Buttons (Compact Pills side-by-side) */
+.edit_info {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 24px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    width: auto !important;
+
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+#edit_account {
+    background-color: var(--dash-btn-primary);
+    color: #0b2416;
+}
+
+#edit_account:hover {
+    background-color: #4da573;
+}
+
+#change_pass {
+    background-color: var(--dash-btn-secondary);
+    color: var(--dash-text-title);
+}
+
+#change_pass:hover {
+    background-color: #bdd2c6;
+}
 
 .expand {
-
-    height: fit-content !important;
-    font-size: 13px;
-
+    height: auto !important;
 }
 
-
-
-
-
+/* Modal Styling */
 dialog#account_overlay {
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 0;
     width: 90%;
-    max-width: 460px;
+    max-width: 480px;
     background-color: #ffffff;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
     margin: auto;
 }
 
 dialog#account_overlay::backdrop {
-    background-color: rgba(17, 24, 39, 0.55);
-    backdrop-filter: blur(3px);
+    background-color: rgba(15, 28, 21, 0.45);
+    backdrop-filter: blur(4px);
 }
-
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    background-color: #ffffff;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #eef2ef;
 }
 
 .modal-header h2 {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--dash-text-title);
     margin: 0;
 }
 
 .close-icon {
     background: none;
     border: none;
-    font-size: 1.5rem;
-    color: #9ca3af;
+    font-size: 1.4rem;
+    color: #889990;
     cursor: pointer;
-    line-height: 1;
-    padding: 0;
 }
-
-.close-icon:hover {
-    color: #374151;
-}
-
 
 .modal-form {
     padding: 20px;
@@ -151,38 +262,69 @@ dialog#account_overlay::backdrop {
 .form-group label {
     font-size: 0.8rem;
     font-weight: 600;
-    color: #374151;
-    text-transform: capitalize;
+    color: var(--dash-text-sub);
 }
-
 
 .form-group input,
 .form-input {
     width: 100%;
     padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+    border: 1px solid #d2ded7;
+    border-radius: 8px;
     font-size: 0.875rem;
-    color: #1f2937;
+    color: var(--dash-text-title);
     box-sizing: border-box;
     outline: none;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .form-group input:focus,
 .form-input:focus {
-    border-color: #2e7d32;
-    box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+    border-color: var(--dash-btn-primary);
+    box-shadow: 0 0 0 3px rgba(92, 184, 132, 0.2);
 }
 
 .form-group input.input-disabled,
 .form-group input:disabled {
-    background-color: #f3f4f6;
-    color: #6b7280;
-    border-color: #e5e7eb;
+    background-color: #f2f6f4;
+    color: #7b8e84;
+    border-color: #e2ebe6;
     cursor: not-allowed;
 }
 
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid #eef2ef;
+}
+
+.btn {
+    padding: 8px 18px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-secondary {
+    background-color: #e5ece8;
+    color: #2e4438;
+}
+
+.btn-secondary:hover {
+    background-color: #d7e2dc;
+}
+
+.btn-primary {
+    background-color: var(--dash-btn-primary);
+    color: #0b2416;
+}
+
+.btn-primary:hover {
+    background-color: #4da573;
+}
 
 .errorlist {
     list-style: none;
@@ -190,94 +332,4 @@ dialog#account_overlay::backdrop {
     margin: 4px 0 0 0;
     font-size: 0.75rem;
     color: #dc2626;
-}
-
-.modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    padding-top: 10px;
-    margin-top: 6px;
-    border-top: 1px solid #f3f4f6;
-}
-
-.btn {
-    padding: 8px 16px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border-radius: 6px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: background-color 0.15s ease;
-}
-
-.btn-secondary {
-    background-color: #ffffff;
-    border-color: #d1d5db;
-    color: #374151;
-}
-
-.btn-secondary:hover {
-    background-color: #f9fafb;
-}
-
-.btn-primary {
-    background-color: #2e7d32;
-    color: #ffffff;
-}
-
-.btn-primary:hover {
-    background-color: #256628;
-}
-
-
-.alert {
-    padding: 10px 14px;
-    border-radius: 6px;
-    margin-bottom: 16px;
-    font-size: 0.875rem;
-}
-
-.alert-success {
-    background-color: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-}
-
-.alert-error {
-    background-color: #fef2f2;
-    color: #991b1b;
-    border: 1px solid #fecaca;
-}
-
-#account_overlay {
-
-    justify-content: space-between;
-    align-self: center;
-}
-
-.profile {
-    font-size: 0.95rem;
-    color: #264638;
-    display: block;
-
-
-}
-
-#profile_pic {
-
-    width: 100px;
-    height: 100px;
-    background-color: #3e4950;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-
-.important_txt {
-    font-weight: bold;
-
-}
-
-.center_txt {
-    text-align: center;
 }
