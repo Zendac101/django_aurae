@@ -46,11 +46,12 @@
                     <table id="activity_table">
 
                         <thead>
+                            <th>Email</th>
                             <th>Activity</th>
                             <th>Date and Time</th>
                             <th>Username</th>
                             <th>Full Name</th>
-                            <th>Email</th>
+
                             <th>Activated</th>
 
                         </thead>
@@ -59,17 +60,18 @@
                         <tbody>
                             {% for item in activity_log %}
                             <tr>
+                                <td>{{ item.user.email }}</td>
                                 <td>{{ item.activity_log }}</td>
                                 <td>{{ item.log_datetime }}</td>
                                 <td>{{ item.user.username }}</td>
 
                                 <td>{{ item.user.first_name }} {{ item.user.last_name }}</td>
-                                <td>{{ item.user.email }}</td>
+
                                 <td>{{ item.user.is_active }}</td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="4">no rec</td>
+                                <td colspan="6" style="text-align: center;">No Record</td>
                             </tr>
                             {% endfor %}
                         </tbody>

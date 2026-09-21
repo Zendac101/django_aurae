@@ -21,7 +21,7 @@ def activityLog_view(request):
         return redirect('/')
 
     act_history = activityHistory.objects.select_related(
-        'user').all()
+        'user').all().order_by('user_id')
 
     return render(request, 'activity_log.html', {'activity_log': act_history})
 
