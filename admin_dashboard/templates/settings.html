@@ -12,7 +12,9 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 </head>
 
+
 <body>
+
     <div id="container" class="expand">
         {% include 'sidebar.html' %}
 
@@ -57,14 +59,49 @@
                                 <button class="edit_info" id="edit_account" type="button"
                                     onclick="document.getElementById('account_overlay').showModal()">Edit</button>
                                 <button class="edit_info" id="change_pass" type="button">Change Password</button>
+                                <button type="button" class="edit_info" id="deactivate_account"
+                                    onclick="document.getElementById('deact_confirm').showModal()">Deactivate
+                                    Account</button>
                             </div>
 
+                            <!--deact account modal-->
+                            <dialog class="account-modal" id="deact_confirm" {% if deact_form.errors %}open{% endif %}>
+                                <div>
+
+                                </div>
+
+                                <div class="modal_content" style="padding: 5px;">
+                                    <div class="modal-header">
+                                        <h2>Deactivate account</h2>
+
+                                    </div>
+                                    <div>
+                                        <form action="{% url 'settings' %}" method="post" class="form_group">
+                                            {% csrf_token %}
+                                            <div class="form-group" style="padding: 5px;">
+                                                <label for="{{ deact.password.id_for_label }}">Password<label>
+                                                        {{deact.password}}
+                                                        {{deact.password.error}}
+                                            </div>
+                                            <div class=" modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    onclick="document.getElementById('deact_confirm').close()">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Confirm</button>
+
+                                            </div>
+                                        </form>
+
+                                    </div>
+
+                                </div>
+                            </dialog>
+
+                            <!--edit account info-->
                             <dialog id="account_overlay" class="account-modal">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h2>Edit Information</h2>
-                                        <button type="button" class="close-icon"
-                                            onclick="document.getElementById('account_overlay').close()">&times;</button>
+
                                     </div>
 
                                     <form method="POST" action="{% url 'settings' %}" class="modal-form">
@@ -90,19 +127,21 @@
 
                                         <div class="form-group">
                                             <label>Email</label>
-                                            <input type="text" value="{{ user.email }}" disabled class="input-disabled">
+                                            <input type="text" value="{{ user.email }}" class="input-disabled">
                                         </div>
 
                                         <div class="form-group">
                                             <label>Account Created at</label>
-                                            <input type="text" value="{{ user.date_joined|date:'M d, Y H:i' }}" disabled
-                                                class="input-disabled">
+                                            <input type="text"
+                                                value="{{ user.profile_history.date_joined|date:'M d, Y H:i' }}"
+                                                disabled class="input-disabled">
                                         </div>
 
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 onclick="document.getElementById('account_overlay').close()">Cancel</button>
                                             <button type="submit" class="btn btn-primary">Save Changes</button>
+
                                         </div>
                                     </form>
                                 </div>
@@ -223,7 +262,12 @@
         </main>
     </div>
 
-    <script src="{% static 'js/setting_expand.js' %}"></script>
+    <script>
+        function expansion(but_id, content) {
+            document.getElementById(but_id).classList.toggle("expand");
+            document.getElementById(content).classList.toggle("show");
+        }
+    </script>
     <script src="{% static 'js/toggle_sidebar.js' %}"></script>
 </body>
 

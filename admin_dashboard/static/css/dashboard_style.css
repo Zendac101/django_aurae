@@ -1,3 +1,5 @@
+@import "variables.css";
+
 .circle {
     width: 40px;
     height: 40px;
@@ -131,9 +133,17 @@
 }
 
 .green {
-    background-color: rgb(122, 216, 155);
+    background-color: var(--dash-btn-primary)
+}
+
+.green:hover {
+    background-color: var(--dash-btn-primary-hover);
 }
 
 .light {
-    background-color: #ccc;
+    background-color: var(--dash-btn-secondary);
+}
+
+.light:hover {
+    background-color: var(--dash-btn-secondary-hover);
 }

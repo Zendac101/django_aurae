@@ -1,9 +1,11 @@
-from .forms import EditProfileForm
+from .forms import EditProfileForm, DeactivateAccount
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import locationData, pollutant_data, activityHistory
 from django.http import JsonResponse
+
+from django.contrib.auth import authenticate, login, get_user_model
 
 
 @login_required
@@ -121,14 +123,30 @@ def report_view(request):
 def settings_view(request):
     if request.method == 'POST':
         form = EditProfileForm(request.POST, instance=request.user)
+        deact_form = DeactivateAccount(request.POST, instance=request.user)
+
+        print('asd')
         if form.is_valid():
+
             form.save()
             messages.success(request, 'Profile updated successfully.')
             return redirect('settings')
+
+        if deact_form.is_valid():
+            user = authenticate(
+                request, username=request.user.email, password=request.POST.get('password', ''))
+            if user is not None:
+
+                login(request, user)
+                user.is_active = False
+                user.save()
+                return redirect('/')
+
     else:
         form = EditProfileForm(instance=request.user)
+        deact_form = DeactivateAccount(instance=request.user)
 
-    return render(request, 'settings.html', {'form': form})
+    return render(request, 'settings.html', {'form': form, 'deact': deact_form})
 
 
 def support_view(request):

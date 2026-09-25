@@ -1,3 +1,5 @@
+@import "variables.css";
+
 .data-table {
 
     background-color: #bad3c4;
@@ -30,10 +32,17 @@
 }
 
 .green {
-    background: #7ca982;
-    color: white;
+    background-color: var(--dash-btn-primary)
+}
+
+.green:hover {
+    background-color: var(--dash-btn-primary-hover);
 }
 
 .light {
-    background: #e5e7eb;
+    background-color: var(--dash-btn-secondary);
+}
+
+.light:hover {
+    background-color: var(--dash-btn-secondary-hover);
 }

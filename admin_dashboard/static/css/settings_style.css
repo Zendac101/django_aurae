@@ -1,15 +1,4 @@
-/* --- Exact Dashboard Theme Palette --- */
-:root {
-    --dash-sage-card: #AFCBBA;
-    --dash-sage-hover: #a1bfaa;
-    --dash-sage-dark: #273b30;
-    --dash-text-title: #14241b;
-    --dash-text-sub: #2e4337;
-    --dash-divider: rgba(0, 0, 0, 0.08);
-    --dash-pill-bg: rgba(255, 255, 255, 0.45);
-    --dash-btn-primary: #5cb884;
-    --dash-btn-secondary: #cde0d5;
-}
+@import "variables.css";
 
 /* Outer Card Container */
 .settings-box {
@@ -184,7 +173,7 @@
 }
 
 #edit_account:hover {
-    background-color: #4da573;
+    background-color: var(--dash-btn-primary-hover);
 }
 
 #change_pass {
@@ -194,6 +183,15 @@
 
 #change_pass:hover {
     background-color: #bdd2c6;
+}
+
+#deactivate_account {
+    background-color: var(--dash-btn-red);
+    color: var(--dash-text-title);
+}
+
+#deactivate_account:hover {
+    background-color: var(--dash-btn-red-hover);
 }
 
 .expand {
@@ -215,6 +213,17 @@ dialog#account_overlay {
 dialog#account_overlay::backdrop {
     background-color: rgba(15, 28, 21, 0.45);
     backdrop-filter: blur(4px);
+}
+
+dialog#deact_confirm {
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    width: 90%;
+    max-width: 480px;
+    background-color: #ffffff;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+    margin: auto;
 }
 
 .modal-header {

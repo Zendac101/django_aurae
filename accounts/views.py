@@ -62,7 +62,7 @@ def LogRes(request):
                         try:
                             send_mail(
                                 subject="Activate Your Account",
-                                message=f"Hello {user.username},\n\nPlease click the link to verify your account:\n{activation_url}",
+                                message=f"Hello {user.username},\n\nPlease click the link to activate your account:\n{activation_url}",
                                 from_email=None,
                                 recipient_list=[user.email],
                                 fail_silently=False,
@@ -71,7 +71,7 @@ def LogRes(request):
                             print(f"SMTP Error: {mail_err}")
 
                     messages.success(
-                        request, "Account created! Please check your email to verify.")
+                        request, "Account created! Please check your email to activate your account.")
                     return render(request, 'index.html', {'form': form, 'active_form': 'login_form'})
 
                 except Exception as e:
@@ -91,7 +91,27 @@ def LogRes(request):
             if user_obj:
                 if not user_obj.is_active:
                     messages.error(
-                        request, "Your account is not verified yet. Please check your email.")
+                        request, "Your account is not activated yet. Please check your email.")
+
+                    # activation link
+                    uid = urlsafe_base64_encode(force_bytes(user_obj.pk))
+                    token = account_activation_token.make_token(user_obj)
+                    activation_url = request.build_absolute_uri(
+                        reverse('activate', kwargs={
+                            'uidb64': uid, 'token': token})
+                    )
+
+                    try:
+                        send_mail(
+                            subject="Activate Your Account",
+                            message=f"Hello {user_obj.username},\n\nPlease click the link to activate your account:\n{activation_url}",
+                            from_email=None,
+                            recipient_list=[user_obj.email],
+                            fail_silently=False,
+                        )
+                    except Exception as mail_err:
+                        print(f"SMTP Error: {mail_err}")
+
                     return render(request, 'index.html', {'form': RegisterForm(), 'active_form': 'login_form'})
 
                 user = authenticate(
@@ -133,7 +153,7 @@ def activate(request, uidb64, token):
             user.roles.save()
 
         messages.success(
-            request, "Your email has been verified! You can now log in.")
+            request, "Your email has been activated! You can now log in.")
         return redirect('registerUser')
     else:
         messages.error(
