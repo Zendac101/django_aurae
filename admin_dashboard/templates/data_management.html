@@ -107,7 +107,7 @@
 
 
 
-                fetch(`?location=${encodeURIComponent(selectedLoc)}`, {
+                fetch(`?locations=${encodeURIComponent(selectedLoc)}`, {
                     headers: { 'X-Requested-With': 'XMLHttpRequest' }
                 })
                     .then(response => response.json())

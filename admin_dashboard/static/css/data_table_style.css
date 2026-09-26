@@ -1,84 +1,87 @@
 @import "variables.css";
 
-* {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-
-#pollutant_table {
-
-
-    max-height: 400px;
-
-
-    border-radius: 5px;
-    overflow-y: auto;
-
-
-}
-
-
-
 table {
-    padding: 2px;
     width: 100%;
-
-    border-collapse: separate;
-    border-spacing: 0;
-    background-color: #6a9b7d;
-
+    border-collapse: collapse;
+    background-color: transparent;
 }
-
-
-
-th,
-td {
-    width: 7%;
-    padding: 10px;
-    font-size: 13px;
-
-    border-left: 2px #436e54 solid;
-    border-right: 2px #436e54 solid;
-
-    border-radius: 0;
-
-}
-
-th {
-    text-align: center;
-    font-weight: 600;
-
-
-
-}
-
-tr:nth-child(odd) {
-    background: rgb(124, 173, 142);
-}
-
-html {
-
-    scrollbar-color: #728175 #AFCBBA;
-
-
-    scrollbar-width: thin;
-
-
-}
-
 
 
 thead th {
     position: sticky;
-    background-color: #649479;
     top: 0;
-    z-index: 1;
-    border: 2px #436e54 solid;
+    background-color: #649479;
+    color: #0f2719;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 14px 12px;
+    text-align: center;
+    border-bottom: 2px solid #436e54;
+    border-right: 1px solid rgba(67, 110, 84, 0.4);
+    z-index: 2;
 
+}
+
+thead th:last-child {
+    border-right: none;
+}
+
+
+thead th label {
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 6px;
 }
 
 #location {
     background-color: #78ac8c;
-    border: 1px #31693c solid;
-    border-radius: 5px;
-    margin-top: 2px;
+    border: 1px solid #31693c;
+    color: #0f2719;
+    border-radius: 6px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+}
+
+
+td {
+    padding: 12px 14px;
+    font-size: 13px;
+    text-align: center;
+    color: #1a1a1a;
+    border-bottom: 1px solid rgba(67, 110, 84, 0.25);
+    border-right: 1px solid rgba(67, 110, 84, 0.25);
+}
+
+td:last-child {
+    border-right: none;
+}
+
+
+tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.data-table::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+.data-table::-webkit-scrollbar-track {
+    background: #AFCBBA;
+    border-radius: 12px;
+}
+
+.data-table::-webkit-scrollbar-thumb {
+    background: #649479;
+    border-radius: 10px;
+}
+
+.data-table::-webkit-scrollbar-thumb:hover {
+    background: #436e54;
 }

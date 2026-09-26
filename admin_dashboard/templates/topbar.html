@@ -31,7 +31,7 @@
                 <span class="name">{{ user.username }}</span>
                 <span class="email">{{ user.email }}</span>
                 {% else %}
-                <!-- Fallback if the user is not logged in -->
+                <!-- bcak to the login poage when not auth -->
                 <a href="{% url 'login' %}">Log In</a>
                 {% endif %}
             </div>

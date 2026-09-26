@@ -28,10 +28,10 @@ class locationData(models.Model):
 
     class Meta:
         managed = False
-        db_table = '"pollutant_data"."locations"'
+        db_table = 'pollutant_data"."locations'
 
 
-class site_ids(models.Model):
+class zipcode(models.Model):
     zipcode = models.CharField(max_length=100)
 
 
@@ -50,7 +50,7 @@ class pollutant_data(models.Model):
         max_digits=6, decimal_places=2, db_column='pm10')
     nox = models.DecimalField(max_digits=6, decimal_places=2, db_column='nox')
     aqi_pm25 = models.DecimalField(
-        max_digits=6, decimal_places=2, db_column='aqi_pm25')
+        max_digits=6, decimal_places=2, db_column='aqi_pm2.5')
     aqi_pm10 = models.DecimalField(
         max_digits=6, decimal_places=2, db_column='aqi_pm10')
     pm25 = models.DecimalField(
@@ -58,4 +58,4 @@ class pollutant_data(models.Model):
 
     class Meta:
         managed = False
-        db_table = '"pollutant_data"."pollutant_values"'
+        db_table = 'pollutant_data"."pollutant_values'

@@ -139,7 +139,7 @@
 
             }
 
-            fetch(`?location=${encodeURIComponent(selectedLoc)}&mindate=${encodeURIComponent(minDateInput)}&maxdate=${encodeURIComponent(maxDateInput)}`, {
+            fetch(`?locations=${encodeURIComponent(selectedLoc)}&mindate=${encodeURIComponent(minDateInput)}&maxdate=${encodeURIComponent(maxDateInput)}`, {
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             }).then(response => response.json())
                 .then(result => {
