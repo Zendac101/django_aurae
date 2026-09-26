@@ -31,9 +31,6 @@ class CoreUserProfileManager(BaseUserManager):
             defaults={"is_staff": True,
                       "is_superuser": True, "is_verified": True},
         )
-        UserProfile_history.objects.update_or_create(
-            user=user, defaults={"is_verified": True}
-        )
 
         return user
 
@@ -83,7 +80,6 @@ class UserProfile_history(models.Model):
     user = models.OneToOneField(
         Core_userProfile, on_delete=models.CASCADE, related_name='profile_history', primary_key=True)
 
-    is_verified = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     last_login = models.DateTimeField(null=True)
@@ -103,6 +99,9 @@ class UserProfile_role(models.Model):
     class Meta:
         managed = True
         db_table = 'user_roles'
+
+    def __str__(self):
+        return f"{self.user}'s roles"
 
 
 # History Table

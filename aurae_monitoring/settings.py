@@ -106,7 +106,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'OPTIONS': {
-            'options': '-c search_path=public,pollutant_data'
+            'options': '-c search_path=public'
         }
     },
     'sensor_data_db': {

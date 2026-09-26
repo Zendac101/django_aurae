@@ -19,25 +19,25 @@ class activityHistory(models.Model):
 
 class locationData(models.Model):
 
-    site_id = models.IntegerField(
-        primary_key=True, db_column='site_id', unique=True)
+    zipcode = models.IntegerField(
+        primary_key=True, db_column='zipcode', unique=True)
 
-    site_name = models.CharField(max_length=255, db_column='site_name')
+    municipality = models.CharField(max_length=255, db_column='municipality')
 
-    county = models.CharField(max_length=45, db_column='county')
+    region = models.CharField(max_length=45, db_column='region')
 
     class Meta:
         managed = False
-        db_table = '"pollutant_data"."location"'  
+        db_table = '"pollutant_data"."locations"'
 
 
 class site_ids(models.Model):
-    site_id = models.CharField(max_length=100)
+    zipcode = models.CharField(max_length=100)
 
 
 class pollutant_data(models.Model):
-    site_id = models.ForeignKey(
-        locationData, on_delete=models.CASCADE, db_column='site_id')
+    zipcode = models.ForeignKey(
+        locationData, on_delete=models.CASCADE, db_column='zipcode')
 
     date = models.DateField(db_column='date')
 

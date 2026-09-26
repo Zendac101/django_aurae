@@ -1,3 +1,5 @@
+@import "variables.css";
+
 * {
     margin: 0;
     padding: 0;
@@ -11,7 +13,7 @@
     padding: 30px;
     border-radius: 16px;
 
-    background: rgba(255, 255, 255, 0.92);
+    background: var(--dash-form-clr-light);
 
     text-align: center;
 
@@ -112,6 +114,11 @@ input {
 
 }
 
+input:focus {
+    border-color: var(--dash-btn-primary);
+    box-shadow: 0 0 0 3px rgba(92, 184, 132, 0.2);
+}
+
 .buttons_register {
     width: 100%;
     padding: 10px;
@@ -120,14 +127,14 @@ input {
     margin-bottom: 10px;
     margin-top: 5px;
     cursor: pointer;
-    background: #509854;
+    background: var(--dash-btn-primary);
     color: rgb(35, 37, 36);
     font-weight: bolder;
     border: #555 1px solid;
 }
 
 .buttons_register:hover {
-    background: rgb(95, 162, 81);
+    background: var(--dash-btn-primary-hover);
 }
 
 
@@ -178,4 +185,9 @@ input {
 
 .term_dialog p {
     font-size: 13px;
+}
+
+#login_form p,
+#register_form p {
+    color: var(--dash-text-minimal);
 }

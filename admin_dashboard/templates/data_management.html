@@ -41,11 +41,11 @@
                             <thead>
                                 <th>Date</th>
                                 <th>
-                                    <label for="location">Location:</label>
-                                    <select name="location" id="location">
+                                    <label for="locations">Location:</label>
+                                    <select name="locations" id="location">
                                         <option value="">Select Location</option>
-                                        {% for site_id, site_name in location_options %}
-                                        <option value="{{ site_id }}">{{ site_name }}</option>
+                                        {% for zipcode, municipality in location_options %}
+                                        <option value="{{ zipcode }}">{{ municipality }}</option>
                                         {% empty %}
                                         <!-- This line will only show if your database returned zero rows -->
                                         <option value="">[No records found or column name error]</option>

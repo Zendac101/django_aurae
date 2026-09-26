@@ -37,10 +37,6 @@ def LogRes(request):
                         user.is_active = False
                         user.save()
 
-                        UserProfile_history.objects.update_or_create(
-                            user=user,
-                            defaults={'is_verified': False}
-                        )
                         UserProfile_role.objects.update_or_create(
                             user=user,
                             defaults={'is_staff': False,
@@ -143,10 +139,6 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
-
-        if hasattr(user, 'profile_history'):
-            user.profile_history.is_verified = True
-            user.profile_history.save()
 
         if hasattr(user, 'roles'):
             user.roles.is_verified = True

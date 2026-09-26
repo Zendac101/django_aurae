@@ -34,22 +34,22 @@ def analysis_view(request):
         return redirect('/')
 
     dropdown_options = locationData.objects \
-        .values_list('site_id', 'site_name') \
-        .order_by('site_name')
+        .values_list('zipcode', 'municipality') \
+        .order_by('municipality')
 
 
 # get the requeest from the fetch in javascript
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
 
-        selected_location = request.GET.get('location', '').strip()
+        selected_location = request.GET.get('locations', '').strip()
         mindate = request.GET.get('mindate', "%Y-%m-%d").strip()
         maxdate = request.GET.get('maxdate', "%Y-%m-%d").strip()
 
-        fields = ['date', 'site_id', 'aqi', 'so2',
+        fields = ['date', 'zipcode', 'aqi', 'so2',
                   'co', 'o3', 'nox', 'pm25', 'pm10']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
-                .filter(site_id=selected_location)
+                .filter(zipcode=selected_location)
         else:
             pollutant_values_show = pollutant_data.objects
 
@@ -78,17 +78,17 @@ def data_management_view(request):
         return redirect('/')
 
     dropdown_options = locationData.objects \
-        .values_list('site_id', 'site_name') \
-        .order_by('site_name')
+        .values_list('zipcode', 'municipality') \
+        .order_by('municipality')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        selected_location = request.GET.get('location', '')
+        selected_location = request.GET.get('locations', '')
 
-        fields = ['date', 'site_id', 'aqi', 'so2',
+        fields = ['date', 'zipcode', 'aqi', 'so2',
                   'co', 'o3', 'nox', 'pm25', 'pm10']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
-                .filter(site_id=selected_location)
+                .filter(zipcode=selected_location)
         else:
             pollutant_values_show = pollutant_data.objects
 
