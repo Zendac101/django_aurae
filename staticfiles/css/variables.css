@@ -1,0 +1,19 @@
+:root {
+    --dash-sage-card: #AFCBBA;
+    --dash-sage-hover: #a1bfaa;
+    --dash-sage-dark: #273b30;
+    --dash-text-title: #14241b;
+    --dash-text-sub: #2e4337;
+    --dash-text-minimal: #9d9c9c;
+    --dash-divider: rgba(0, 0, 0, 0.08);
+    --dash-pill-bg: rgba(255, 255, 255, 0.45);
+    --dash-btn-primary: #5cb884;
+    --dash-btn-primary-hover: #479167;
+    --dash-btn-secondary: #cde0d5;
+    --dash-btn-secondary-hover: #bdd2c6;
+    --dash-btn-red: #c03737;
+    --dash-btn-red-hover: #a31717;
+    --dash-btn-gray: #b9b7b7;
+    --dash-btn-gray-hover: #a8a2a2;
+    --dash-form-clr-light: #f7f7f7f8;
+}

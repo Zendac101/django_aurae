@@ -1,3 +1,5 @@
+@import "variables.css";
+
 .sidebar {
     width: 240px;
     background: #AFCBBA;
@@ -176,11 +178,24 @@
 }
 
 
-.avatar {
-    width: 38px;
-    height: 38px;
-    background: #ccc;
+#profile_pic {
+    width: 58px;
+    height: 58px;
+    background-color: var(--dash-pill-bg);
     border-radius: 50%;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px gray solid;
+}
+
+#profile_pic::before {
+    content: "\f007";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1.4rem;
+    color: var(--dash-text-sub);
 }
 
 .name {

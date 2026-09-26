@@ -1,3 +1,5 @@
+@import "variables.css";
+
 #chart-box {
     height: 25%;
     background: #AFCBBA;
@@ -80,13 +82,22 @@
 }
 
 #download_graph {
-    background: #7ca982;
+    background-color: var(--dash-btn-primary);
     color: white;
+}
+
+#download_graph:hover {
+    background-color: var(--dash-btn-primary-hover);
 }
 
 #date_range,
 #reset {
-    background: #e5e7eb;
+    background-color: var(--dash-btn-secondary);
+}
+
+#date_range:hover,
+#reset:hover {
+    background-color: var(--dash-btn-secondary-hover);
 }
 
 #pang_map {
