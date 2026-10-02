@@ -40,7 +40,7 @@
                         <table id="pollutant_table">
                             <thead>
                                 <th>Date</th>
-                                <th>
+                                <th style="width: 15%;">
                                     <label for="locations">Location:</label>
                                     <select name="locations" id="location">
                                         <option value="">Select Location</option>
@@ -81,11 +81,7 @@
                     </div>
                 </div>
 
-                <div class="table-actions">
-                    <button class="green">Upload Data</button>
-                    <button class="light">Download Data</button>
-                    <button class="light">Delete Data</button>
-                </div>
+
 
             </main>
 
@@ -112,7 +108,7 @@
                 })
                     .then(response => response.json())
                     .then(result => {
-                        if (result.success) {
+                        if (result.success && result.data && result.data.length > 0) {
                             result.data.forEach(row => {
                                 const tr = document.createElement('tr');
 
@@ -133,6 +129,17 @@
 
                             });
 
+                        }
+                        else {
+                            const tr = document.createElement('tr');
+                            const td = document.createElement('td');
+
+                            td.textContent = 'No data available';
+                            td.colSpan = 9;
+                            td.style.textAlign = 'center';
+
+                            tr.appendChild(td);
+                            tbody.appendChild(tr);
                         }
 
                     })

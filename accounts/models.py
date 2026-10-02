@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db import models
@@ -122,3 +123,10 @@ def create_user_dependent_profiles(sender, instance, created, **kwargs):
         # Automatically insert empty/default data into your separate tables
         UserProfile_history.objects.create(user=instance)
         UserProfile_role.objects.create(user=instance)
+
+
+class UserSession(models.Model):
+    # Enforce a strict one-to-one relationship
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    session_key = models.CharField(max_length=40)

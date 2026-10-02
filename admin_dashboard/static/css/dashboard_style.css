@@ -67,7 +67,7 @@
     border: 1px solid rgba(175, 203, 186, 0.35);
     box-shadow: 0 4px 16px rgba(45, 68, 54, 0.05);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    position: relative;
+
     overflow: hidden;
 }
 

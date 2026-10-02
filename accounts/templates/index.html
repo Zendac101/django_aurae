@@ -44,7 +44,7 @@
             </div>
             {% endif %}
 
-            <input type="text" class="log_email" id="email" name="email" placeholder="username@gmail.com" required>
+            <input type="text" class="log_email" id="email" name="email" placeholder="@gmail.com" required>
 
             <input type="password" style="margin-bottom: 5px;" class=" log_password" id="password" name="password"
                 placeholder="password" required>
@@ -67,15 +67,8 @@
                 Sign up
             </button>
 
-            <p class="terms">
-                By clicking login, you agree to our
-                <span class="link"><button type="button" class="terms_popup" id="service">Terms of
-                        Service</button></span> and
-                <span class="link"><button type="button" class="terms_popup" id="privacy">Privacy
-                        Policy</button></span>
-            </p>
 
-            {% include 'term_dialog.html' %}
+
 
         </form>
     </div>
@@ -101,7 +94,7 @@
                 {% for field, errors in form.errors.items %}
                 {% if forloop.first %}
                 <p
-                    style="margin: 2px 0;color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: left;">
+                    style="margin: 2px 0;color: #721c24; background: #f8d7da; padding: 10px; border-radius: 6px; margin-bottom: 12px; font-size: 12px; text-align: center;">
                     {{ errors.0 }}</p>
                 {% endif %}
                 {% endfor %}
@@ -113,12 +106,13 @@
             <input type="text" id="username" name="username" placeholder="Username"
                 value="{{ form.username.value|default:'' }}" required>
 
-            <input type="text" id="fname" name="first_name" placeholder="First Name"
-                value="{{ form.first_name.value|default:'' }}" required>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="fname" name="first_name" placeholder="First Name"
+                    value="{{ form.first_name.value|default:'' }}" required>
 
-            <input type="text" id="lname" name="last_name" placeholder="Last Name"
-                value="{{ form.last_name.value|default:'' }}" required>
-
+                <input type="text" id="lname" name="last_name" placeholder="Last Name"
+                    value="{{ form.last_name.value|default:'' }}" required>
+            </div>
             <input type="email" class="reg_email" id="signUp_email" name="email" placeholder="@gmail.com"
                 value="{{ form.email.value|default:'' }}" required>
 
@@ -127,6 +121,16 @@
             <input type="password" class="con_password" id="con_password" name="con_password"
                 placeholder="Confirm password" minlength="8" required>
 
+
+            <p class="terms">
+                <input type="checkbox" name="checkbox_reg" id="checkbox" class="term_popup" value="True">
+                By signing in, you agree to our
+                <span class="link"><button type="button" class="terms_popup" id="service">Terms of
+                        Service</button></span> and
+                <span class="link"><button type="button" class="terms_popup" id="privacy">Privacy
+                        Policy</button></span>
+            </p>
+            {% include 'term_dialog.html' %}
             <button type="submit" class="buttons_register" id="submits_btn" name="register_submit">
                 Sign up
             </button>

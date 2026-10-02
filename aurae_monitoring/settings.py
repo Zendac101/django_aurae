@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'preventconcurrentlogins',
     "django_htmx",
     'accounts',
     'client_dashboard',
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_htmx.middleware.HtmxMiddleware",
+    'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
 ]
 
 ROOT_URLCONF = 'aurae_monitoring.urls'
@@ -121,7 +123,7 @@ DATABASES = {
 }
 
 AUTH_USER_MODEL = 'accounts.Core_userProfile'
-
+LOGIN_URL = '/'
 # web server database
 POSTGRES_LOCALLY = True
 

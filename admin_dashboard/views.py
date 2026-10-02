@@ -14,7 +14,7 @@ def home_view(request):
 
         return redirect('/')
 
-    return render(request, 'home.html')
+    return render(request, 'admin_home.html')
 
 
 def activityLog_view(request):
@@ -25,7 +25,7 @@ def activityLog_view(request):
     act_history = activityHistory.objects.select_related(
         'user').all().order_by('user_id')
 
-    return render(request, 'activity_log.html', {'activity_log': act_history})
+    return render(request, 'admin_activity_log.html', {'activity_log': act_history})
 
 
 def analysis_view(request):
@@ -34,8 +34,8 @@ def analysis_view(request):
         return redirect('/')
 
     dropdown_options = locationData.objects \
-        .values_list('zipcode', 'municipality') \
-        .order_by('municipality')
+        .values_list('zipcode', 'loc_name') \
+        .order_by('loc_name')
 
 
 # get the requeest from the fetch in javascript
@@ -69,7 +69,7 @@ def analysis_view(request):
 
     }
 
-    return render(request, 'analysis.html', context)
+    return render(request, 'admin_analysis.html', context)
 
 
 def data_management_view(request):
@@ -78,8 +78,8 @@ def data_management_view(request):
         return redirect('/')
 
     dropdown_options = locationData.objects \
-        .values_list('zipcode', 'municipality') \
-        .order_by('municipality')
+        .values_list('zipcode', 'loc_name') \
+        .order_by('loc_name')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         selected_location = request.GET.get('locations', '')
@@ -90,10 +90,10 @@ def data_management_view(request):
             pollutant_values_show = pollutant_data.objects \
                 .filter(zipcode=selected_location)
         else:
-            pollutant_values_show = pollutant_data.objects
+            pollutant_values_show = None
 
         records = pollutant_values_show.order_by('date').values(
-            *fields)
+            *fields)[:300]
 
         serializable_data = [
             {key: (str(val) if val is not None else 'NaN')
@@ -108,7 +108,7 @@ def data_management_view(request):
 
     }
 
-    return render(request, 'data_management.html', context)
+    return render(request, 'admin_data_management.html', context)
 
 
 def report_view(request):
@@ -116,7 +116,7 @@ def report_view(request):
 
         return redirect('/')
 
-    return render(request, 'reports.html')
+    return render(request, 'admin_reports.html')
 
 
 @login_required
@@ -146,7 +146,7 @@ def settings_view(request):
         form = EditProfileForm(instance=request.user)
         deact_form = DeactivateAccount(instance=request.user)
 
-    return render(request, 'settings.html', {'form': form, 'deact': deact_form})
+    return render(request, 'admin_settings.html', {'form': form, 'deact': deact_form})
 
 
 def support_view(request):
@@ -154,4 +154,4 @@ def support_view(request):
 
         return redirect('/')
 
-    return render(request, 'support.html')
+    return render(request, 'admin_support.html')

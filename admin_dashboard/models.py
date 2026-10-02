@@ -22,9 +22,9 @@ class locationData(models.Model):
     zipcode = models.IntegerField(
         primary_key=True, db_column='zipcode', unique=True)
 
-    municipality = models.CharField(max_length=255, db_column='municipality')
+    loc_name = models.CharField(max_length=255, db_column='location_name')
 
-    region = models.CharField(max_length=45, db_column='region')
+    loc_type = models.CharField(max_length=45, db_column='loc_type')
 
     class Meta:
         managed = False

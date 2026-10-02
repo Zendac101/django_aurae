@@ -23,6 +23,7 @@ urlpatterns = [
     path('bossbaby/', admin.site.urls),
     path('', include('accounts.urls')),
     path('admin_dashboard/', include('admin_dashboard.urls')),
+    path('client_dashboard/', include('client_dashboard.urls')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
 ]

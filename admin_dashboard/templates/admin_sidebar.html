@@ -1,0 +1,41 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/component.css' %}">
+
+<body>
+
+    <aside class="sidebar collapsed">
+        <div>
+            <div class="logo">
+                <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                <h2>Aurae Admin</h2>
+            </div>
+
+            <ul class="menu">
+
+
+
+
+                <li><a href="{% url 'admin_home' %}"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="{% url 'admin_dataManagement' %}"><i class="fas fa-database"></i> Data Management</a></li>
+                <li><a href="{% url 'admin_analysis' %}"><i class="fas fa-chart-line"></i> Analysis</a></li>
+                <li><a href="{% url 'admin_reports' %}"><i class="fas fa-file-alt"></i> Reports</a></li>
+                <li><a href="{% url 'admin_activityLog' %}"><i class="fas fa-calendar"></i> Activity Log</a></li>
+                <li><a href="{% url 'admin_settings' %}"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="{% url 'admin_support' %}"><i class="fas fa-life-ring"></i> Support / Help</a></li>
+            </ul>
+        </div>
+
+
+        <div>
+            {% if user.is_authenticated %}
+
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">Log Out</button>
+            </form>
+            {% else %}
+            <a href="{% url 'login' %}">Log In</a>
+            {% endif %}
+        </div>
+    </aside>
+</body>

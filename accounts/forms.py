@@ -16,10 +16,15 @@ class RegisterForm(forms.ModelForm):
 
     password = forms.CharField(widget=forms.PasswordInput(), min_length=8)
     con_password = forms.CharField(widget=forms.PasswordInput(), min_length=8)
+    checkbox_reg = forms.BooleanField(
+        required=True,
+        error_messages={
+            'required': 'Agree to our terms and services before signing up.'}
+    )
 
     class Meta:
         model = User
-        # These are the fields Django checks during form.is_valid()
+        # These are the fields django checks
         fields = ['username', 'email',  'first_name', 'last_name']
 
     def clean_email(self):

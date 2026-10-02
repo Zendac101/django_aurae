@@ -29,6 +29,7 @@ def LogRes(request):
         # register
         if 'register_submit' in request.POST:
             form = RegisterForm(request.POST)
+
             if form.is_valid():
                 try:
                     with transaction.atomic():
@@ -119,7 +120,7 @@ def LogRes(request):
                 login(request, user)
 
                 if hasattr(user, 'roles') and (user.roles.is_superuser or user.roles.is_staff):
-                    return redirect('/admin_dashboard/home')
+                    return redirect('/admin_dashboard/admin_home')
                 return redirect('/client_dashboard/home')
             else:
                 messages.error(request, "Invalid username/email or password.")
