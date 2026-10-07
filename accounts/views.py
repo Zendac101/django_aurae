@@ -12,15 +12,26 @@ from django.contrib.auth.decorators import login_required
 from .forms import RegisterForm
 from .tokens import account_activation_token, password_reset_token
 
+from allauth.account.signals import user_signed_up
+from django.dispatch import receiver
 
 from .models import ActivityHistory, Core_userProfile, UserProfile_history, UserProfile_role
-
 
 User = get_user_model()
 
 
 @ensure_csrf_cookie
 def LogRes(request):
+    # --- FIX: Check if the user is ALREADY logged in ---
+    # If Google OAuth successfully logs them in and redirects them to '/',
+    # we need to catch them here and send them to the dashboard,
+    # otherwise they will just stare at the login form again!
+    if request.user.is_authenticated:
+        if hasattr(request.user, 'roles') and (request.user.roles.is_superuser or request.user.roles.is_staff):
+            return redirect('/admin_dashboard/admin_home')
+        return redirect('/client_dashboard/home')
+    # ---------------------------------------------------
+
     storage = get_messages(request)
     for _ in storage:
         pass
@@ -33,30 +44,18 @@ def LogRes(request):
             if form.is_valid():
                 try:
                     with transaction.atomic():
-
-                        user = form.save(commit=False)
-                        user.is_active = False
-                        user.save()
-
-                        UserProfile_role.objects.update_or_create(
-                            user=user,
-                            defaults={'is_staff': False,
-                                      'is_superuser': False, 'is_verified': False}
-                        )
-
-                        ActivityHistory.objects.create(
-                            user=user,
-                            activity_log="Account initialized via registration."
-                        )
-
-                        uid = urlsafe_base64_encode(force_bytes(user.pk))
-                        token = account_activation_token.make_token(user)
-                        activation_url = request.build_absolute_uri(
-                            reverse('activate', kwargs={
-                                    'uidb64': uid, 'token': token})
-                        )
-
                         try:
+
+                            user = form.save(commit=False)
+                            user.is_active = False
+
+                            uid = urlsafe_base64_encode(force_bytes(user.pk))
+                            token = account_activation_token.make_token(user)
+                            activation_url = request.build_absolute_uri(
+                                reverse('activate', kwargs={
+                                        'uidb64': uid, 'token': token})
+                            )
+
                             send_mail(
                                 subject="Activate Your Account",
                                 message=f"Hello {user.username},\n\nPlease click the link to activate your account:\n{activation_url}",
@@ -64,8 +63,23 @@ def LogRes(request):
                                 recipient_list=[user.email],
                                 fail_silently=False,
                             )
+                            user.save()
+
+                            UserProfile_role.objects.update_or_create(
+                                user=user,
+                                defaults={'is_staff': False,
+                                          'is_superuser': False, 'is_verified': False}
+                            )
+
+                            ActivityHistory.objects.create(
+                                user=user,
+                                activity_log="Account initialized via registration."
+                            )
+
                         except Exception as mail_err:
-                            print(f"SMTP Error: {mail_err}")
+                            messages.error(
+                                request, "We could not send an email to that address. Please check if the email exists.")
+                            return render(request, 'index.html', {'form': form, 'active_form': 'login_form'})
 
                     messages.success(
                         request, "Account created! Please check your email to activate your account.")
@@ -107,7 +121,8 @@ def LogRes(request):
                             fail_silently=False,
                         )
                     except Exception as mail_err:
-                        print(f"SMTP Error: {mail_err}")
+                        messages.error(
+                            request, "We could not send an email to that address. Please check if the email exists.")
 
                     return render(request, 'index.html', {'form': RegisterForm(), 'active_form': 'login_form'})
 
@@ -250,3 +265,37 @@ def password_reset_confirm(request, uidb64, token):
         return render(request, "password_reset_confirm.html", {"validlink": True})
     else:
         return render(request, "password_reset_confirm.html", {"validlink": False})
+
+
+@receiver(user_signed_up)
+def send_google_activation_email(sender, request, user, **kwargs):
+    print(f"--- NEW GOOGLE SIGN UP DETECTED FOR: {user.email} ---")
+
+    # Check if the signup came from a third-party social provider (like Google)
+    if 'sociallogin' in kwargs:
+
+        # 1. Generate the unique activation link
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = account_activation_token.make_token(user)
+        activation_url = request.build_absolute_uri(
+            reverse('activate', kwargs={'uidb64': uid, 'token': token})
+        )
+
+        # 2. Send the verification email
+        try:
+            send_mail(
+                subject="Activate Your Aurae Account (Google Sign-Up)",
+                message=f"Hello {user.username},\n\nPlease click the link to activate your account:\n{activation_url}",
+                from_email=None,
+                recipient_list=[user.email],
+                fail_silently=False,
+            )
+            print("--- ACTIVATION EMAIL SENT SUCCESSFULLY ---")
+
+            # 3. Log the activity in your history table
+            ActivityHistory.objects.create(
+                user=user,
+                activity_log="Account initialized via Google Sign-Up. Activation email sent."
+            )
+        except Exception as e:
+            print(f"--- FAILED TO SEND EMAIL: {e} ---")

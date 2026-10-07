@@ -43,7 +43,7 @@ class RegisterForm(forms.ModelForm):
         con_password = cleaned_data.get("con_password")
 
         if password and con_password and password != con_password:
-            self.add_error('con_password', "Passwords do not match.")
+            self.add_error('password', "Passwords do not match.")
         return cleaned_data
 
     def save(self, commit=True):

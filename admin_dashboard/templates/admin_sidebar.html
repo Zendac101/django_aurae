@@ -1,12 +1,339 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/component.css' %}">
+
+
+<style>
+    .sidebar {
+        width: 240px;
+        background: #AFCBBA;
+        padding: 20px;
+        border-radius: 0 10px 10px 0;
+        transition: all 0.3s ease;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+    }
+
+    .sidebar:hover {
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu li {
+        list-style: none;
+        margin-bottom: 10px;
+    }
+
+    .menu li a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        text-decoration: none;
+        color: black;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        transform-origin: center;
+    }
+
+    .menu li a:hover {
+        background: #8fbf96;
+        transform: scale(1.03);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .menu li a i {
+        transform: translateY(10%);
+        transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        will-change: transform;
+        /* Prepares the browser GPU */
+    }
+
+    .menu li a:hover i {
+        transform: scale(1.15);
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        width: 300px;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 20px;
+        border: 1px solid #ddd;
+        background: transparent;
+    }
+
+    .search-box input {
+        border: none;
+        outline: none;
+        width: 100%;
+        background: transparent;
+        font-size: 14px;
+    }
+
+    .search-box i {
+        color: gray;
+        font-size: 14px;
+    }
+
+
+
+    .sidebar {
+        transition: width 0.3s ease, margin-left 0.3s ease;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .sidebar.collapsed {
+        width: 90px;
+    }
+
+
+
+    .sidebar.collapsed h2 {
+        display: none;
+    }
+
+    .sidebar.collapsed .menu li a {
+        justify-content: center;
+        font-size: 0;
+    }
+
+    .sidebar.collapsed .menu li a i {
+        font-size: 18px;
+    }
+
+    .btn-logout {
+        position: relative;
+        left: 50%;
+        background-color: #1c4b32;
+        /* Dark contrast color, or use a red like #d9534f */
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 24px;
+        font-size: 15px;
+        font-family: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.2s ease, transform 0.1s ease;
+
+    }
+
+    .sidebar.collapsed .btn-logout {
+        display: none;
+    }
+
+    .btn-logout:hover {
+        background-color: #2e5735;
+        opacity: 0.7;
+        /* Subtle hover effect */
+    }
+
+
+
+
+
+    .active {
+        background-color: #8fbf96;
+
+        font-weight: bold;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .logo h2 {
+        font-size: 22px;
+        white-space: nowrap;
+    }
+
+    .logo-img {
+        width: 45px;
+    }
+
+
+    .menu-btn {
+        width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 12px;
+        background: #AFCBBA;
+        cursor: pointer;
+        font-size: 18px;
+        transition: 0.3s ease;
+
+    }
+
+    .menu-btn:hover {
+        transform: scale(1.05);
+    }
+
+    /* --- New Profile & Popup Styles --- */
+    .sidebar-bottom {
+        position: relative;
+    }
+
+    .sidebar-profile {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .sidebar-profile:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .profile-avatar {
+        width: 40px;
+        height: 40px;
+        background: #1c4b32;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
+
+    .profile-details {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .profile-name {
+        font-weight: 600;
+        font-size: 14px;
+        color: #000;
+    }
+
+    .profile-role {
+        font-size: 11px;
+        color: #333;
+    }
+
+    .profile-chevron {
+        margin-left: auto;
+        font-size: 12px;
+        color: #333;
+        transition: transform 0.3s ease;
+    }
+
+    /* Popup Styling */
+    .profile-popup {
+        position: absolute;
+        bottom: calc(100% + 10px);
+        left: 0;
+        width: 100%;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        padding: 10px 0;
+        display: none;
+        /* Hidden by default */
+        flex-direction: column;
+        z-index: 100;
+    }
+
+    .profile-popup.show {
+        display: flex;
+        /* Shown when toggled via JS */
+    }
+
+    .popup-header {
+        padding: 5px 15px 10px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .popup-header strong {
+        font-size: 14px;
+        color: #000;
+    }
+
+    .popup-header span {
+        font-size: 11px;
+        color: gray;
+    }
+
+    .profile-popup hr {
+        border: 0;
+        border-top: 1px solid #eee;
+        margin: 5px 0;
+    }
+
+    .profile-popup a,
+    .popup-logout {
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: #333;
+        font-size: 14px;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .profile-popup a:hover,
+    .popup-logout:hover {
+        background: #f5f5f5;
+    }
+
+    .popup-logout {
+        color: #d9534f;
+
+        font-weight: 600;
+    }
+
+
+    .sidebar.collapsed .profile-details,
+    .sidebar.collapsed .profile-chevron {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-profile {
+        justify-content: center;
+        padding: 10px 0;
+    }
+
+    .sidebar.collapsed .profile-popup {
+
+        left: 100%;
+        bottom: 0;
+        width: 200px;
+        margin-left: 15px;
+    }
+</style>
 
 <body>
 
     <aside class="sidebar collapsed">
         <div>
             <div class="logo">
-                <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                <button id="toggleSidebar" class="menu-btn">
+                    <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                </button>
+
+
                 <h2>Aurae Admin</h2>
             </div>
 
@@ -25,17 +352,69 @@
             </ul>
         </div>
 
-
-        <div>
+        <!-- Replace the bottom div with this -->
+        <div class="sidebar-bottom">
             {% if user.is_authenticated %}
 
-            <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn-logout">Log Out</button>
-            </form>
+            <!-- The Popup Menu (Hidden by default) -->
+            <div class="profile-popup" id="profilePopup">
+                <div class="popup-header">
+                    <strong>{{ user.username|title }}</strong>
+                    <span>{{ user.email }}</span>
+                </div>
+                <hr>
+                <a href="{% url 'admin_settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
+
+                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="popup-logout"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+                </form>
+            </div>
+
+            <!-- The Clickable Profile Trigger -->
+            <div class="sidebar-profile" id="profileTrigger">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-details">
+                    <span class="profile-name">{{ user.username|title }}</span>
+                    <span class="profile-role">Admin</span>
+                </div>
+                <i class="fas fa-chevron-up profile-chevron"></i>
+            </div>
+
             {% else %}
             <a href="{% url 'login' %}">Log In</a>
             {% endif %}
         </div>
     </aside>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const profileTrigger = document.getElementById("profileTrigger");
+            const profilePopup = document.getElementById("profilePopup");
+            const chevron = document.querySelector(".profile-chevron");
+
+            if (profileTrigger && profilePopup) {
+                profileTrigger.addEventListener("click", function (e) {
+                    e.stopPropagation(); // Prevents click from bubbling to document
+                    profilePopup.classList.toggle("show");
+
+                    // Optional: flip chevron when open
+                    if (profilePopup.classList.contains("show") && chevron) {
+                        chevron.style.transform = "rotate(180deg)";
+                    } else if (chevron) {
+                        chevron.style.transform = "rotate(0deg)";
+                    }
+                });
+
+                // Close popup when clicking outside of it
+                document.addEventListener("click", function (e) {
+                    if (!profileTrigger.contains(e.target) && !profilePopup.contains(e.target)) {
+                        profilePopup.classList.remove("show");
+                        if (chevron) chevron.style.transform = "rotate(0deg)";
+                    }
+                });
+            }
+        });
+    </script>
 </body>

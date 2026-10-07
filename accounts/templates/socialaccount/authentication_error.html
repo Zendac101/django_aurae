@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae - Login Error</title>
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <style>
+        body::before {
+            background-image: url("{% static 'image/aurae_pic.png' %}");
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Using the same form-box design from your login page -->
+    <div class="form-box active" style="display: block;">
+
+        <div class="logo">
+            <img src="{% static 'image/logo_aurae.png' %}" alt="Aurae Logo">
+        </div>
+
+        <h2 style="color: #9f1e2b; margin-top: 10px;">Account Error</h2>
+
+        <p style="font-size: 14px; margin-bottom: 25px; line-height: 1.5; text-align: left;">
+            An account with this email address already exists in our system. Please use the standard login form to
+            access your account, or log in with the method you originally used to sign up.
+        </p>
+
+        <!-- Redirects the user back to the main login page -->
+        <a href="/" style="text-decoration: none;">
+            <button type="button" class="buttons_register">
+                Return to Login
+            </button>
+        </a>
+
+    </div>
+</body>
+
+</html>

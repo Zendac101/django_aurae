@@ -1,89 +1,120 @@
 @import "variables.css";
 
 #chart-box {
-    height: 25%;
+    height: 35%;
     background: #AFCBBA;
     padding: 20px;
     border-radius: 12px;
     margin-bottom: 20px;
+    transition: height 0.3s ease;
 }
 
 #chart-box.expanded {
     height: 50%;
 }
 
-.chart-placeholder {
-
-    background: rgba(255, 255, 255, 0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 10px;
-    border-radius: 10px;
-    height: 80%;
-    margin-bottom: 15px;
-}
-
 #chart_top {
     display: flex;
-    justify-content: space-between
+    justify-content: space-between;
+    align-items: center;
 }
-
 
 #pollutants,
 #location {
-    margin-right: 30px;
-    border-radius: 5px;
-    border: none;
-    background-color: rgba(255, 255, 255, 0.475);
+    margin-right: 20px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #1a2e22;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    outline: none;
+}
+
+.chart-placeholder {
+    background: rgba(255, 255, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    border-radius: 10px;
+    height: 80%;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+#chart-box:not(.expanded) .chart-placeholder::after {
+    content: "Select a location and pollutant to view the graph";
+    position: absolute;
+    color: #2a4734;
+    font-weight: 600;
+    font-size: 1.1rem;
+
+}
+
+#chart-box:not(.expanded) #dbChart {
+    display: none;
 }
 
 .bottom-section {
     height: 55%;
     display: flex;
-    gap: 10px;
+    gap: 20px;
 }
 
 .map-box {
-    flex: 2;
+    flex: 3;
     background: #AFCBBA;
     padding: 20px;
     border-radius: 12px;
     height: 100%;
-
+    display: flex;
+    flex-direction: column;
 }
 
 .map-placeholder {
-    height: 90%;
-
+    flex-grow: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 10px;
+    margin-top: 15px;
     border-radius: 10px;
-
+    overflow: hidden;
 }
 
+#pang_map {
+    height: 100%;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+}
 
 .actions {
     flex: 1;
-
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    justify-content: flex-start;
+    padding-top: 55px;
 
 }
 
 .actions button {
-    padding: 10px;
-    border-radius: 20px;
+    padding: 12px;
+    border-radius: 8px;
     border: none;
     cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
 }
 
 #download_graph {
     background-color: var(--dash-btn-primary);
-    color: white;
+    color: #ffffff;
+    box-shadow: 0 4px 6px rgba(42, 71, 52, 0.2);
 }
 
 #download_graph:hover {
@@ -92,22 +123,48 @@
 
 #date_range,
 #reset {
-    background-color: var(--dash-btn-secondary);
+    background-color: #ffffff;
+    color: #2a4734;
+    border: 2px solid #2a4734;
 }
 
 #date_range:hover,
 #reset:hover {
-    background-color: var(--dash-btn-secondary-hover);
-}
-
-#pang_map {
-    height: 100%;
-    width: 80%;
-    border-radius: 10px;
+    background-color: #edf2ef;
 }
 
 dialog {
-    border: 2px solid;
-    border-radius: 5px;
+    border: none;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     margin: auto;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#date_range_dialog input[type="date"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-right: 10px;
+    font-family: inherit;
+    outline: none;
+    margin: auto;
+}
+
+#date_submit {
+    padding: 10px 20px;
+    background-color: #2a4734;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+#date_submit:hover {
+    background-color: #1c3023;
 }

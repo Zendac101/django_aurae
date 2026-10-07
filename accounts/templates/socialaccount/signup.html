@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae - Complete Sign Up</title>
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <style>
+        body::before {
+            background-image: url("{% static 'image/aurae_pic.png' %}");
+        }
+
+        /* Styles to ensure Django's auto-generated form fields look good */
+        .form-box label {
+            display: block;
+            text-align: left;
+            font-size: 12px;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .form-box input[type="text"],
+        .form-box input[type="email"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-family: inherit;
+        }
+
+        .form-box input:focus {
+            border-color: var(--dash-btn-primary);
+            box-shadow: 0 0 0 3px rgba(92, 184, 132, 0.2);
+            outline: none;
+        }
+
+        .helptext {
+            font-size: 10px;
+            color: #999;
+            display: block;
+            text-align: left;
+            margin-bottom: 15px;
+            margin-top: -10px;
+        }
+    </style>
+</head>
+
+<body>
+    <form class="form-box active" style="display: block;" id="signup_form" method="POST"
+        action="{% url 'socialaccount_signup' %}">
+        {% csrf_token %}
+
+        <div class="logo">
+            <img src="{% static 'image/logo_aurae.png' %}" alt="Aurae Logo">
+        </div>
+
+        <h2>Complete Sign Up</h2>
+
+        <p style="font-size: 12px; margin-bottom: 20px; line-height: 1.5;">
+            You are about to use your Google account to login. As a final step, please complete the following form:
+        </p>
+
+        {% if form.errors %}
+        <div class="error_box" style="padding: 10px; border-radius: 6px; margin-bottom: 12px; text-align: left;">
+            {% for field in form %}
+            {% for error in field.errors %}
+            <p style="color: #721c24; margin: 2px 0; font-size: 12px;">{{ field.label }}: {{ error }}</p>
+            {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+            <p style="color: #721c24; margin: 2px 0; font-size: 12px;">{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Render the form fields (Email and Username) -->
+        {% for field in form %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.help_text %}
+        <span class="helptext">{{ field.help_text }}</span>
+        {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="buttons_register" style="margin-top: 10px;">
+            Sign Up
+        </button>
+    </form>
+</body>
+
+</html>

@@ -13,8 +13,9 @@ def home_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
+    data_count = pollutant_data.objects.count()
 
-    return render(request, 'home.html')
+    return render(request, 'home.html', {"data_count": data_count})
 
 
 def analysis_view(request):

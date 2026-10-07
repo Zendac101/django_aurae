@@ -14,7 +14,9 @@ def home_view(request):
 
         return redirect('/')
 
-    return render(request, 'admin_home.html')
+    data_count = pollutant_data.objects.count()
+
+    return render(request, 'admin_home.html', {"data_count": data_count})
 
 
 def activityLog_view(request):

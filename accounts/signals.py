@@ -6,7 +6,7 @@ from .models import UserSession
 
 @receiver(user_logged_in)
 def remove_other_sessions(sender, user, request, **kwargs):
-    print(f"DEBUG: Signal fired for user {user.username}!")
+
     # generate session key
     if not request.session.session_key:
         request.session.create()

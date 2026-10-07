@@ -1,39 +1,115 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/component.css' %}">
 
+
+<style>
+    .topbar {
+        justify-content: space-between;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        border-bottom: 2px solid rgb(54, 63, 54);
+        width: 90%;
+
+
+    }
+
+
+
+    .user {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    #profile_pic {
+        width: 58px;
+        height: 58px;
+        background-color: var(--dash-pill-bg);
+        border-radius: 50%;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px gray solid;
+    }
+
+    #profile_pic::before {
+        content: "\f007";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        font-size: 1.4rem;
+        color: var(--dash-text-sub);
+    }
+
+    .name {
+        font-weight: 600;
+    }
+
+    .email {
+        font-size: 11px;
+        color: gray;
+    }
+
+    .icons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .icons i {
+        background: white;
+        padding: 8px;
+        border-radius: 50%;
+    }
+
+    .icons .fas {
+        border: darkgrey 1px solid;
+    }
+
+    .topbar_wrapper {
+        margin-bottom: 6%;
+
+    }
+</style>
 
 <body>
 
-    <div class="topbar">
+    <div class="topbar_wrapper">
 
-        <button id="toggleSidebar" class="menu-btn">
-            <i class="fas fa-bars"></i>
-        </button>
+        <div class="topbar">
 
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search task">
-        </div>
 
-        <div class="user">
-            <div class="icons">
-                <i class="fas fa-envelope"></i>
-                <i class="fas fa-bell"></i>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search task">
             </div>
 
-            <div id="profile_pic">
-                <!--Profile picture-->
-            </div>
+            <div class="user">
+                <div class="icons">
+                    <i class="fas fa-envelope"></i>
+                    <i class="fas fa-bell"></i>
+                </div>
 
-            <div class="user-info">
-                {% if user.is_authenticated %}
-                <!-- Display username and email when logged in -->
-                <span class="name">{{ user.username }}</span>
-                <span class="email">{{ user.email }}</span>
-                {% else %}
-                <!-- bcak to the login poage when not auth -->
-                <a href="{% url 'login' %}">Log In</a>
-                {% endif %}
+                <div id="profile_pic">
+                    <!--Profile picture-->
+                </div>
+
+                <div class="user-info">
+                    {% if user.is_authenticated %}
+                    <!-- Display username and email when logged in -->
+                    <span class="name">{{ user.username }}</span>
+                    <span class="email">{{ user.email }}</span>
+                    {% else %}
+                    <!-- bcak to the login poage when not auth -->
+                    <a href="{% url 'login' %}">Log In</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

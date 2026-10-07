@@ -60,8 +60,14 @@ INSTALLED_APPS = [
     'admin_dashboard',
     'sensors',
     'anymail',
+    'django.contrib.sites',  # Required by allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',  # The Google provider
 
 ]
+SITE_ID = 1
 
 
 MIDDLEWARE = [
@@ -74,6 +80,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_htmx.middleware.HtmxMiddleware",
     'preventconcurrentlogins.middleware.PreventConcurrentLoginsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'aurae_monitoring.urls'
@@ -124,6 +131,8 @@ DATABASES = {
 
 AUTH_USER_MODEL = 'accounts.Core_userProfile'
 LOGIN_URL = '/'
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+
 # web server database
 POSTGRES_LOCALLY = True
 
@@ -161,9 +170,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# logout
-LOGOUT_REDIRECT_URL = '/'
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
@@ -193,6 +199,11 @@ ANYMAIL = {
 
 # if want to use email verification
 LOGIN_REDIRECT_URL = '/'
+# logout
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
 if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
 
     # to send an email
@@ -209,11 +220,34 @@ if ENVIRONMENT == "production" or POSTGRES_LOCALLY == True:
 # email verification using the console
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
+
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username', 'password1*', 'password2*']
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'accounts', 'profile', 'category',
                               'post', 'inbox', 'superuser', 'aurae_monitoring', 'aurae', 'admin_dashboard', 'bossbaby']
 
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': env('GOOGLE_CLIENT_ID'),
+            'secret': env('GOOGLE_SECRET_KEY'),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True

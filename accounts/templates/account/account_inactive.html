@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aurae - Account Inactive</title>
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <style>
+        body::before {
+            background-image: url("{% static 'image/aurae_pic.png' %}");
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Using the same form-box design from your login page -->
+    <div class="form-box active" style="display: block;">
+
+        <div class="logo">
+            <img src="{% static 'image/logo_aurae.png' %}" alt="Aurae Logo">
+        </div>
+
+        <h2 style="color: #9f1e2b; margin-top: 10px;">Account Inactive</h2>
+
+        <p style="font-size: 14px; margin-bottom: 25px; line-height: 1.5; text-align: left;">
+            This account is currently inactive. If you just registered, please check your email for an activation link.
+            If your account was disabled, contact the administrator.
+        </p>
+
+        <!-- Redirects the user back to the main login page -->
+        <a href="/" style="text-decoration: none;">
+            <button type="button" class="buttons_register">
+                Return to Login
+            </button>
+        </a>
+
+    </div>
+</body>
+
+</html>

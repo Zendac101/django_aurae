@@ -16,91 +16,98 @@
 
     <div id="container" class="expand">
 
+
         {% include 'admin_sidebar.html' %}
 
         <main class="main">
 
-            {% include 'admin_topbar.html' %}
-
-            <div class="header">
-                <div class="header-left">
-                    <h1>Analysis</h1>
-                    <p>Turn data into clear insights.</p>
-                </div>
-            </div>
-
-            <div id="chart-box">
-                <div id="chart_top">
-                    <h3>Temporal AQI Analysis</h3>
-
-                    <div>
-                        <!-- pollutant select -->
-                        <label for="pollutants"><b>Pollutant:</b></label>
-                        <select name="poluttants" id="pollutants"
-                            onchange="toPHP(document.getElementById('location').value)">
-                            <option value="aqi">AQI</option>
-                            <option value="so2">SO2</option>
-                            <option value="co">CO</option>
-                            <option value="o3">O3</option>
-                            <option value="pm10">PM10</option>
-                            <option value="pm2.5">PM2.5</option>
-                            <option value="nox">NOX</option>
-                        </select>
 
 
-                        <label for="Location"><b>Location: </b></label>
-                        <select name="Location" id="location" onchange="toPHP(value)">
-                            <option value="0">Select Location</option>
-                            {% for site_id, site_name in location_options %}
-                            <option value="{{ site_id }}">{{ site_name }}</option>
-                            {% empty %}
-                            <!-- This line will only show if your database returned zero rows -->
-                            <option value="">[No records found or column name error]</option>
-                            {% endfor %}
-                        </select>
+            <div class="page_content">
+
+                <div class="header">
+                    <div class="header-left">
+                        <h1>Analysis</h1>
+                        <p>Turn data into clear insights.</p>
                     </div>
                 </div>
 
-                <!-- graoh pollutant level -->
-                <div class="chart-placeholder">
-                    <canvas id="dbChart" style="position: relative; width: 100%; height: 100%;">
+                <div id="chart-box">
+                    <div id="chart_top">
+                        <h3>Temporal AQI Analysis</h3>
+
+                        <div>
+                            <!-- pollutant select -->
+                            <label for="pollutants"><b>Pollutant:</b></label>
+                            <select name="poluttants" id="pollutants"
+                                onchange="toPHP(document.getElementById('location').value)">
+                                <option value="aqi">AQI</option>
+                                <option value="so2">SO2</option>
+                                <option value="co">CO</option>
+                                <option value="o3">O3</option>
+                                <option value="pm10">PM10</option>
+                                <option value="pm2.5">PM2.5</option>
+                                <option value="nox">NOX</option>
+                            </select>
 
 
-                    </canvas>
+                            <label for="Location"><b>Location: </b></label>
+                            <select name="Location" id="location" onchange="toPHP(value)">
+                                <option value="0">Select Location</option>
+                                {% for site_id, site_name in location_options %}
+                                <option value="{{ site_id }}">{{ site_name }}</option>
+                                {% empty %}
+                                <!-- This line will only show if your database returned zero rows -->
+                                <option value="">[No records found or column name error]</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
 
-                </div>
+                    <!-- graoh pollutant level -->
+                    <div class="chart-placeholder">
+                        <canvas id="dbChart" style="position: relative; width: 100%; height: 100%;max-height: 300px;">
 
 
-            </div><br>
-
-
-            <div class="bottom-section">
-
-                <div class="map-box">
-                    <h3>48 Areas in Pangasinan</h3>
-                    <div class="map-placeholder">
-
-                        <img src="{% static 'image/pangasinan_map.png' %}" alt="pangasinan map" id="pang_map">
+                        </canvas>
 
                     </div>
+
+
+                </div><br>
+
+
+                <div class="bottom-section">
+
+                    <div class="map-box">
+                        <h3>Map of Pangasinan</h3>
+                        <div class="map-placeholder">
+
+                            <iframe id="pang_map"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d981673.2205994279!2d119.67560638294528!3d16.031152237302084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3391609ecf540463%3A0x44bc9c18460340e3!2sPangasinan!5e0!3m2!1sen!2sph!4v1790955519607!5m2!1sen!2sph"
+                                allowfullscreen="" loading="lazy"
+                                referrerpolicy="strict-origin-when-cross-origin"></iframe>
+
+                        </div>
+                    </div>
+
+
+                    <div class="actions">
+                        <button id="download_graph">Download Graph</button>
+                        <button id="date_range">Date Range</button>
+                        <button id="reset">Reset</button>
+
+                        <dialog id="date_range_dialog">
+                            <input type="date" id="min">
+                            <input type="date" id="max">
+
+                            <button type="button" id="date_submit"
+                                onclick="toPHP(document.getElementById('location').value)">submit</button>
+                        </dialog>
+
+                    </div>
+
                 </div>
-
-
-                <div class="actions">
-                    <button id="download_graph">Download Graph</button>
-                    <button id="date_range">Date Range</button>
-                    <button id="reset">Reset</button>
-
-                    <dialog id="date_range_dialog">
-                        <input type="date" id="min">
-                        <input type="date" id="max">
-
-                        <button type="button" id="date_submit"
-                            onclick="toPHP(document.getElementById('location').value)">submit</button>
-                    </dialog>
-
-                </div>
-
             </div>
 
         </main>

@@ -83,7 +83,6 @@ class UserProfile_history(models.Model):
 
     date_joined = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    last_login = models.DateTimeField(null=True)
 
     class Meta:
         managed = True

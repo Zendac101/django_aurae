@@ -25,5 +25,6 @@ urlpatterns = [
     path('admin_dashboard/', include('admin_dashboard.urls')),
     path('client_dashboard/', include('client_dashboard.urls')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/', include('allauth.urls')),
 
 ]
