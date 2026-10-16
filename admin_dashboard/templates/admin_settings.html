@@ -168,6 +168,7 @@
                 </div>
 
                 <!-- 2. Data Source Settings -->
+                {% if user.is_superuser %}
                 <div class="setting-item" id="setting-data_source">
                     <div class="setting_header">
                         <h5><span>Data Source Settings</span></h5>
@@ -184,7 +185,7 @@
                             onclick="expansion('setting-data_source','data_source_hidden')"></button>
                     </div>
                 </div>
-
+                {% endif %}
                 <!-- 3. Air Quality Threshold Rules -->
                 <div class="setting-item" id="setting-threshold">
                     <div class="setting_header">

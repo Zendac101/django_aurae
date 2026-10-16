@@ -192,6 +192,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 # resend
 ANYMAIL = {
     "RESEND_API_KEY": env('RESEND_API'),
@@ -232,6 +233,8 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
+
+# gmail auth
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
@@ -251,3 +254,9 @@ SOCIALACCOUNT_PROVIDERS = {
 SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+
+
+MQTT_SERVER = env('EMQX_ADDRESS')
+MQTT_PORT = 8883
+MQTT_USER = env('EMQX_USERNAME')
+MQTT_PASSWORD = env('EMQX_PASSWORD')

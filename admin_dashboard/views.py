@@ -9,17 +9,26 @@ from django.contrib.auth import authenticate, login, get_user_model
 
 
 @login_required
-def home_view(request):
+def admin_home_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
 
     data_count = pollutant_data.objects.count()
 
-    return render(request, 'admin_home.html', {"data_count": data_count})
+    dropdown_options = locationData.objects \
+        .values_list('zipcode', 'loc_name') \
+        .order_by('loc_name')
+
+    context = {
+        "data_count": data_count,
+        'location_options': dropdown_options
+    }
+
+    return render(request, 'admin_home.html', context)
 
 
-def activityLog_view(request):
+def admin_activityLog_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
@@ -30,7 +39,7 @@ def activityLog_view(request):
     return render(request, 'admin_activity_log.html', {'activity_log': act_history})
 
 
-def analysis_view(request):
+def admin_analysis_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
@@ -74,7 +83,7 @@ def analysis_view(request):
     return render(request, 'admin_analysis.html', context)
 
 
-def data_management_view(request):
+def admin_data_management_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
@@ -113,7 +122,7 @@ def data_management_view(request):
     return render(request, 'admin_data_management.html', context)
 
 
-def report_view(request):
+def admin_report_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')
@@ -122,7 +131,7 @@ def report_view(request):
 
 
 @login_required
-def settings_view(request):
+def admin_settings_view(request):
     if request.method == 'POST':
         form = EditProfileForm(request.POST, instance=request.user)
         deact_form = DeactivateAccount(request.POST, instance=request.user)
@@ -151,7 +160,7 @@ def settings_view(request):
     return render(request, 'admin_settings.html', {'form': form, 'deact': deact_form})
 
 
-def support_view(request):
+def admin_support_view(request):
     if not request.user.is_authenticated:
 
         return redirect('/')

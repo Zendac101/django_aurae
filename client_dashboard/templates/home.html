@@ -24,7 +24,7 @@
 
 
         <main class="main">
-            {% include 'topbar.html' %}
+
 
             <div class="header">
 
@@ -63,15 +63,23 @@
                             <b>Device Monitioring</b>
                         </div>
                         <select name="devices" id="devices">
-                            <option value=""></option>
+                            <option value="0">Select Location</option>
+                            {% for site_id, site_name in location_options %}
+                            <option value="{{ site_id }}">{{ site_name }}</option>
+                            {% empty %}
+                            <!-- This line will only show if your database returned zero rows -->
+                            <option value="">[No records found or column name error]</option>
+                            {% endfor %}
                         </select>
                     </div>
 
                     <div id="bottom_chart">
-                        <h5>Humidity: </h5>
-                        <p id="humid_data"></p><br>
-                        <h5>Temprature: </h5>
-                        <p id="temp_data"></p>
+
+                        <p>Temperature: <span id="temp-display" class="val">--</span> °C</p>
+                        <p>Humidity: <span id="humidity-display" class="val">--</span> %</p>
+                        <p>PM2.5: <span id="pm25-display" class="val">--</span> µg/m³</p>
+                        <p>CO: <span id="co-display" class="val">--</span> ppm</p>
+
                     </div>
 
                 </div>
@@ -123,6 +131,46 @@
 
     <script src="{% static 'js/toggle_sidebar.js' %}">
 
+    </script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+    <script>
+        const host = 'wss://c2717182.ala.eu-central-1.emqxsl.com:8084/mqtt';
+
+
+        const options = {
+            username: 'Esp-sensor-Trial', // Replace with your actual username
+            password: '12345678', // Replace with your actual password
+            clientId: 'aurae_dashboard_' + Math.random().toString(16).substr(2, 8) // Prevents conflicts if multiple tabs are open
+        };
+
+        const client = mqtt.connect(host, options);
+
+        let latestData = null;
+        let lastUpdateTime = 0;
+
+        client.on('connect', function () {
+            console.log("Connected to EMQX directly from browser");
+            client.subscribe('Aurae_test_data_sensor');
+        });
+
+        client.on('error', function (err) {
+            console.error("Connection error: ", err);
+        });
+
+        client.on('message', function (topic, message) {
+            latestData = JSON.parse(message.toString());
+            const currentTime = Date.now();
+
+            if (currentTime - lastUpdateTime >= 5000) {
+                document.getElementById('temp-display').innerText = latestData.temperature;
+                document.getElementById('humidity-display').innerText = latestData.humidity;
+                document.getElementById('pm25-display').innerText = latestData.pm25;
+                document.getElementById('co-display').innerText = latestData.co;
+
+                lastUpdateTime = currentTime;
+            }
+        });
     </script>
 
 

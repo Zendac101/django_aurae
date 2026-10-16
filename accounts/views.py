@@ -269,7 +269,6 @@ def password_reset_confirm(request, uidb64, token):
 
 @receiver(user_signed_up)
 def send_google_activation_email(sender, request, user, **kwargs):
-    print(f"--- NEW GOOGLE SIGN UP DETECTED FOR: {user.email} ---")
 
     # Check if the signup came from a third-party social provider (like Google)
     if 'sociallogin' in kwargs:
@@ -290,7 +289,6 @@ def send_google_activation_email(sender, request, user, **kwargs):
                 recipient_list=[user.email],
                 fail_silently=False,
             )
-            print("--- ACTIVATION EMAIL SENT SUCCESSFULLY ---")
 
             # 3. Log the activity in your history table
             ActivityHistory.objects.create(

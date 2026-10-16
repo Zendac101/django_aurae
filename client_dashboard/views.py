@@ -14,8 +14,15 @@ def home_view(request):
 
         return redirect('/')
     data_count = pollutant_data.objects.count()
+    dropdown_options = locationData.objects \
+        .values_list('zipcode', 'loc_name') \
+        .order_by('loc_name')
 
-    return render(request, 'home.html', {"data_count": data_count})
+    context = {
+        "data_count": data_count,
+        'location_options': dropdown_options}
+
+    return render(request, 'home.html', context)
 
 
 def analysis_view(request):

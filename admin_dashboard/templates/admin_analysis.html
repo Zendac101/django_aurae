@@ -66,10 +66,7 @@
 
                     <!-- graoh pollutant level -->
                     <div class="chart-placeholder">
-                        <canvas id="dbChart" style="position: relative; width: 100%; height: 100%;max-height: 300px;">
-
-
-                        </canvas>
+                        <canvas id="dbChart"></canvas>
 
                     </div>
 
@@ -83,10 +80,10 @@
                         <h3>Map of Pangasinan</h3>
                         <div class="map-placeholder">
 
-                            <iframe id="pang_map"
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d981673.2205994279!2d119.67560638294528!3d16.031152237302084!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3391609ecf540463%3A0x44bc9c18460340e3!2sPangasinan!5e0!3m2!1sen!2sph!4v1790955519607!5m2!1sen!2sph"
-                                allowfullscreen="" loading="lazy"
-                                referrerpolicy="strict-origin-when-cross-origin"></iframe>
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1113378.0217220394!2d119.57952284792401!3d16.057313948821207!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3391609ecf540463%3A0x44bc9c18460340e3!2sPangasinan!5e0!3m2!1sen!2sph!4v1791457466947!5m2!1sen!2sph"
+                                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="strict-origin-when-cross-origin" id="pang_map"></iframe>
 
                         </div>
                     </div>
@@ -95,7 +92,7 @@
                     <div class="actions">
                         <button id="download_graph">Download Graph</button>
                         <button id="date_range">Date Range</button>
-                        <button id="reset">Reset</button>
+                        <button id="reset">Reset Graph</button>
 
                         <dialog id="date_range_dialog">
                             <input type="date" id="min">
@@ -116,12 +113,16 @@
 
     <script src="{% static 'js/toggle_sidebar.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
 
     <script>
 
         document.getElementById('date_range').addEventListener('click', function () {
             document.getElementById('date_range_dialog').showModal();
         });
+
+
 
     </script>
 
@@ -162,47 +163,71 @@
                         }
                         if (myChartInstance) {
                             myChartInstance.destroy();
-                        }
+                        } document.getElementById('reset').addEventListener('click', function () {
+                            if (myChartInstance) {
+                                myChartInstance.resetZoom();
+                            }
+                        });
 
                         const chartLabels = result.data.map(item => item.date);
                         const chartValues = result.data.map(item => parseFloat(item[selectedPollutant]) || 0);
 
-                        myChartInstance = new Chart(ctx, {
-                            type: 'line',
-                            data: {
-                                labels: chartLabels,
-                                datasets: [{
-                                    label: selectedPollutant.toUpperCase() + ' Level',
-                                    data: chartValues,
-                                    borderColor: 'rgb(75, 192, 192)',
-                                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                                    borderWidth: 2,
-                                    tension: 0.2,
-                                    fill: true,
-                                    pointBackgroundColor: function (context) {
-                                        const value = context.dataset.data[context.dataIndex];
-                                        if (value <= 50) return 'rgb(76, 175, 80)';
-                                        if (value <= 100) return 'rgb(255, 152, 0)';
-                                        return 'rgb(244, 67, 54)';
+                        setTimeout(() => {
+                            myChartInstance = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: chartLabels,
+                                    datasets: [{
+                                        label: selectedPollutant.toUpperCase() + ' Level',
+                                        data: chartValues,
+                                        borderColor: 'rgb(75, 192, 192)',
+                                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                        borderWidth: 2,
+                                        tension: 0.2,
+                                        fill: true,
+                                        pointBackgroundColor: function (context) {
+                                            const value = context.dataset.data[context.dataIndex];
+                                            if (value <= 50) return 'rgb(76, 175, 80)';
+                                            if (value <= 100) return 'rgb(255, 152, 0)';
+                                            return 'rgb(244, 67, 54)';
+                                        },
+                                        pointBorderColor: function (context) {
+                                            const value = context.dataset.data[context.dataIndex];
+                                            if (value <= 50) return 'rgb(56, 142, 60)';
+                                            if (value <= 100) return 'rgb(245, 124, 0)';
+                                            return 'rgb(211, 47, 47)';
+                                        }
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    resizeDelay: 300,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }, plugins: {
+                                        zoom: {
+                                            pan: {
+                                                enabled: true,
+                                                mode: 'x' // Allows you to click and drag horizontally
+                                            },
+                                            zoom: {
+                                                wheel: {
+                                                    enabled: true, // Zooms in/out with the mouse wheel
+                                                },
+                                                drag: {
+                                                    enabled: true, // Allows you to draw a box to zoom into a specific section
+                                                    backgroundColor: 'rgba(42, 71, 52, 0.3)'
+                                                },
+                                                mode: 'x', // Restricts zooming to the dates (horizontal)
+                                            }
+                                        }
                                     },
-                                    pointBorderColor: function (context) {
-                                        const value = context.dataset.data[context.dataIndex];
-                                        if (value <= 50) return 'rgb(56, 142, 60)';
-                                        if (value <= 100) return 'rgb(245, 124, 0)';
-                                        return 'rgb(211, 47, 47)';
-                                    }
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                scales: {
-                                    y: {
-                                        beginAtZero: true
-                                    }
                                 }
-                            }
-                        });
+                            });
+                        }, 400)
 
                     }
 
