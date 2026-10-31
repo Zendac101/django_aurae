@@ -5,270 +5,1086 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurae Admin</title>
+    <title>Aurae Admin | Settings</title>
 
-    <link rel="stylesheet" href="{% static 'css/settings_style.css' %}">
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-</head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <style>
+        :root {
+            --sidebar-width-collapsed: 85px;
+            --sidebar-width-expanded: 260px;
+            --bg-main: #f0f4f1;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-green: #059669;
+            --accent-light-green: #d1fae5;
+            --accent-orange: #d97706;
+            --accent-light-orange: #fef3c7;
+            --accent-red: #dc2626;
+            --accent-light-red: #fee2e2;
+            --border-color: #cbd5e1;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Hover-Collapsible Sidebar Styles --- */
+        .sidebar {
+            width: var(--sidebar-width-collapsed);
+            background: #AFCBBA;
+            padding: 20px 12px;
+            border-radius: 0 16px 16px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .sidebar:hover,
+        .sidebar:focus-within {
+            width: var(--sidebar-width-expanded);
+            box-shadow: 8px 0 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .workspace-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #334155;
+            margin-bottom: 12px;
+            padding-left: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar:hover .workspace-label,
+        .sidebar:focus-within .workspace-label {
+            opacity: 1;
+            transition-delay: 0.05s;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-left: 4px;
+            white-space: nowrap;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c4b32;
+            margin: 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .logo h2,
+        .sidebar:focus-within .logo h2 {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: #1e293b;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 13.5px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .menu li a i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            color: #1c4b32;
+            flex-shrink: 0;
+        }
+
+        .menu-text-wrap {
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .menu-text-wrap,
+        .sidebar:focus-within .menu-text-wrap {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu-sub {
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .menu li a:hover, .menu li a.active {
+            background: #8fbf96 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        .menu li a:hover i, .menu li a.active i,
+        .menu li a:hover .menu-sub, .menu li a.active .menu-sub {
+            color: #fff !important;
+        }
+
+        /* Profile Bottom Widget */
+        .sidebar-bottom {
+            position: relative;
+            width: 100%;
+            border-top: 1px solid rgba(28, 75, 50, 0.15);
+            padding-top: 10px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 6px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar-profile:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            background: #1c4b32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .profile-details, .profile-chevron {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .profile-details,
+        .sidebar:hover .profile-chevron,
+        .sidebar:focus-within .profile-details,
+        .sidebar:focus-within .profile-chevron {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .profile-role {
+            font-size: 11px;
+            color: #334155;
+        }
+
+        .profile-chevron {
+            margin-left: auto;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        /* Profile Popup Menu */
+        .profile-popup {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 0;
+            width: 210px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            padding: 10px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+        }
+
+        .profile-popup.show {
+            display: flex;
+        }
+
+        .popup-header {
+            padding: 6px 15px 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header strong {
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .popup-header span {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .profile-popup hr {
+            border: 0;
+            border-top: 1px solid #f1f5f9;
+            margin: 4px 0;
+        }
+
+        .profile-popup a,
+        .popup-logout {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #334155;
+            font-size: 13px;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-popup a:hover,
+        .popup-logout:hover {
+            background: #f8fafc;
+            color: #1c4b32;
+        }
+
+        .popup-logout {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        /* --- Main Content Layout --- */
+        .main {
+            margin-left: var(--sidebar-width-collapsed);
+            flex: 1;
+            padding: 2.25rem 2.5rem;
+            box-sizing: border-box;
+            width: calc(100vw - var(--sidebar-width-collapsed));
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header-left p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        /* --- Settings Layout Grid --- */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .settings-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            box-sizing: border-box;
+        }
+
+        .settings-card h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .settings-card p.card-desc {
+            margin: 0 0 1.25rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Scrollable Thresholds Box Container */
+        .thresholds-container {
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .thresholds-container::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .thresholds-container::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        .thresholds-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .form-group input, .form-group select {
+            padding: 0.6rem 0.75rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+            background: #ffffff;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--accent-green);
+        }
+
+        /* Notification Toggles Switch */
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-info strong {
+            font-size: 0.9rem;
+            display: block;
+            color: var(--text-primary);
+        }
+
+        .toggle-info span {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.15rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary { background-color: var(--accent-green); color: white; }
+        .btn-primary:hover { background-color: #047857; }
+
+        .btn-secondary { background-color: white; color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: #f8fafc; }
+
+        .btn-danger { background-color: var(--accent-light-red); color: var(--accent-red); border: none; }
+        .btn-danger:hover { background-color: #fee2e2; }
+
+        .btn-warning { background-color: #fef3c7; color: #d97706; border: none; }
+        .btn-warning:hover { background-color: #fde68a; }
+
+        /* --- Recent Logins Security Table Card --- */
+        .security-table-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        th, td {
+            padding: 0.8rem 0.9rem;
+            border-bottom: 1px solid #f1f5f9;
+            white-space: nowrap;
+        }
+
+        th {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            font-weight: 700;
+            background: #f8fafc;
+        }
+
+        tr:hover td {
+            background-color: #f8fafc;
+        }
+
+        .badge-active {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.55rem;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Dialog Modals */
+        dialog {
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: white;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            width: 420px;
+            max-width: 90vw;
+            box-sizing: border-box;
+        }
+
+        dialog::backdrop {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
 
 <body>
 
-    <div id="container" class="expand">
-        {% include 'sidebar.html' %}
+    <div>
 
+        <!-- HOVER-EXPANDABLE SIDEBAR -->
+        <aside class="sidebar" id="appSidebar">
+            <div>
+                <div class="workspace-label">Workspace</div>
+                <div class="logo">
+                    <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                    <h2>Aurae</h2>
+                </div>
+
+                <ul class="menu">
+                    <li>
+                        <a href="{% url 'home' %}">
+                            <i class="fas fa-home"></i>
+                            <div class="menu-text-wrap">
+                                <span>Dashboard</span>
+                                <span class="menu-sub">Live overview</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dataManagement' %}">
+                            <i class="fas fa-database"></i>
+                            <div class="menu-text-wrap">
+                                <span>Data Management</span>
+                                <span class="menu-sub">Sensor records</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'analysis' %}">
+                            <i class="fas fa-chart-line"></i>
+                            <div class="menu-text-wrap">
+                                <span>Analysis</span>
+                                <span class="menu-sub">Trends & insights</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'settings' %}" class="active">
+                            <i class="fas fa-cog"></i>
+                            <div class="menu-text-wrap">
+                                <span>Settings</span>
+                                <span class="menu-sub">Thresholds & alerts</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'support' %}">
+                            <i class="fas fa-life-ring"></i>
+                            <div class="menu-text-wrap">
+                                <span>Support</span>
+                                <span class="menu-sub">Help & docs</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-bottom">
+                {% if user.is_authenticated %}
+                <!-- Interactive Profile Popup Menu -->
+                <div class="profile-popup" id="profilePopup">
+                    <div class="popup-header">
+                        <strong>{{ user.username|title }}</strong>
+                        <span>{{ user.email }}</span>
+                    </div>
+                    <hr>
+                    <a href="{% url 'settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
+                    <!-- Triggers Logout Confirmation Dialog Modal -->
+                    <button type="button" class="popup-logout" onclick="document.getElementById('logout_confirm_dialog').showModal()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+                </div>
+
+                <div class="sidebar-profile" id="profileTrigger">
+                    <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                    <div class="profile-details">
+                        <span class="profile-name">{{ user.username|title }}</span>
+                        <span class="profile-role">Admin</span>
+                    </div>
+                    <i class="fas fa-chevron-up profile-chevron"></i>
+                </div>
+                {% else %}
+                <a href="#" style="color: #1e293b; text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:12px; padding:8px;">
+                    <i class="fas fa-sign-in-alt"></i> <span class="menu-text-wrap">Log In</span>
+                </a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
         <main class="main">
-
 
             <div class="header">
                 <div class="header-left">
                     <h1>Settings</h1>
-                    <p>Control, configure, and manage everything in one place.</p>
+                    <p>Control, configure, and manage system preferences, alert thresholds, and user access.</p>
                 </div>
             </div>
 
-            <div class="settings-box">
+            <!-- Settings Grid Panel Cards -->
+            <div class="settings-grid">
+                
+                <!-- 1. Workspace Configuration Card -->
+                <div class="settings-card">
+                    <h3>Workspace</h3>
+                    <p class="card-desc">Shown across the admin interface and telemetry reports.</p>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="form-group">
+                            <label>Organization Name</label>
+                            <input type="text" value="Aurae Operations">
+                        </div>
 
-                <!-- 1. Account Settings -->
-                <div class="setting-item" id="setting-account">
-                    <div class="setting_header">
-                        <h5><span>Account</span></h5>
-                        <div class="content_hidden" id="account_hidden">
-                            {% if user.is_authenticated %}
-                            <div>
-                                <div id="profile_pic"></div>
-                                <span class="profile important_txt">{{ user.username }}</span>
-                            </div>
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input type="email" value="ops@aurae.io">
+                        </div>
 
-                            <span class="profile">Email : {{ user.email }}</span>
-                            <span class="profile">Name : {{ user.first_name }} {{ user.last_name }}</span>
-
-                            {% if user.is_superuser %}
-                            <span class="profile">Role : Superuser</span>
-                            {% elif user.is_staff %}
-                            <span class="profile">Role : Staff</span>
-                            {% else %}
-                            <span class="profile">Role : User</span>
-                            {% endif %}
-
-                            <span class="profile">Account Created at :
-                                {{ user.profile_history.date_joined|date:'M d, Y H:i'|default:'N/A' }}</span>
-
-                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                <button class="edit_info" id="edit_account" type="button"
-                                    onclick="document.getElementById('account_overlay').showModal()">Edit</button>
-                                <button class="edit_info" id="change_pass" type="button">Change Password</button>
-                                <button type="button" class="edit_info" id="deactivate_account"
-                                    onclick="document.getElementById('deact_confirm').showModal()">Deactivate
-                                    Account</button>
-                            </div>
-
-                            <!--deact account modal-->
-                            <dialog class="account-modal" id="deact_confirm" {% if deact_form.errors %}open{% endif %}>
-                                <div>
-
-                                </div>
-
-                                <div class="modal_content" style="padding: 5px;">
-                                    <div class="modal-header">
-                                        <h2>Deactivate account</h2>
-
-                                    </div>
-                                    <div>
-                                        <form action="{% url 'settings' %}" method="post" class="form_group">
-                                            {% csrf_token %}
-                                            <div class="form-group" style="padding: 5px;">
-                                                <label for="{{ deact.password.id_for_label }}">Password<label>
-                                                        {{deact.password}}
-                                                        {{deact.password.error}}
-                                            </div>
-                                            <div class=" modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    onclick="document.getElementById('deact_confirm').close()">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Confirm</button>
-
-                                            </div>
-                                        </form>
-
-                                    </div>
-
-                                </div>
-                            </dialog>
-
-                            <!--edit account info-->
-                            <dialog id="account_overlay" class="account-modal">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h2>Edit Information</h2>
-
-                                    </div>
-
-                                    <form method="POST" action="{% url 'settings' %}" class="modal-form">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <label for="{{ form.username.id_for_label }}">Username</label>
-                                            {{ form.username }}
-                                            {{ form.username.errors }}
-                                        </div>
-
-                                        <div class="form-row">
-                                            <div class="form-group">
-                                                <label for="{{ form.first_name.id_for_label }}">First Name</label>
-                                                {{ form.first_name }}
-                                                {{ form.first_name.errors }}
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-                                                {{ form.last_name }}
-                                                {{ form.last_name.errors }}
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="text" value="{{ user.email }}" class="input-disabled">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label>Account Created at</label>
-                                            <input type="text"
-                                                value="{{ user.profile_history.date_joined|date:'M d, Y H:i' }}"
-                                                disabled class="input-disabled">
-                                        </div>
-
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                onclick="document.getElementById('account_overlay').close()">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Save Changes</button>
-
-                                        </div>
-                                    </form>
-                                </div>
-                            </dialog>
-
-                            {% if form.errors %}
-                            <script>
-                                document.addEventListener('DOMContentLoaded', () => {
-                                    document.getElementById('account_overlay').showModal();
-                                });
-                            </script>
-                            {% endif %}
-
-                            {% else %}
-                            <a href="{% url 'login' %}">Log In</a>
-                            {% endif %}
+                        <div class="form-group">
+                            <label>Data Refresh Interval</label>
+                            <select>
+                                <option value="5s">5 seconds</option>
+                                <option value="15s">15 seconds</option>
+                                <option value="30s">30 seconds</option>
+                                <option value="60s">1 minute</option>
+                            </select>
                         </div>
                     </div>
-                    <div class="setting_action">
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-account','account_hidden')"></button>
+
+                    <div style="margin-top: 1.2rem;">
+                        <button class="btn-action btn-primary" onclick="alert('Workspace settings updated successfully!')"><i class="fa-solid fa-floppy-disk"></i> Save Workspace</button>
                     </div>
                 </div>
 
-                <!-- 2. Data Source Settings -->
-                <div class="setting-item" id="setting-data_source">
-                    <div class="setting_header">
-                        <h5><span>Data Source Settings</span></h5>
-                        <div class="content_hidden" id="data_source_hidden">
+                <!-- 2. Scrollable All-Pollutant Alert Thresholds Card -->
+                <div class="settings-card">
+                    <h3>Alert Thresholds</h3>
+                    <p class="card-desc">Values above these levels trigger immediate zone alerts.</p>
 
-                            <div style="display: flex; gap: 8px;">
-                                <button class="edit_info" id="edit_account" type="button">Update Broker</button>
-                                <button class="edit_info" id="change_pass" type="button">Test Connection</button>
-                            </div>
+                    <!-- Scrollable Box Containing All Pollutants -->
+                    <div class="thresholds-container">
+                        <div class="form-group">
+                            <label>AQI Limit</label>
+                            <input type="number" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>PM2.5 (µg/m³)</label>
+                            <input type="number" value="15">
+                        </div>
+                        <div class="form-group">
+                            <label>PM10 (µg/m³)</label>
+                            <input type="number" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label>Carbon Monoxide (CO - ppm)</label>
+                            <input type="number" value="9">
+                        </div>
+                        <div class="form-group">
+                            <label>Nitric Oxide (NO - ppm)</label>
+                            <input type="number" value="5">
+                        </div>
+                        <div class="form-group">
+                            <label>Nitrogen Dioxide (NO₂ - ppb)</label>
+                            <input type="number" value="40">
+                        </div>
+                        <div class="form-group">
+                            <label>Nitrogen Oxides (NOX - ppb)</label>
+                            <input type="number" value="60">
+                        </div>
+                        <div class="form-group">
+                            <label>Ozone (O₃ - ppb)</label>
+                            <input type="number" value="70">
                         </div>
                     </div>
-                    <div class="setting_action">
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-data_source','data_source_hidden')"></button>
-                    </div>
-                </div>
 
-                <!-- 3. Air Quality Threshold Rules -->
-                <div class="setting-item" id="setting-threshold">
-                    <div class="setting_header">
-                        <h5><span>Air Quality Threshold Rules</span></h5>
-                        <div class="content_hidden" id="threshold_hidden">
-
-
-                            <div style="display: flex; gap: 8px;">
-                                <button class="edit_info" id="edit_account" type="button">Configure Thresholds</button>
-                                <button class="edit_info" id="change_pass" type="button">Reset to Standard</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setting_action">
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-threshold','threshold_hidden')"></button>
-                    </div>
-                </div>
-
-                <!-- 4. Report Format Settings -->
-                <div class="setting-item" id="setting-report_format">
-                    <div class="setting_header">
-                        <h5><span>Report Format Settings</span></h5>
-                        <div class="content_hidden" id="report_format_hidden">
-
-                            <div style="display: flex; gap: 8px;">
-                                <button class="edit_info" id="edit_account" type="button">Change Schedule</button>
-                                <button class="edit_info" id="change_pass" type="button">Edit Template</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setting_action">
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-report_format','report_format_hidden')"></button>
-                    </div>
-                </div>
-
-                <!-- 5. Backup & Restore -->
-                <div class="setting-item" id="setting-backup">
-                    <div class="setting_header">
-                        <h5><span>Backup &amp; Restore</span></h5>
-                        <div class="content_hidden" id="backup_hidden">
-
-
-                            <div style="display: flex; gap: 8px;">
-                                <button class="edit_info" id="edit_account" type="button">Create Backup Now</button>
-                                <button class="edit_info" id="change_pass" type="button">Upload Restore File</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setting_action">
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-backup','backup_hidden')"></button>
-                    </div>
-                </div>
-
-                <!-- 6. Email Notification Settings -->
-                <div class="setting-item" id="setting-notification">
-                    <div class="setting_header">
-                        <h5><span>Email Notification Settings</span></h5>
-                        <div class="content_hidden" id="notification_hidden">
-
-                            <div style="display: flex; gap: 8px;">
-                                <button class="edit_info" id="edit_account" type="button">Edit Recipients</button>
-                                <button class="edit_info" id="change_pass" type="button">Send Test Alert</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setting_action">
-                        <button class="fas fa-ellipsis-h"
-                            onclick="expansion('setting-notification','notification_hidden')"></button>
+                    <div style="margin-top: 1.2rem;">
+                        <button class="btn-action btn-primary" onclick="alert('All pollutant threshold rules saved successfully!')"><i class="fa-solid fa-sliders"></i> Update Thresholds</button>
                     </div>
                 </div>
 
             </div>
+
+            <!-- Notifications & Data Source Panel Card -->
+            <div class="settings-grid" style="margin-bottom: 2rem;">
+                
+                <!-- 3. Notifications Toggles Card -->
+                <div class="settings-card">
+                    <h3>Notifications</h3>
+                    <p class="card-desc">Who hears about a problem, and when.</p>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <strong>Threshold alerts</strong>
+                            <span>Email me when a reading crosses a threshold.</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <strong>Sensor offline</strong>
+                            <span>Notify when a sensor stops reporting for 10 minutes.</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <strong>Weekly summary</strong>
+                            <span>A Monday digest of averages and hot-spots.</span>
+                        </div>
+                        <label class="switch"><input type="checkbox"><span class="slider"></span></label>
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <strong>Daily digest</strong>
+                            <span>One short email at the end of each day.</span>
+                        </div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <!-- 4. Data Source & Broker Settings Card -->
+                <div class="settings-card">
+                    <h3>Data Source Settings</h3>
+                    <p class="card-desc">Manage MQTT broker endpoints and hardware connections.</p>
+
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="form-group">
+                            <label>MQTT Broker Host</label>
+                            <input type="text" value="mqtt.aurae-iot.internal">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Broker Port</label>
+                            <input type="number" value="8883">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button class="btn-action btn-primary" onclick="alert('Broker connection updated successfully.')"><i class="fa-solid fa-rotate"></i> Update Broker</button>
+                        <button class="btn-action btn-secondary" onclick="alert('Connection test successful! Latency: 24ms.')"><i class="fa-solid fa-plug"></i> Test Connection</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- --- RECENT LOGINS & USER SESSIONS SECURITY TABLE --- -->
+            <div class="security-table-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h3>Recent User Logins & Active Sessions</h3>
+                        <p style="margin: 0.2rem 0 0; font-size: 0.85rem; color: var(--text-secondary);">Monitor active sessions and remove unauthorized access.</p>
+                    </div>
+                    <button class="btn-action btn-danger" onclick="alert('All unrecognized sessions have been terminated.')"><i class="fa-solid fa-shield-halved"></i> Terminate All Other Sessions</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>IP Address</th>
+                                <th>Login Timestamp</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sessionTableBody">
+                            <tr data-username="admin_aurae">
+                                <td><strong>{{ user.username|default:"admin_aurae" }}</strong></td>
+                                <td>Admin</td>
+                                <td>192.168.1.45 (Local)</td>
+                                <td>2026-10-31 22:15</td>
+                                <td><span class="badge-active">Active Now</span></td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="btn-action btn-warning" style="padding: 4px 8px; font-size: 0.75rem;" onclick="alert('Editing permissions for admin user.')"><i class="fa-solid fa-pen"></i> Edit</button>
+                                        <button class="btn-action btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="confirmRemoveUser('admin_aurae', this.closest('tr'))"><i class="fa-solid fa-user-xmark"></i> Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-username="analyst_sensor02">
+                                <td><strong>analyst_sensor02</strong></td>
+                                <td>Staff</td>
+                                <td>112.198.74.12</td>
+                                <td>2026-10-31 19:40</td>
+                                <td><span style="color: var(--text-secondary);">Idle</span></td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="btn-action btn-warning" style="padding: 4px 8px; font-size: 0.75rem;" onclick="alert('Editing permissions for analyst_sensor02.')"><i class="fa-solid fa-pen"></i> Edit</button>
+                                        <button class="btn-action btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="confirmRemoveUser('analyst_sensor02', this.closest('tr'))"><i class="fa-solid fa-user-xmark"></i> Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr data-username="guest_reviewer">
+                                <td><strong>guest_reviewer</strong></td>
+                                <td>User</td>
+                                <td>49.145.12.88</td>
+                                <td>2026-10-30 14:10</td>
+                                <td><span style="color: var(--accent-red);">Suspicious IP</span></td>
+                                <td>
+                                    <div style="display: flex; gap: 6px;">
+                                        <button class="btn-action btn-warning" style="padding: 4px 8px; font-size: 0.75rem;" onclick="alert('Editing permissions for guest_reviewer.')"><i class="fa-solid fa-pen"></i> Edit</button>
+                                        <button class="btn-action btn-danger" style="padding: 4px 8px; font-size: 0.75rem;" onclick="confirmRemoveUser('guest_reviewer', this.closest('tr'))"><i class="fa-solid fa-user-xmark"></i> Remove</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- --- USER REMOVAL CONFIRMATION MODAL POPUP --- -->
+            <dialog id="remove_confirm_dialog">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: var(--accent-light-red); color: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.25rem;">
+                        <i class="fa-solid fa-user-xmark"></i>
+                    </div>
+                    <h3 style="margin: 0 0 0.5rem; font-size: 1.15rem;">Remove User Access?</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0;">Are you sure you want to remove access for user <strong id="target_username_display">this user</strong>?</p>
+                </div>
+                <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+                    <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('remove_confirm_dialog').close()">Cancel</button>
+                    <button type="button" class="btn-action btn-danger" onclick="executeUserRemoval()">Yes, Remove User</button>
+                </div>
+            </dialog>
+
+            <!-- --- ACCOUNT MANAGEMENT & PROFILE EDIT MODAL (Django Integration) --- -->
+            {% if user.is_authenticated %}
+            <div class="settings-card" style="margin-bottom: 2rem;">
+                <h3>Account & Profile Management</h3>
+                <p class="card-desc">Manage your admin login credentials and personal details.</p>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div><strong>Username:</strong> {{ user.username }}</div>
+                    <div><strong>Email:</strong> {{ user.email }}</div>
+                    <div><strong>Role:</strong> {% if user.is_superuser %}Superuser{% elif user.is_staff %}Staff{% else %}User{% endif %}</div>
+                </div>
+                <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
+                    <button class="btn-action btn-primary" onclick="document.getElementById('account_overlay').showModal()"><i class="fa-solid fa-user-pen"></i> Edit Profile</button>
+                    <button class="btn-action btn-danger" onclick="document.getElementById('deact_confirm').showModal()"><i class="fa-solid fa-user-slash"></i> Deactivate Account</button>
+                </div>
+            </div>
+
+            <!-- Edit Profile Dialog Modal -->
+            <dialog id="account_overlay">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <h3 style="margin: 0; font-size: 1.15rem;">Edit Profile Information</h3>
+                    <button type="button" onclick="document.getElementById('account_overlay').close()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--text-secondary);"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form method="POST" action="{% url 'settings' %}">
+                    {% csrf_token %}
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <div class="form-group">
+                            <label for="{{ form.username.id_for_label }}">Username</label>
+                            {{ form.username }}
+                            {{ form.username.errors }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                            {{ form.first_name }}
+                            {{ form.first_name.errors }}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                            {{ form.last_name }}
+                            {{ form.last_name.errors }}
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                        <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('account_overlay').close()">Cancel</button>
+                        <button type="submit" class="btn-action btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </dialog>
+
+            <!-- Deactivate Account Confirmation Dialog -->
+            <dialog id="deact_confirm">
+                <div style="text-align: center; margin-bottom: 1rem;">
+                    <div style="width: 50px; height: 50px; background: var(--accent-light-red); color: var(--accent-red); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.25rem;">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 style="margin: 0 0 0.5rem; font-size: 1.15rem;">Deactivate Account?</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0;">Enter your password to confirm account deactivation.</p>
+                </div>
+                <form action="{% url 'settings' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ deact.password.id_for_label }}">Password</label>
+                        {{ deact.password }}
+                        {{ deact.password.error }}
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+                        <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('deact_confirm').close()">Cancel</button>
+                        <button type="submit" class="btn-action btn-danger">Confirm Deactivation</button>
+                    </div>
+                </form>
+            </dialog>
+
+            {% if form.errors %}
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.getElementById('account_overlay').showModal();
+                });
+            </script>
+            {% endif %}
+            {% endif %}
+
         </main>
+
     </div>
 
+    <!-- LOGOUT CONFIRMATION DIALOG MODAL -->
+    <dialog id="logout_confirm_dialog">
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.25rem;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h3 style="margin: 0 0 0.5rem; font-size: 1.15rem;">Log Out?</h3>
+            <p style="color: #64748b; font-size: 0.88rem; margin: 0;">Are you sure you want to log out of your account?</p>
+        </div>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+                <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('logout_confirm_dialog').close()" style="padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600;">Cancel</button>
+                <button type="submit" class="btn-action btn-danger" style="padding: 0.5rem 1rem; border-radius: 12px; border: none; background: #dc2626; color: white; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Yes, Log Out</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/toggle_sidebar.js' %}"></script>
     <script>
+        // Profile Popup Toggle
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profilePopup = document.getElementById('profilePopup');
+
+        if (profileTrigger && profilePopup) {
+            profileTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profilePopup.classList.toggle('show');
+            });
+
+            document.addEventListener('click', () => {
+                profilePopup.classList.remove('show');
+            });
+        }
+
+        let targetRowToRemove = null;
+
+        function confirmRemoveUser(username, rowElement) {
+            targetRowToRemove = rowElement;
+            document.getElementById('target_username_display').innerText = username;
+            document.getElementById('remove_confirm_dialog').showModal();
+        }
+
+        function executeUserRemoval() {
+            if (targetRowToRemove) {
+                targetRowToRemove.remove();
+                targetRowToRemove = null;
+            }
+            document.getElementById('remove_confirm_dialog').close();
+        }
+
         function expansion(but_id, content) {
             document.getElementById(but_id).classList.toggle("expand");
             document.getElementById(content).classList.toggle("show");
         }
     </script>
-    <script src="{% static 'js/toggle_sidebar.js' %}"></script>
+
 </body>
 
 </html>

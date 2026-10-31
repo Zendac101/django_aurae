@@ -1,50 +1,840 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurae Admin</title>
+    <title>Aurae Admin | Support</title>
 
-    <link rel="stylesheet" href="{% static 'css/support_style.css' %}">
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width-collapsed: 85px;
+            --sidebar-width-expanded: 260px;
+            --bg-main: #f0f4f1;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-green: #059669;
+            --accent-light-green: #d1fae5;
+            --border-color: #cbd5e1;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Hover-Collapsible Professional Sidebar Styles --- */
+        .sidebar {
+            width: var(--sidebar-width-collapsed);
+            background: #AFCBBA;
+            padding: 20px 12px;
+            border-radius: 0 16px 16px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .sidebar:hover,
+        .sidebar:focus-within {
+            width: var(--sidebar-width-expanded);
+            box-shadow: 8px 0 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .workspace-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #334155;
+            margin-bottom: 12px;
+            padding-left: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar:hover .workspace-label,
+        .sidebar:focus-within .workspace-label {
+            opacity: 1;
+            transition-delay: 0.05s;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-left: 4px;
+            white-space: nowrap;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c4b32;
+            margin: 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .logo h2,
+        .sidebar:focus-within .logo h2 {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: #1e293b;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 13.5px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .menu li a i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            color: #1c4b32;
+            flex-shrink: 0;
+        }
+
+        .menu-text-wrap {
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .menu-text-wrap,
+        .sidebar:focus-within .menu-text-wrap {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu-sub {
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .menu li a:hover, .menu li a.active {
+            background: #8fbf96 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        .menu li a:hover i, .menu li a.active i,
+        .menu li a:hover .menu-sub, .menu li a.active .menu-sub {
+            color: #fff !important;
+        }
+
+        /* Profile Bottom Widget */
+        .sidebar-bottom {
+            position: relative;
+            width: 100%;
+            border-top: 1px solid rgba(28, 75, 50, 0.15);
+            padding-top: 10px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 6px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar-profile:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            background: #1c4b32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .profile-details, .profile-chevron {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .profile-details,
+        .sidebar:hover .profile-chevron,
+        .sidebar:focus-within .profile-details,
+        .sidebar:focus-within .profile-chevron {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .profile-role {
+            font-size: 11px;
+            color: #334155;
+        }
+
+        .profile-chevron {
+            margin-left: auto;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        /* Profile Popup Menu */
+        .profile-popup {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 0;
+            width: 210px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            padding: 10px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+        }
+
+        .profile-popup.show {
+            display: flex;
+        }
+
+        .popup-header {
+            padding: 6px 15px 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header strong {
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .popup-header span {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .profile-popup hr {
+            border: 0;
+            border-top: 1px solid #f1f5f9;
+            margin: 4px 0;
+        }
+
+        .profile-popup a,
+        .popup-logout {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #334155;
+            font-size: 13px;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-popup a:hover,
+        .popup-logout:hover {
+            background: #f8fafc;
+            color: #1c4b32;
+        }
+
+        .popup-logout {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        /* --- Main Content Layout --- */
+        .main {
+            margin-left: var(--sidebar-width-collapsed);
+            flex: 1;
+            padding: 2.25rem 2.5rem;
+            box-sizing: border-box;
+            width: calc(100vw - var(--sidebar-width-collapsed));
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        /* Top 3 Cards Grid */
+        .support-top-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .support-top-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .support-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            box-sizing: border-box;
+        }
+
+        .support-card-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent-light-green);
+            color: var(--accent-green);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .support-card h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .support-card p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .card-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-green);
+            text-decoration: none;
+        }
+
+        .card-link-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* Bottom Grid: FAQ & Research Team */
+        .support-bottom-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1024px) {
+            .support-bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .faq-box, .team-box {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            box-sizing: border-box;
+        }
+
+        .faq-box h3, .team-box h3 {
+            margin: 0 0 0.25rem 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .faq-sub, .team-sub {
+            margin: 0 0 1.25rem 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Collapsible FAQ Styles */
+        .faq-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-question-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .faq-toggle-icon {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: transform 0.2s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, margin-top 0.3s ease;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 150px;
+            margin-top: 0.5rem;
+        }
+
+        .faq-item.active .faq-toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Research Team Member Cards */
+        .team-member-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .team-member-card:last-of-type {
+            margin-bottom: 1rem;
+        }
+
+        .team-info-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-avatar {
+            width: 38px;
+            height: 38px;
+            background: #1c4b32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .team-details h4 {
+            margin: 0 0 0.1rem 0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .team-email {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+
+        .team-email:hover {
+            color: var(--accent-green);
+            text-decoration: underline;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary { background-color: var(--accent-green); color: white; width: 100%; justify-content: center; }
+        .btn-primary:hover { background-color: #047857; }
+
+        .btn-secondary { background-color: white; color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: #f8fafc; }
+
+        .btn-danger { background-color: #fee2e2; color: #dc2626; padding: 4px 8px; font-size: 0.75rem; }
+        .btn-danger:hover { background-color: #fecaca; }
+
+        /* Dialog Modal */
+        dialog {
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: white;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            width: 380px;
+            max-width: 90vw;
+            box-sizing: border-box;
+        }
+
+        dialog::backdrop {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            padding: 0.6rem 0.75rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            font-size: 0.88rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--accent-green);
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="container" class="expand">
+    <div>
 
-        {% include 'sidebar.html' %}
-
-        <main class="main">
-
-
-            <div class="header">
-                <div class="header-left">
-                    <h1>Support / Help</h1>
-                    <p>Guidance when you need it most.</p>
+        <!-- HOVER-EXPANDABLE PROFESSIONAL SIDEBAR -->
+        <aside class="sidebar" id="appSidebar">
+            <div>
+                <div class="workspace-label">Workspace</div>
+                <div class="logo">
+                    <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                    <h2>Aurae</h2>
                 </div>
+
+                <ul class="menu">
+                    <li>
+                        <a href="{% url 'home' %}">
+                            <i class="fas fa-home"></i>
+                            <div class="menu-text-wrap">
+                                <span>Dashboard</span>
+                                <span class="menu-sub">Live overview</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dataManagement' %}">
+                            <i class="fas fa-database"></i>
+                            <div class="menu-text-wrap">
+                                <span>Data Management</span>
+                                <span class="menu-sub">Sensor records</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'analysis' %}">
+                            <i class="fas fa-chart-line"></i>
+                            <div class="menu-text-wrap">
+                                <span>Analysis</span>
+                                <span class="menu-sub">Trends & insights</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'settings' %}">
+                            <i class="fas fa-cog"></i>
+                            <div class="menu-text-wrap">
+                                <span>Settings</span>
+                                <span class="menu-sub">Thresholds & alerts</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'support' %}" class="active">
+                            <i class="fas fa-life-ring"></i>
+                            <div class="menu-text-wrap">
+                                <span>Support</span>
+                                <span class="menu-sub">Help & docs</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
             </div>
 
-            <div class="support-container">
+            <div class="sidebar-bottom">
+                {% if user.is_authenticated %}
+                <!-- Interactive Profile Popup Menu -->
+                <div class="profile-popup" id="profilePopup">
+                    <div class="popup-header">
+                        <strong>{{ user.username|title }}</strong>
+                        <span>{{ user.email }}</span>
+                    </div>
+                    <hr>
+                    <a href="{% url 'settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
+                    <button type="button" class="popup-logout" onclick="document.getElementById('logout_confirm_dialog').showModal()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+                </div>
 
+                <div class="sidebar-profile" id="profileTrigger">
+                    <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                    <div class="profile-details">
+                        <span class="profile-name">{{ user.username|title }}</span>
+                        <span class="profile-role">Admin</span>
+                    </div>
+                    <i class="fas fa-chevron-up profile-chevron"></i>
+                </div>
+                {% else %}
+                <a href="#" style="color: #1e293b; text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:12px; padding:8px;">
+                    <i class="fas fa-sign-in-alt"></i> <span class="menu-text-wrap">Log In</span>
+                </a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main">
+
+            <div class="header">
+                <h1>Support / Help</h1>
+                <p>Guidance when you need it most — designed & engineered by the Aurae Research Team.</p>
+            </div>
+
+            <!-- Top 3 Support Information Cards -->
+            <div class="support-top-grid">
+                
                 <div class="support-card">
-                    <i class="fas fa-comments"></i>
-                    <span>FAQs</span>
+                    <div class="support-card-icon"><i class="fas fa-file-alt"></i></div>
+                    <h3>System Documentation</h3>
+                    <p>Setup guides, MQTT topic naming conventions, and hardware sensor wiring notes.</p>
+                    <a href="#" class="card-link-btn" onclick="alert('Opening system documentation guides...')">Open docs <i class="fas fa-arrow-right"></i></a>
                 </div>
 
                 <div class="support-card">
-                    <i class="fas fa-microchip"></i>
-                    <span>Technical Support</span>
+                    <div class="support-card-icon"><i class="fas fa-envelope"></i></div>
+                    <h3>Email Support</h3>
+                    <p>ops@aurae.io · Direct inquiries to our development researchers.</p>
+                    <a href="mailto:ops@aurae.io" class="card-link-btn">Send an email <i class="fas fa-arrow-right"></i></a>
                 </div>
 
                 <div class="support-card">
-                    <i class="fas fa-file-alt"></i>
-                    <span>System Documentation</span>
+                    <div class="support-card-icon"><i class="fas fa-microchip"></i></div>
+                    <h3>System Status</h3>
+                    <p>All MQTT brokers, database nodes, and ingestion workers operational.</p>
+                    <a href="#" class="card-link-btn" onclick="alert('All systems normal. 99.4% uptime.')">View status <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+            </div>
+
+            <!-- Bottom Grid: FAQs (Collapsible) & Research Team with Add Button -->
+            <div class="support-bottom-grid">
+                
+                <!-- Frequently Asked Questions (Collapsible Accordion) -->
+                <div class="faq-box">
+                    <h3>Frequently asked questions</h3>
+                    <p class="faq-sub">Quick answers for day-to-day operation and sensor calibration.</p>
+
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question-row">
+                            <span>A sensor shows no reading. What should I check first?</span>
+                            <i class="fas fa-plus faq-toggle-icon"></i>
+                        </div>
+                        <div class="faq-answer">Confirm the device is publishing to the Aurae sensor topic and that its client ID is unique. The dashboard only renders a value once a message arrives.</div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question-row">
+                            <span>How often do the boxes on the dashboard update?</span>
+                            <i class="fas fa-plus faq-toggle-icon"></i>
+                        </div>
+                        <div class="faq-answer">Telemetry values refresh dynamically every 5 seconds or whenever a broker telemetry payload syncs with the database.</div>
+                    </div>
+
+                    <div class="faq-item" onclick="toggleFaq(this)">
+                        <div class="faq-question-row">
+                            <span>Where do exported records go?</span>
+                            <i class="fas fa-plus faq-toggle-icon"></i>
+                        </div>
+                        <div class="faq-answer">Exported CSV files and graphs are saved directly to your local browser download directory.</div>
+                    </div>
+                </div>
+
+                <!-- Research & Development Team with Add Member Button -->
+                <div class="team-box">
+                    <h3>Contact the Team</h3>
+                    <p class="team-sub">Capstone Research & Development</p>
+
+                    <div id="teamMemberList">
+                        <!-- Mark Louie Camu -->
+                        <div class="team-member-card">
+                            <div class="team-info-wrap">
+                                <div class="team-avatar">MC</div>
+                                <div class="team-details">
+                                    <h4>Mark Louie Camu</h4>
+                                    <a href="mailto:marklouie@aurae.io" class="team-email"><i class="fas fa-envelope"></i> marklouie@aurae.io</a>
+                                </div>
+                            </div>
+                            <button class="btn-action btn-danger" onclick="this.closest('.team-member-card').remove()"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <!-- Angelica Erguiza -->
+                        <div class="team-member-card">
+                            <div class="team-info-wrap">
+                                <div class="team-avatar">AE</div>
+                                <div class="team-details">
+                                    <h4>Angelica Erguiza</h4>
+                                    <a href="mailto:angelica@aurae.io" class="team-email"><i class="fas fa-envelope"></i> angelica@aurae.io</a>
+                                </div>
+                            </div>
+                            <button class="btn-action btn-danger" onclick="this.closest('.team-member-card').remove()"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <!-- Aliyha Nicole Montemayor -->
+                        <div class="team-member-card">
+                            <div class="team-info-wrap">
+                                <div class="team-avatar">AM</div>
+                                <div class="team-details">
+                                    <h4>Aliyha Nicole Montemayor</h4>
+                                    <a href="mailto:aliyha@aurae.io" class="team-email"><i class="fas fa-envelope"></i> aliyha@aurae.io</a>
+                                </div>
+                            </div>
+                            <button class="btn-action btn-danger" onclick="this.closest('.team-member-card').remove()"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <!-- Wilmer Bernan Orduca -->
+                        <div class="team-member-card">
+                            <div class="team-info-wrap">
+                                <div class="team-avatar">WO</div>
+                                <div class="team-details">
+                                    <h4>Wilmer Bernan Orduca</h4>
+                                    <a href="mailto:wilmer@aurae.io" class="team-email"><i class="fas fa-envelope"></i> wilmer@aurae.io</a>
+                                </div>
+                            </div>
+                            <button class="btn-action btn-danger" onclick="this.closest('.team-member-card').remove()"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Add Team Member Button -->
+                    <button class="btn-action btn-secondary" style="width: 100%; justify-content: center; margin-top: 0.5rem;" onclick="document.getElementById('add_member_dialog').showModal()"><i class="fas fa-user-plus"></i> Add Team Member</button>
+
                 </div>
 
             </div>
@@ -53,9 +843,98 @@
 
     </div>
 
-    <script src="{% static 'js/toggle_sidebar.js' %}">
+    <!-- Add Team Member Dialog Modal -->
+    <dialog id="add_member_dialog">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h3 style="margin: 0; font-size: 1.15rem;">Add Contact Team Member</h3>
+            <button type="button" onclick="document.getElementById('add_member_dialog').close()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--text-secondary);"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form onsubmit="addNewTeamMember(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="new_member_name" placeholder="e.g. Juan Dela Cruz" required>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="new_member_email" placeholder="e.g. juan@aurae.io" required>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem;">
+                <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('add_member_dialog').close()">Cancel</button>
+                <button type="submit" class="btn-action btn-primary" style="width: auto;">Add Member</button>
+            </div>
+        </form>
+    </dialog>
 
+    <!-- Logout Confirmation Dialog Modal -->
+    <dialog id="logout_confirm_dialog">
+        <div style="text-align: center; margin-bottom: 1rem;">
+            <div style="width: 50px; height: 50px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.25rem;">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+            <h3 style="margin: 0 0 0.5rem; font-size: 1.15rem;">Log Out?</h3>
+            <p style="color: #64748b; font-size: 0.88rem; margin: 0;">Are you sure you want to log out of your account?</p>
+        </div>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+                <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('logout_confirm_dialog').close()" style="padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600;">Cancel</button>
+                <button type="submit" class="btn-action btn-danger" style="padding: 0.5rem 1rem; border-radius: 12px; border: none; background: #dc2626; color: white; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Yes, Log Out</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Scripts -->
+    <script src="{% static 'js/toggle_sidebar.js' %}"></script>
+    <script>
+        // Profile Popup Toggle
+        const profileTrigger = document.getElementById('profileTrigger');
+        const profilePopup = document.getElementById('profilePopup');
+
+        if (profileTrigger && profilePopup) {
+            profileTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                profilePopup.classList.toggle('show');
+            });
+
+            document.addEventListener('click', () => {
+                profilePopup.classList.remove('show');
+            });
+        }
+
+        // Collapsible FAQ Function
+        function toggleFaq(element) {
+            element.classList.toggle('active');
+        }
+
+        // Add New Team Member Dynamically
+        function addNewTeamMember(event) {
+            event.preventDefault();
+            const name = document.getElementById('new_member_name').value.trim();
+            const email = document.getElementById('new_member_email').value.trim();
+            if (!name || !email) return;
+
+            const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+            const cardHTML = `
+                <div class="team-member-card">
+                    <div class="team-info-wrap">
+                        <div class="team-avatar">${initials}</div>
+                        <div class="team-details">
+                            <h4>${name}</h4>
+                            <a href="mailto:${email}" class="team-email"><i class="fas fa-envelope"></i> ${email}</a>
+                        </div>
+                    </div>
+                    <button class="btn-action btn-danger" onclick="this.closest('.team-member-card').remove()"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+
+            document.getElementById('teamMemberList').insertAdjacentHTML('beforeend', cardHTML);
+            document.getElementById('new_member_name').value = '';
+            document.getElementById('new_member_email').value = '';
+            document.getElementById('add_member_dialog').close();
+        }
     </script>
 
-
 </body>
+
+</html>

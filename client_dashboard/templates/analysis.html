@@ -5,128 +5,854 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurae Admin</title>
+    <title>Aurae Admin | Analysis</title>
 
-    <link rel="stylesheet" href="{% static 'css/analysis_style.css' %}">
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --sidebar-width-collapsed: 85px;
+            --sidebar-width-expanded: 260px;
+            --bg-main: #f0f4f1;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-green: #059669;
+            --accent-light-green: #d1fae5;
+            --accent-orange: #d97706;
+            --accent-light-orange: #fef3c7;
+            --accent-red: #dc2626;
+            --accent-light-red: #fee2e2;
+            --border-color: #cbd5e1;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- Hover-Collapsible Sidebar Styles --- */
+        .sidebar {
+            width: var(--sidebar-width-collapsed);
+            background: #AFCBBA;
+            padding: 20px 12px;
+            border-radius: 0 16px 16px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .sidebar:hover,
+        .sidebar:focus-within {
+            width: var(--sidebar-width-expanded);
+            box-shadow: 8px 0 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .workspace-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #334155;
+            margin-bottom: 12px;
+            padding-left: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar:hover .workspace-label,
+        .sidebar:focus-within .workspace-label {
+            opacity: 1;
+            transition-delay: 0.05s;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-left: 4px;
+            white-space: nowrap;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c4b32;
+            margin: 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .logo h2,
+        .sidebar:focus-within .logo h2 {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: #1e293b;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 13.5px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .menu li a i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            color: #1c4b32;
+            flex-shrink: 0;
+        }
+
+        .menu-text-wrap {
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .menu-text-wrap,
+        .sidebar:focus-within .menu-text-wrap {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu-sub {
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .menu li a:hover, .menu li a.active {
+            background: #8fbf96 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        .menu li a:hover i, .menu li a.active i,
+        .menu li a:hover .menu-sub, .menu li a.active .menu-sub {
+            color: #fff !important;
+        }
+
+        /* Profile Bottom Widget */
+        .sidebar-bottom {
+            position: relative;
+            width: 100%;
+            border-top: 1px solid rgba(28, 75, 50, 0.15);
+            padding-top: 10px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 6px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar-profile:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            background: #1c4b32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .profile-details, .profile-chevron {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .profile-details,
+        .sidebar:hover .profile-chevron,
+        .sidebar:focus-within .profile-details,
+        .sidebar:focus-within .profile-chevron {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .profile-role {
+            font-size: 11px;
+            color: #334155;
+        }
+
+        .profile-chevron {
+            margin-left: auto;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        /* Profile Popup Menu */
+        .profile-popup {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 0;
+            width: 210px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            padding: 10px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+        }
+
+        .profile-popup.show {
+            display: flex;
+        }
+
+        .popup-header {
+            padding: 6px 15px 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header strong {
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .popup-header span {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .profile-popup hr {
+            border: 0;
+            border-top: 1px solid #f1f5f9;
+            margin: 4px 0;
+        }
+
+        .profile-popup a,
+        .popup-logout {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #334155;
+            font-size: 13px;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-popup a:hover,
+        .popup-logout:hover {
+            background: #f8fafc;
+            color: #1c4b32;
+        }
+
+        .popup-logout {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        /* --- Main Content Layout --- */
+        .main {
+            margin-left: var(--sidebar-width-collapsed);
+            flex: 1;
+            padding: 2.25rem 2.5rem;
+            box-sizing: border-box;
+            width: calc(100vw - var(--sidebar-width-collapsed));
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header-left p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        /* Admin Action Toolbar */
+        .admin-controls-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-admin {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 0.625rem 1.15rem;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .btn-admin:hover {
+            background: #f8fafc;
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        /* Chart Card */
+        #chart-box {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #chart_top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        #chart_top h3 {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        #chart_top select, #chart_top input {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.85rem;
+            background: white;
+            outline: none;
+            margin-left: 0.5rem;
+        }
+
+        .chart-placeholder {
+            position: relative;
+            height: 380px;
+            width: 100%;
+        }
+
+        /* Bottom Grid Section */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 1024px) {
+            .bottom-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .map-box, .comparison-box, .guide-box {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .map-box h3, .comparison-box h3, .guide-box h3 {
+            margin: 0 0 1rem 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .map-placeholder iframe {
+            width: 100%;
+            height: 320px;
+            border-radius: 8px;
+        }
+
+        /* Actions Bar */
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .actions button {
+            padding: 0.625rem 1.15rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #download_graph { background: var(--accent-green); color: white; }
+        #download_graph:hover { background: #047857; }
+
+        #date_range, #reset { background: white; color: var(--text-primary); border: 1px solid var(--border-color); }
+        #date_range:hover, #reset:hover { background: #f8fafc; }
+
+        /* Perfectly Centered Dialog Overlay */
+        dialog#date_range_dialog {
+            border: none;
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: white;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            width: 340px;
+            max-width: 90vw;
+            box-sizing: border-box;
+        }
+
+        dialog#date_range_dialog::backdrop {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(4px);
+        }
+
+        dialog#date_range_dialog .dialog-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        dialog#date_range_dialog input {
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            font-family: inherit;
+            font-size: 0.9rem;
+            width: 100%;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        dialog#date_range_dialog input:focus {
+            border-color: var(--accent-green);
+        }
+
+        /* How to read guide box */
+        .guide-box {
+            margin-bottom: 2rem;
+        }
+
+        .guide-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .guide-list li {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .guide-list li i {
+            color: var(--accent-green);
+            margin-top: 3px;
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="container" class="expand">
+    <div>
 
+        <!-- HOVER-EXPANDABLE SIDEBAR -->
+        <aside class="sidebar" id="appSidebar">
+            <div>
+                <div class="workspace-label">Workspace</div>
+                <div class="logo">
+                    <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                    <h2>Aurae</h2>
+                </div>
 
-        {% include 'sidebar.html' %}
+                <ul class="menu">
+                    <li>
+                        <a href="{% url 'home' %}">
+                            <i class="fas fa-home"></i>
+                            <div class="menu-text-wrap">
+                                <span>Dashboard</span>
+                                <span class="menu-sub">Live overview</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'dataManagement' %}">
+                            <i class="fas fa-database"></i>
+                            <div class="menu-text-wrap">
+                                <span>Data Management</span>
+                                <span class="menu-sub">Sensor records</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'analysis' %}" class="active">
+                            <i class="fas fa-chart-line"></i>
+                            <div class="menu-text-wrap">
+                                <span>Analysis</span>
+                                <span class="menu-sub">Trends & insights</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'settings' %}">
+                            <i class="fas fa-cog"></i>
+                            <div class="menu-text-wrap">
+                                <span>Settings</span>
+                                <span class="menu-sub">Thresholds & alerts</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'support' %}">
+                            <i class="fas fa-life-ring"></i>
+                            <div class="menu-text-wrap">
+                                <span>Support</span>
+                                <span class="menu-sub">Help & docs</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
+            <div class="sidebar-bottom">
+                {% if user.is_authenticated %}
+                <div class="profile-popup" id="profilePopup">
+                    <div class="popup-header">
+                        <strong>{{ user.username|title }}</strong>
+                        <span>{{ user.email }}</span>
+                    </div>
+                    <hr>
+                    <a href="{% url 'admin_settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
+                    <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                        {% csrf_token %}
+                        <button type="submit" class="popup-logout"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+                    </form>
+                </div>
+
+                <div class="sidebar-profile" id="profileTrigger">
+                    <div class="profile-avatar"><i class="fas fa-user"></i></div>
+                    <div class="profile-details">
+                        <span class="profile-name">{{ user.username|title }}</span>
+                        <span class="profile-role">Admin</span>
+                    </div>
+                    <i class="fas fa-chevron-up profile-chevron"></i>
+                </div>
+                {% else %}
+                <a href="{% url 'login' %}" style="color: #1e293b; text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:12px; padding:8px;">
+                    <i class="fas fa-sign-in-alt"></i> <span class="menu-text-wrap">Log In</span>
+                </a>
+                {% endif %}
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
         <main class="main">
 
-
-
-            <div class="page_content">
-
-                <div class="header">
-                    <div class="header-left">
-                        <h1>Analysis</h1>
-                        <p>Turn data into clear insights.</p>
-                    </div>
+            <div class="header">
+                <div class="header-left">
+                    <h1>Analysis</h1>
+                    <p>Turn telemetry data into actionable environmental insights.</p>
                 </div>
+            </div>
 
-                <div id="chart-box">
-                    <div id="chart_top">
-                        <h3>Temporal AQI Analysis</h3>
+            <!-- Admin Manipulative Tools Bar -->
+            <div class="admin-controls-bar">
+                <button class="btn-admin" onclick="alert('Recalibrating active sensor nodes...')"><i class="fa-solid fa-sliders"></i> Recalibrate Nodes</button>
+                <button class="btn-admin" onclick="alert('Forcing live telemetry sync with server database...')"><i class="fa-solid fa-sync"></i> Force Data Sync</button>
+                <button class="btn-admin" onclick="alert('Broadcasting threshold alert to active client views...')"><i class="fa-solid fa-bullhorn"></i> Broadcast Alert</button>
+            </div>
+
+            <!-- Temporal AQI Analysis Chart Box -->
+            <div id="chart-box">
+                <div id="chart_top">
+                    <h3>Temporal AQI Analysis</h3>
+
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <label for="pollutants"><b>Pollutant:</b></label>
+                            <select name="pollutants" id="pollutants" onchange="toPHP(document.getElementById('location').value)">
+                                <option value="aqi">AQI</option>
+                                <option value="pm2.5">PM2.5</option>
+                                <option value="pm10">PM10</option>
+                                <option value="co">CO</option>
+                                <option value="no">NO</option>
+                                <option value="no2">NO₂</option>
+                                <option value="nox">NOX</option>
+                                <option value="o3">O3</option>
+                            </select>
+                        </div>
 
                         <div>
-                            <!-- pollutant select -->
-                            <label for="pollutants"><b>Pollutant:</b></label>
-                            <select name="poluttants" id="pollutants"
-                                onchange="toPHP(document.getElementById('location').value)">
-                                <option value="aqi">AQI</option>
-                                <option value="so2">SO2</option>
-                                <option value="co">CO</option>
-                                <option value="o3">O3</option>
-                                <option value="pm10">PM10</option>
-                                <option value="pm2.5">PM2.5</option>
-                                <option value="nox">NOX</option>
-                            </select>
-
-
                             <label for="Location"><b>Location: </b></label>
-                            <select name="Location" id="location" onchange="toPHP(value)">
-                                <option value="0">Select Location</option>
+                            <input type="text" id="location" list="pangasinan-towns" placeholder="Search town..." onchange="toPHP(this.value)">
+                            <datalist id="pangasinan-towns">
+                                <option value="Agno"><option value="Aguilar"><option value="Alaminos City"><option value="Alcala"><option value="Anda"><option value="Asingan"><option value="Balungao"><option value="Bani"><option value="Basista"><option value="Bautista"><option value="Bayambang"><option value="Binalonan"><option value="Binmaley"><option value="Bolinao"><option value="Bugallon"><option value="Burgos"><option value="Calasiao"><option value="Dasol"><option value="Infanta"><option value="Labrador"><option value="Laoac"><option value="Lingayen"><option value="Malasiqui"><option value="Mapandan"><option value="Natividad"><option value="Pozorrubio"><option value="Rosales"><option value="San Carlos City"><option value="San Fabian"><option value="San Jacinto"><option value="San Manuel"><option value="Santa Barbara"><option value="Santa Maria"><option value="Sison"><option value="Sual"><option value="Tayug"><option value="Umingan"><option value="Urbiztondo"><option value="Urdaneta City"><option value="Villasis">
                                 {% for site_id, site_name in location_options %}
-                                <option value="{{ site_id }}">{{ site_name }}</option>
-                                {% empty %}
-                                <!-- This line will only show if your database returned zero rows -->
-                                <option value="">[No records found or column name error]</option>
+                                <option value="{{ site_name }}">
                                 {% endfor %}
-                            </select>
+                            </datalist>
                         </div>
                     </div>
-
-                    <!-- graoh pollutant level -->
-                    <div class="chart-placeholder">
-                        <canvas id="dbChart"></canvas>
-
-                    </div>
-
-
-                </div><br>
-
-
-                <div class="bottom-section">
-
-                    <div class="map-box">
-                        <h3>Map of Pangasinan</h3>
-                        <div class="map-placeholder">
-
-                            <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1113378.0217220394!2d119.57952284792401!3d16.057313948821207!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3391609ecf540463%3A0x44bc9c18460340e3!2sPangasinan!5e0!3m2!1sen!2sph!4v1791457466947!5m2!1sen!2sph"
-                                width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                                referrerpolicy="strict-origin-when-cross-origin" id="pang_map"></iframe>
-
-                        </div>
-                    </div>
-
-
-                    <div class="actions">
-                        <button id="download_graph">Download Graph</button>
-                        <button id="date_range">Date Range</button>
-                        <button id="reset">Reset Graph</button>
-
-                        <dialog id="date_range_dialog">
-                            <input type="date" id="min">
-                            <input type="date" id="max">
-
-                            <button type="button" id="date_submit"
-                                onclick="toPHP(document.getElementById('location').value)">submit</button>
-                        </dialog>
-
-                    </div>
-
                 </div>
+
+                <div class="chart-placeholder">
+                    <canvas id="dbChart"></canvas>
+                </div>
+
+                <div class="actions">
+                    <!-- Dynamic Download Button -->
+                    <button id="download_graph" onclick="downloadGraphImage()"><i class="fa-solid fa-download"></i> Download Graph</button>
+                    <!-- Dynamic Date Range Button -->
+                    <button id="date_range"><i class="fa-solid fa-calendar"></i> Date Range</button>
+                    <!-- Dynamic Reset Button -->
+                    <button id="reset" onclick="resetGraphZoom()"><i class="fa-solid fa-rotate-left"></i> Reset Graph</button>
+
+                    <!-- Perfectly Centered Dialog Popup -->
+                    <dialog id="date_range_dialog">
+                        <div class="dialog-content">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h3 style="margin: 0; font-size: 1.1rem;">Select Date Range</h3>
+                                <button type="button" onclick="document.getElementById('date_range_dialog').close()" style="background:none; border:none; font-size:1.1rem; cursor:pointer; color:var(--text-secondary);"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase;">Start Date</label>
+                                <input type="date" id="min">
+                            </div>
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:600; color:var(--text-secondary); text-transform:uppercase;">End Date</label>
+                                <input type="date" id="max">
+                            </div>
+                            <button type="button" id="date_submit" class="btn-admin" onclick="toPHP(document.getElementById('location').value)" style="background: var(--accent-green); color: white; width: 100%; justify-content: center; margin-top: 0.5rem;">Apply Date Filter</button>
+                        </div>
+                    </dialog>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Map of Pangasinan & Comprehensive Pollutant Comparison Bar Chart -->
+            <div class="bottom-section">
+                <!-- Map Box -->
+                <div class="map-box">
+                    <h3>Map of Pangasinan</h3>
+                    <div class="map-placeholder">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1113378.0217220394!2d119.57952284792401!3d16.057313948821207!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3391609ecf540463%3A0x44bc9c18460340e3!2sPangasinan!5e0!3m2!1sen!2sph!4v1791457466947!5m2!1sen!2sph" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" id="pang_map"></iframe>
+                    </div>
+                </div>
+
+                <!-- Comprehensive Pollutant Comparison Chart Box with Compact Line Legends -->
+                <div class="comparison-box">
+                    <h3>Pollutant Comparison (Weekly Average)</h3>
+                    <div class="chart-placeholder" style="height: 320px;">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Information Card ("How to read this") -->
+            <div class="guide-box">
+                <h3>How to read this telemetry data</h3>
+                <ul class="guide-list">
+                    <li><i class="fa-solid fa-circle-check"></i> <span>PM2.5 above 25 µg/m³ for more than 20 minutes triggers an immediate zone alert.</span></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <span>NO₂ is measured in ppb and typically peaks during evening commuter traffic hours.</span></li>
+                    <li><i class="fa-solid fa-circle-check"></i> <span>CO stays low indoors; a drifting baseline usually indicates a blocked or obstructed sensor intake.</span></li>
+                </ul>
             </div>
 
         </main>
 
     </div>
 
+    <!-- Scripts -->
     <script src="{% static 'js/toggle_sidebar.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
 
+    <!-- Comprehensive Multi-Pollutant Comparison Chart Script with Compact Legend Layout -->
     <script>
+        const compCtx = document.getElementById('comparisonChart').getContext('2d');
+        const comparisonChart = new Chart(compCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [
+                    { label: 'AQI', data: [35, 42, 38, 45, 40, 36, 32], backgroundColor: '#10b981', borderRadius: 2 },
+                    { label: 'PM2.5', data: [18, 22, 15, 26, 25, 21, 16], backgroundColor: '#059669', borderRadius: 2 },
+                    { label: 'PM10', data: [30, 35, 28, 38, 34, 30, 25], backgroundColor: '#047857', borderRadius: 2 },
+                    { label: 'CO', data: [0.4, 0.5, 0.3, 0.6, 0.5, 0.4, 0.3], backgroundColor: '#3b82f6', borderRadius: 2 },
+                    { label: 'NO', data: [0.1, 0.15, 0.1, 0.2, 0.15, 0.1, 0.08], backgroundColor: '#8b5cf6', borderRadius: 2 },
+                    { label: 'NO₂', data: [24, 31, 28, 32, 29, 27, 24], backgroundColor: '#d97706', borderRadius: 2 },
+                    { label: 'O₃', data: [15, 18, 16, 20, 19, 17, 14], backgroundColor: '#ec4899', borderRadius: 2 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            boxWidth: 10,
+                            boxHeight: 10,
+                            padding: 8,
+                            font: {
+                                size: 11,
+                                family: "'Inter', sans-serif"
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <script>
+        let myChartInstance = null;
 
         document.getElementById('date_range').addEventListener('click', function () {
             document.getElementById('date_range_dialog').showModal();
         });
 
+        // Dynamic Download Graph Functionality
+        function downloadGraphImage() {
+            const canvas = document.getElementById('dbChart');
+            if (!canvas) return;
+            const imageURL = canvas.toDataURL('image/png');
+            const link = document.createElement('a');
+            link.href = imageURL;
+            link.download = 'aurae_temporal_aqi_analysis.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
+        // Dynamic Reset Graph Functionality
+        function resetGraphZoom() {
+            if (myChartInstance) {
+                myChartInstance.resetZoom();
+                // Visual click feedback
+                const btn = document.getElementById('reset');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = `<i class="fa-solid fa-check" style="color:var(--accent-green);"></i> Reset Complete`;
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 1200);
+            }
+        }
 
-    </script>
-
-    <script>
         function toPHP(value) {
             const selectedLoc = document.getElementById('location').value
             const pollutantSelect = document.getElementById('pollutants');
@@ -139,12 +865,11 @@
                 minDateInput, maxDateInput = maxDateInput, minDateInput
             }
 
-            if (!selectedLoc || selectedLoc === 'Select Location') return;
+            if (!selectedLoc || selectedLoc === 'Select Location' || selectedLoc === '0') return;
 
-            chart = document.getElementById('chart-box')
-            if (chart) {
-                chart.classList.add("expanded");
-
+            const chartBox = document.getElementById('chart-box');
+            if (chartBox) {
+                chartBox.classList.add("expanded");
             }
 
             fetch(`?locations=${encodeURIComponent(selectedLoc)}&mindate=${encodeURIComponent(minDateInput)}&maxdate=${encodeURIComponent(maxDateInput)}`, {
@@ -154,20 +879,10 @@
                     if (result.success) {
                         const canvasElement = document.getElementById('dbChart');
                         const ctx = canvasElement.getContext('2d');
-                        // remove current chart
                         const existingChart = Chart.getChart(canvasElement);
-                        let myChartInstance = null;
                         if (existingChart) {
                             existingChart.destroy();
-
                         }
-                        if (myChartInstance) {
-                            myChartInstance.destroy();
-                        } document.getElementById('reset').addEventListener('click', function () {
-                            if (myChartInstance) {
-                                myChartInstance.resetZoom();
-                            }
-                        });
 
                         const chartLabels = result.data.map(item => item.date);
                         const chartValues = result.data.map(item => parseFloat(item[selectedPollutant]) || 0);
@@ -180,69 +895,49 @@
                                     datasets: [{
                                         label: selectedPollutant.toUpperCase() + ' Level',
                                         data: chartValues,
-                                        borderColor: 'rgb(75, 192, 192)',
-                                        backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                        borderColor: 'rgb(5, 150, 105)',
+                                        backgroundColor: 'rgba(5, 150, 105, 0.1)',
                                         borderWidth: 2,
                                         tension: 0.2,
                                         fill: true,
                                         pointBackgroundColor: function (context) {
                                             const value = context.dataset.data[context.dataIndex];
-                                            if (value <= 50) return 'rgb(76, 175, 80)';
-                                            if (value <= 100) return 'rgb(255, 152, 0)';
-                                            return 'rgb(244, 67, 54)';
-                                        },
-                                        pointBorderColor: function (context) {
-                                            const value = context.dataset.data[context.dataIndex];
-                                            if (value <= 50) return 'rgb(56, 142, 60)';
-                                            if (value <= 100) return 'rgb(245, 124, 0)';
-                                            return 'rgb(211, 47, 47)';
+                                            if (value <= 50) return 'rgb(5, 150, 105)';
+                                            if (value <= 100) return 'rgb(217, 119, 6)';
+                                            return 'rgb(220, 38, 38)';
                                         }
                                     }]
                                 },
                                 options: {
                                     responsive: true,
                                     maintainAspectRatio: false,
-                                    resizeDelay: 300,
                                     scales: {
-                                        y: {
-                                            beginAtZero: true
-                                        }
-                                    }, plugins: {
+                                        y: { beginAtZero: true }
+                                    },
+                                    plugins: {
                                         zoom: {
-                                            pan: {
-                                                enabled: true,
-                                                mode: 'x' // Allows you to click and drag horizontally
-                                            },
+                                            pan: { enabled: true, mode: 'x' },
                                             zoom: {
-                                                wheel: {
-                                                    enabled: true, // Zooms in/out with the mouse wheel
-                                                },
-                                                drag: {
-                                                    enabled: true, // Allows you to draw a box to zoom into a specific section
-                                                    backgroundColor: 'rgba(42, 71, 52, 0.3)'
-                                                },
-                                                mode: 'x', // Restricts zooming to the dates (horizontal)
+                                                wheel: { enabled: true },
+                                                drag: { enabled: true, backgroundColor: 'rgba(5, 150, 105, 0.2)' },
+                                                mode: 'x'
                                             }
                                         }
-                                    },
+                                    }
                                 }
                             });
-                        }, 400)
-
+                        }, 400);
                     }
+                });
 
-                })
-
-            submit_date = document.getElementById("date_submit");
+            const submit_date = document.getElementById("date_submit");
             submit_date.value = value;
 
-            //close overlay
             submit_date.addEventListener('click', function () {
-
                 document.getElementById("date_range_dialog").close();
             })
         }
-
     </script>
 
 </body>
+</html>

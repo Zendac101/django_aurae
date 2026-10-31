@@ -1,415 +1,123 @@
 {% load static %}
-
-
-<style>
-    .sidebar {
-        width: 240px;
-        background: #AFCBBA;
-        padding: 20px;
-        border-radius: 0 10px 10px 0;
-        transition: all 0.3s ease;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
-    }
-
-    .sidebar:hover {
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .menu li {
-        list-style: none;
-        margin-bottom: 10px;
-    }
-
-    .menu li a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px;
-        text-decoration: none;
-        color: black;
-        border-radius: 8px;
-        transition: all 0.25s ease;
-        transform-origin: center;
-    }
-
-    .menu li a:hover {
-        background: #8fbf96;
-        transform: scale(1.03);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-    }
-
-    .menu li a i {
-        transform: translateY(10%);
-        transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-        will-change: transform;
-        /* Prepares the browser GPU */
-    }
-
-    .menu li a:hover i {
-        transform: scale(1.15);
-    }
-
-    .search-box {
-        display: flex;
-        align-items: center;
-        width: 300px;
-        gap: 8px;
-        padding: 8px 12px;
-        border-radius: 20px;
-        border: 1px solid #ddd;
-        background: transparent;
-    }
-
-    .search-box input {
-        border: none;
-        outline: none;
-        width: 100%;
-        background: transparent;
-        font-size: 14px;
-    }
-
-    .search-box i {
-        color: gray;
-        font-size: 14px;
-    }
-
-
-
-    .sidebar {
-        transition: width 0.3s ease, margin-left 0.3s ease;
-        overflow: visible;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
-
-    .sidebar.collapsed {
-        width: 90px;
-    }
-
-
-
-    .sidebar.collapsed h2 {
-        display: none;
-    }
-
-    .sidebar.collapsed .menu li a {
-        justify-content: center;
-        font-size: 0;
-    }
-
-    .sidebar.collapsed .menu li a i {
-        font-size: 18px;
-    }
-
-    .btn-logout {
-        position: relative;
-        left: 50%;
-        background-color: #1c4b32;
-        /* Dark contrast color, or use a red like #d9534f */
-        color: #ffffff;
-        border: none;
-        border-radius: 6px;
-        padding: 10px 24px;
-        font-size: 15px;
-        font-family: inherit;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.2s ease, transform 0.1s ease;
-
-    }
-
-    .sidebar.collapsed .btn-logout {
-        display: none;
-    }
-
-    .btn-logout:hover {
-        background-color: #2e5735;
-        opacity: 0.7;
-        /* Subtle hover effect */
-    }
-
-
-
-
-
-    .active {
-        background-color: #8fbf96;
-
-        font-weight: bold;
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 30px;
-    }
-
-    .logo h2 {
-        font-size: 22px;
-        white-space: nowrap;
-    }
-
-    .logo-img {
-        width: 45px;
-    }
-
-
-    .menu-btn {
-        width: 42px;
-        height: 42px;
-        border: none;
-        border-radius: 12px;
-        background: #AFCBBA;
-        cursor: pointer;
-        font-size: 18px;
-        transition: 0.3s ease;
-
-    }
-
-    .menu-btn:hover {
-        transform: scale(1.05);
-    }
-
-    /* --- New Profile & Popup Styles --- */
-    .sidebar-bottom {
-        position: relative;
-    }
-
-    .sidebar-profile {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background 0.3s ease;
-    }
-
-    .sidebar-profile:hover {
-        background: rgba(255, 255, 255, 0.2);
-    }
-
-    .profile-avatar {
-        width: 40px;
-        height: 40px;
-        background: #1c4b32;
-        color: white;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.2rem;
-        flex-shrink: 0;
-    }
-
-    .profile-details {
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-
-    .profile-name {
-        font-weight: 600;
-        font-size: 14px;
-        color: #000;
-    }
-
-    .profile-role {
-        font-size: 11px;
-        color: #333;
-    }
-
-    .profile-chevron {
-        margin-left: auto;
-        font-size: 12px;
-        color: #333;
-        transition: transform 0.3s ease;
-    }
-
-    /* Popup Styling */
-    .profile-popup {
-        position: absolute;
-        bottom: calc(100% + 10px);
-        left: 0;
-        width: 100%;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        padding: 10px 0;
-        display: none;
-        /* Hidden by default */
-        flex-direction: column;
-        z-index: 100;
-    }
-
-    .profile-popup.show {
-        display: flex;
-        /* Shown when toggled via JS */
-    }
-
-    .popup-header {
-        padding: 5px 15px 10px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .popup-header strong {
-        font-size: 14px;
-        color: #000;
-    }
-
-    .popup-header span {
-        font-size: 11px;
-        color: gray;
-    }
-
-    .profile-popup hr {
-        border: 0;
-        border-top: 1px solid #eee;
-        margin: 5px 0;
-    }
-
-    .profile-popup a,
-    .popup-logout {
-        padding: 10px 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-decoration: none;
-        color: #333;
-        font-size: 14px;
-        background: transparent;
-        border: none;
-        width: 100%;
-        text-align: left;
-        cursor: pointer;
-        font-family: inherit;
-    }
-
-    .profile-popup a:hover,
-    .popup-logout:hover {
-        background: #f5f5f5;
-    }
-
-    .popup-logout {
-        color: #d9534f;
-
-        font-weight: 600;
-    }
-
-
-    .sidebar.collapsed .profile-details,
-    .sidebar.collapsed .profile-chevron {
-        display: none;
-    }
-
-    .sidebar.collapsed .sidebar-profile {
-        justify-content: center;
-        padding: 10px 0;
-    }
-
-    .sidebar.collapsed .profile-popup {
-
-        left: 100%;
-        bottom: 0;
-        width: 200px;
-        margin-left: 15px;
-    }
-</style>
-
-
-<body>
-
-    <aside class="sidebar collapsed">
-        <div>
-            <div class="logo">
-                <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
-                <h2>Aurae</h2>
-            </div>
-
-            <ul class="menu">
-
-
-
-
-                <li><a href="{% url 'home' %}"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li><a href="{% url 'dataManagement' %}"><i class="fas fa-database"></i> Data Management</a></li>
-                <li><a href="{% url 'analysis' %}"><i class="fas fa-chart-line"></i> Analysis</a></li>
-
-                <li><a href="{% url 'settings' %}"><i class="fas fa-cog"></i> Settings</a></li>
-                <li><a href="{% url 'support' %}"><i class="fas fa-life-ring"></i> Support / Help</a></li>
-            </ul>
+<!-- HOVER-EXPANDABLE PROFESSIONAL SIDEBAR -->
+<aside class="sidebar" id="appSidebar">
+    <div>
+        <div class="workspace-label">Workspace</div>
+        <div class="logo">
+            <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+            <h2>Aurae</h2>
         </div>
 
-        <div class="sidebar-bottom">
-            {% if user.is_authenticated %}
+        <ul class="menu">
+            <li>
+                <a href="{% url 'home' %}">
+                    <i class="fas fa-home"></i>
+                    <div class="menu-text-wrap">
+                        <span>Dashboard</span>
+                        <span class="menu-sub">Live overview</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'dataManagement' %}">
+                    <i class="fas fa-database"></i>
+                    <div class="menu-text-wrap">
+                        <span>Data Management</span>
+                        <span class="menu-sub">Sensor records</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'analysis' %}">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="menu-text-wrap">
+                        <span>Analysis</span>
+                        <span class="menu-sub">Trends & insights</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'settings' %}">
+                    <i class="fas fa-cog"></i>
+                    <div class="menu-text-wrap">
+                        <span>Settings</span>
+                        <span class="menu-sub">Thresholds & alerts</span>
+                    </div>
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'support' %}">
+                    <i class="fas fa-life-ring"></i>
+                    <div class="menu-text-wrap">
+                        <span>Support</span>
+                        <span class="menu-sub">Help & docs</span>
+                    </div>
+                </a>
+            </li>
+        </ul>
+    </div>
 
-            <!-- The Popup Menu (Hidden by default) -->
-            <div class="profile-popup" id="profilePopup">
-                <div class="popup-header">
-                    <strong>{{ user.username|title }}</strong>
-                    <span>{{ user.email }}</span>
-                </div>
-                <hr>
-                <a href="{% url 'admin_settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
-
-                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
-                    {% csrf_token %}
-                    <button type="submit" class="popup-logout"><i class="fas fa-sign-out-alt"></i> Log Out</button>
-                </form>
+    <div class="sidebar-bottom">
+        {% if user.is_authenticated %}
+        <!-- Interactive Profile Popup Menu -->
+        <div class="profile-popup" id="profilePopup">
+            <div class="popup-header">
+                <strong>{{ user.username|title }}</strong>
+                <span>{{ user.email }}</span>
             </div>
-
-            <!-- The Clickable Profile Trigger -->
-            <div class="sidebar-profile" id="profileTrigger">
-                <div class="profile-avatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="profile-details">
-                    <span class="profile-name">{{ user.username|title }}</span>
-                    <span class="profile-role">Admin</span>
-                </div>
-                <i class="fas fa-chevron-up profile-chevron"></i>
-            </div>
-
-            {% else %}
-            <a href="{% url 'login' %}">Log In</a>
-            {% endif %}
+            <hr>
+            <a href="{% url 'settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
+            <!-- Triggers Logout Confirmation Dialog Modal -->
+            <button type="button" class="popup-logout" onclick="document.getElementById('logout_confirm_dialog').showModal()"><i class="fas fa-sign-out-alt"></i> Log Out</button>
         </div>
-    </aside>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const profileTrigger = document.getElementById("profileTrigger");
-            const profilePopup = document.getElementById("profilePopup");
-            const chevron = document.querySelector(".profile-chevron");
 
-            if (profileTrigger && profilePopup) {
-                profileTrigger.addEventListener("click", function (e) {
-                    e.stopPropagation(); // Prevents click from bubbling to document
-                    profilePopup.classList.toggle("show");
+        <div class="sidebar-profile" id="profileTrigger">
+            <div class="profile-avatar"><i class="fas fa-user"></i></div>
+            <div class="profile-details">
+                <span class="profile-name">{{ user.username|title }}</span>
+                <span class="profile-role">Admin</span>
+            </div>
+            <i class="fas fa-chevron-up profile-chevron"></i>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}" style="color: #1e293b; text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:12px; padding:8px;">
+            <i class="fas fa-sign-in-alt"></i> <span class="menu-text-wrap">Log In</span>
+        </a>
+        {% endif %}
+    </div>
+</aside>
 
-                    // Optional: flip chevron when open
-                    if (profilePopup.classList.contains("show") && chevron) {
-                        chevron.style.transform = "rotate(180deg)";
-                    } else if (chevron) {
-                        chevron.style.transform = "rotate(0deg)";
-                    }
-                });
+<!-- LOGOUT CONFIRMATION DIALOG MODAL (Include this anywhere on your page body) -->
+<dialog id="logout_confirm_dialog">
+    <div style="text-align: center; margin-bottom: 1rem;">
+        <div style="width: 50px; height: 50px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 1.25rem;">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </div>
+        <h3 style="margin: 0 0 0.5rem; font-size: 1.15rem;">Log Out?</h3>
+        <p style="color: #64748b; font-size: 0.88rem; margin: 0;">Are you sure you want to log out of your account?</p>
+    </div>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
+            <button type="button" class="btn-action btn-secondary" onclick="document.getElementById('logout_confirm_dialog').close()" style="padding: 0.5rem 1rem; border-radius: 12px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: 600;">Cancel</button>
+            <button type="submit" class="btn-action btn-danger" style="padding: 0.5rem 1rem; border-radius: 12px; border: none; background: #dc2626; color: white; cursor: pointer; font-weight: 600; font-size: 0.85rem;">Yes, Log Out</button>
+        </div>
+    </form>
+</dialog>
 
-                // Close popup when clicking outside of it
-                document.addEventListener("click", function (e) {
-                    if (!profileTrigger.contains(e.target) && !profilePopup.contains(e.target)) {
-                        profilePopup.classList.remove("show");
-                        if (chevron) chevron.style.transform = "rotate(0deg)";
-                    }
-                });
-            }
+<script>
+    // Profile Popup Toggle Script
+    const profileTrigger = document.getElementById('profileTrigger');
+    const profilePopup = document.getElementById('profilePopup');
+
+    if (profileTrigger && profilePopup) {
+        profileTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profilePopup.classList.toggle('show');
         });
-    </script>
-</body>
+
+        document.addEventListener('click', () => {
+            profilePopup.classList.remove('show');
+        });
+    }
+</script>

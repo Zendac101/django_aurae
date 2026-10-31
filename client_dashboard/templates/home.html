@@ -1,151 +1,1088 @@
 {% load static %}
 <!DOCTYPE html>
-
-
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aurae Admin</title>
+    <title>Aurae Admin | Management Console</title>
 
-
-    <link rel="stylesheet" href="{% static 'css/dashboard_style.css' %}">
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <style>
+        :root {
+            --sidebar-width-collapsed: 85px;
+            --sidebar-width-expanded: 260px;
+            --bg-main: #f0f4f1; /* Warm mint background */
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --accent-green: #059669;
+            --accent-light-green: #d1fae5;
+            --accent-orange: #d97706;
+            --accent-light-orange: #fef3c7;
+            --border-color: #cbd5e1;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-hover: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            min-height: 100vh;
+        }
 
+        /* --- Hover-Collapsible Sidebar Styles --- */
+        .sidebar {
+            width: var(--sidebar-width-collapsed);
+            background: #AFCBBA;
+            padding: 20px 12px;
+            border-radius: 0 16px 16px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 1000;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.04);
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+        }
+
+        .sidebar:hover,
+        .sidebar:focus-within {
+            width: var(--sidebar-width-expanded);
+            box-shadow: 8px 0 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .workspace-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #334155;
+            margin-bottom: 12px;
+            padding-left: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar:hover .workspace-label,
+        .sidebar:focus-within .workspace-label {
+            opacity: 1;
+            transition-delay: 0.05s;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-left: 4px;
+            white-space: nowrap;
+        }
+
+        .logo-img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .logo h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1c4b32;
+            margin: 0;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .logo h2,
+        .sidebar:focus-within .logo h2 {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .menu li a {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 12px;
+            text-decoration: none;
+            color: #1e293b;
+            border-radius: 10px;
+            font-weight: 500;
+            font-size: 13.5px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .menu li a i {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            color: #1c4b32;
+            flex-shrink: 0;
+        }
+
+        .menu-text-wrap {
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .menu-text-wrap,
+        .sidebar:focus-within .menu-text-wrap {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .menu-sub {
+            font-size: 11px;
+            color: #475569;
+        }
+
+        .menu li a:hover, .menu li a.active {
+            background: #8fbf96 !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+
+        .menu li a:hover i, .menu li a.active i,
+        .menu li a:hover .menu-sub, .menu li a.active .menu-sub {
+            color: #fff !important;
+        }
+
+        /* Profile Bottom Widget */
+        .sidebar-bottom {
+            position: relative;
+            width: 100%;
+            border-top: 1px solid rgba(28, 75, 50, 0.15);
+            padding-top: 10px;
+        }
+
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 6px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar-profile:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            background: #1c4b32;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .profile-details, .profile-chevron {
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: opacity 0.2s ease, transform 0.3s ease;
+        }
+
+        .sidebar:hover .profile-details,
+        .sidebar:hover .profile-chevron,
+        .sidebar:focus-within .profile-details,
+        .sidebar:focus-within .profile-chevron {
+            opacity: 1;
+            transform: translateX(0);
+            transition-delay: 0.05s;
+        }
+
+        .profile-details {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .profile-role {
+            font-size: 11px;
+            color: #334155;
+        }
+
+        .profile-chevron {
+            margin-left: auto;
+            font-size: 12px;
+            color: #334155;
+        }
+
+        /* Profile Popup Menu */
+        .profile-popup {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            left: 0;
+            width: 210px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+            padding: 10px 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1100;
+        }
+
+        .profile-popup.show {
+            display: flex;
+        }
+
+        .popup-header {
+            padding: 6px 15px 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .popup-header strong {
+            font-size: 13px;
+            color: #1e293b;
+        }
+
+        .popup-header span {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .profile-popup hr {
+            border: 0;
+            border-top: 1px solid #f1f5f9;
+            margin: 4px 0;
+        }
+
+        .profile-popup a,
+        .popup-logout {
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #334155;
+            font-size: 13px;
+            background: transparent;
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .profile-popup a:hover,
+        .popup-logout:hover {
+            background: #f8fafc;
+            color: #1c4b32;
+        }
+
+        .popup-logout {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        /* --- Main Content Area --- */
+        .main {
+            margin-left: var(--sidebar-width-collapsed);
+            flex: 1;
+            padding: 2.25rem 2.5rem;
+            box-sizing: border-box;
+            max-width: calc(100% - var(--sidebar-width-collapsed));
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header-left h1 {
+            font-size: 1.85rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem 0;
+            letter-spacing: -0.02em;
+        }
+
+        .header-left p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+        }
+
+        .header-right-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.15rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-secondary {
+            background-color: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        .btn-secondary:hover { background-color: #f8fafc; }
+
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: white;
+        }
+        .btn-primary:hover { background-color: #047857; }
+
+        /* Metric Cards */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.35rem 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card p {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin: 0 0 0.4rem 0;
+        }
+
+        .card h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .card-icon-badge {
+            position: absolute;
+            top: 1.35rem;
+            right: 1.35rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: var(--accent-light-green);
+            color: var(--accent-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        /* Admin Action Bar */
+        .admin-action-bar {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.75rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .admin-action-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-admin-command {
+            background: #f1f5f9;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-admin-command:hover {
+            background: var(--accent-light-green);
+            color: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        /* Content & Live Sensor Grid */
+        .content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+        }
+
+        #top_chart {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.15rem 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-location-wrapper {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 0.45rem 0.85rem;
+            gap: 8px;
+            min-width: 280px;
+            transition: var(--transition);
+        }
+
+        .search-location-wrapper:focus-within,
+        .search-location-wrapper:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .search-location-wrapper i {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .search-location-input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            width: 100%;
+            font-family: inherit;
+        }
+
+        #bottom_chart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .sensor-box {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.35rem 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sensor-box:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .sensor-box-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .sensor-box p {
+            margin: 0;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            letter-spacing: 0.05em;
+        }
+
+        .sensor-box .val {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .sensor-metric-row {
+            display: flex;
+            align-items: baseline;
+            gap: 0.35rem;
+            margin: 0.3rem 0 0.85rem 0;
+        }
+
+        /* --- DYNAMIC ANIMATED PROGRESS BARS --- */
+        .dynamic-progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.85rem;
+        }
+
+        .dynamic-progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: var(--accent-green);
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s ease;
+        }
+
+        .sensor-box-footer {
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            border-top: 1px solid #f1f5f9;
+            padding-top: 0.55rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Lower Dashboard Panels */
+        .analytics-grid-lower {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 1024px) {
+            .analytics-grid-lower { grid-template-columns: 1fr; }
+        }
+
+        .dashboard-panel {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .panel-header h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.85rem;
+        }
+        .alert-item:last-child { border-bottom: none; }
+
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 9999px;
+            background-color: var(--accent-light-green);
+            color: var(--accent-green);
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(5, 150, 105, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0); }
+        }
+    </style>
 </head>
 
 <body>
 
-    <div id="container" class="expand">
-        {% include 'sidebar.html' %}
-
-
-        <main class="main">
-
-
-            <div class="header">
-
-                <div class="header-left">
-                    <h1>Dashboard</h1>
-                    <p>Monitor, manage, and make decisions with ease.</p>
-                </div>
-
-
-
+    <!-- HOVER-EXPANDABLE SIDEBAR -->
+    <aside class="sidebar" id="appSidebar">
+        <div>
+            <div class="workspace-label">Workspace</div>
+            <div class="logo">
+                <img src="{% static 'image/logo_aurae.png' %}" class="logo-img" alt="Aurae Logo">
+                <h2>Aurae</h2>
             </div>
 
-            <div class="cards">
-                <div class="card">
+            <ul class="menu">
+                <li>
+                    <a href="{% url 'home' %}" class="active">
+                        <i class="fas fa-home"></i>
+                        <div class="menu-text-wrap">
+                            <span>Dashboard</span>
+                            <span class="menu-sub">Live overview</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'dataManagement' %}">
+                        <i class="fas fa-database"></i>
+                        <div class="menu-text-wrap">
+                            <span>Data Management</span>
+                            <span class="menu-sub">Sensor records</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'analysis' %}">
+                        <i class="fas fa-chart-line"></i>
+                        <div class="menu-text-wrap">
+                            <span>Analysis</span>
+                            <span class="menu-sub">Trends & insights</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'settings' %}">
+                        <i class="fas fa-cog"></i>
+                        <div class="menu-text-wrap">
+                            <span>Settings</span>
+                            <span class="menu-sub">Thresholds & alerts</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'support' %}">
+                        <i class="fas fa-life-ring"></i>
+                        <div class="menu-text-wrap">
+                            <span>Support</span>
+                            <span class="menu-sub">Help & docs</span>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-bottom">
+            {% if user.is_authenticated %}
+            <!-- Popup Menu -->
+            <div class="profile-popup" id="profilePopup">
+                <div class="popup-header">
+                    <strong>{{ user.username|title }}</strong>
+                    <span>{{ user.email }}</span>
+                </div>
+                <hr>
+                <a href="{% url 'admin_settings' %}"><i class="fas fa-user-cog"></i> Account Settings</a>
+                <form action="{% url 'logout' %}" method="post" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="popup-logout"><i class="fas fa-sign-out-alt"></i> Log Out</button>
+                </form>
+            </div>
+
+            <!-- Profile Trigger -->
+            <div class="sidebar-profile" id="profileTrigger">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-details">
+                    <span class="profile-name">{{ user.username|title }}</span>
+                    <span class="profile-role">Admin</span>
+                </div>
+                <i class="fas fa-chevron-up profile-chevron"></i>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" style="color: #1e293b; text-decoration: none; font-weight: 600; display:flex; align-items:center; gap:12px; padding:8px;">
+                <i class="fas fa-sign-in-alt"></i> <span class="menu-text-wrap">Log In</span>
+            </a>
+            {% endif %}
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="main">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Dashboard</h1>
+                <p>Monitor air quality telemetries and manage provincial sensor nodes.</p>
+            </div>
+            <div class="header-right-controls">
+                <button class="btn-action btn-secondary" onclick="window.location.reload();">
+                    <i class="fa-solid fa-rotate-right"></i> Refresh
+                </button>
+                <button class="btn-action btn-primary">
+                    <i class="fa-solid fa-file-export"></i> Export Logs
+                </button>
+            </div>
+        </div>
+
+        <!-- Top Metric Cards -->
+        <div class="cards">
+            <div class="card">
+                <div>
                     <p>Total Records</p>
                     <h2>{{ data_count }}</h2>
                 </div>
+                <div class="card-icon-badge"><i class="fa-solid fa-database"></i></div>
+            </div>
 
-                <div class="card">
-                    <p>Selected Location</p>
+            <div class="card">
+                <div>
+                    <p>Covered Towns</p>
                     <h2>48 areas</h2>
                 </div>
+                <div class="card-icon-badge"><i class="fa-solid fa-location-dot"></i></div>
+            </div>
 
-                <div class="card">
-                    <p>Most Affected Pollutant</p>
+            <div class="card">
+                <div>
+                    <p>Critical Pollutant</p>
                     <h2>NO₂</h2>
+                </div>
+                <div class="card-icon-badge" style="background: var(--accent-light-orange); color: var(--accent-orange);"><i class="fa-solid fa-wind"></i></div>
+            </div>
+
+            <div class="card">
+                <div>
+                    <p>Sensors Online</p>
+                    <h2>41 / 48</h2>
+                </div>
+                <div class="card-icon-badge"><i class="fa-solid fa-wifi"></i></div>
+            </div>
+        </div>
+
+        <!-- ADMIN COMMAND & ACTION BAR -->
+        <div class="admin-action-bar">
+            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">
+                <i class="fa-solid fa-sliders" style="color: var(--accent-green); margin-right: 6px;"></i> Admin Control Actions:
+            </div>
+            <div class="admin-action-group">
+                <button class="btn-admin-command" onclick="alert('Broadcasting calibration signal to active nodes...');">
+                    <i class="fa-solid fa-gauge-high"></i> Calibrate Nodes
+                </button>
+                <button class="btn-admin-command" onclick="alert('Clearing local MQTT message buffer cache...');">
+                    <i class="fa-solid fa-rotate"></i> Clear MQTT Cache
+                </button>
+                <button class="btn-admin-command" onclick="window.location.href='{% url 'settings' %}';">
+                    <i class="fa-solid fa-sliders"></i> Edit Thresholds
+                </button>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content">
+
+            <!-- Device Selector with Searchable Input Box -->
+            <div id="top_chart">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <b style="font-size: 0.92rem;"><i class="fa-solid fa-microchip" style="color: var(--accent-green); margin-right: 4px;"></i> Device Monitoring</b>
+                    
+                    <div class="search-location-wrapper">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="devices" name="devices" class="search-location-input" list="pangasinan-locations" placeholder="Search Pangasinan town...">
+                    </div>
+
+                    <datalist id="pangasinan-locations">
+                        <option value="Agno">
+                        <option value="Aguilar">
+                        <option value="Alaminos City">
+                        <option value="Alcala">
+                        <option value="Anda">
+                        <option value="Asingan">
+                        <option value="Balungao">
+                        <option value="Bani">
+                        <option value="Basista">
+                        <option value="Bautista">
+                        <option value="Bayambang">
+                        <option value="Binalonan">
+                        <option value="Binmaley">
+                        <option value="Bolinao">
+                        <option value="Bugallon">
+                        <option value="Burgos">
+                        <option value="Calasiao">
+                        <option value="Dasol">
+                        <option value="Infanta">
+                        <option value="Labrador">
+                        <option value="Laoac">
+                        <option value="Lingayen">
+                        <option value="Malasiqui">
+                        <option value="Mapandan">
+                        <option value="Natividad">
+                        <option value="Pozorrubio">
+                        <option value="Rosales">
+                        <option value="San Carlos City">
+                        <option value="San Fabian">
+                        <option value="San Jacinto">
+                        <option value="San Manuel">
+                        <option value="Santa Barbara">
+                        <option value="Santa Maria">
+                        <option value="Sison">
+                        <option value="Sual">
+                        <option value="Tayug">
+                        <option value="Umingan">
+                        <option value="Urbiztondo">
+                        <option value="Urdaneta City">
+                        <option value="Villasis">
+                        {% for site_id, site_name in location_options %}
+                        <option value="{{ site_name }}">
+                        {% endfor %}
+                    </datalist>
+                </div>
+                <div class="badge-live">
+                    <span class="pulse-dot"></span> Streaming Active
                 </div>
             </div>
 
-            <div class="content">
-
-                <div class="chart">
-
-                    <div id="top_chart">
-                        <div>
-                            <b>Device Monitioring</b>
-                        </div>
-                        <select name="devices" id="devices">
-                            <option value="0">Select Location</option>
-                            {% for site_id, site_name in location_options %}
-                            <option value="{{ site_id }}">{{ site_name }}</option>
-                            {% empty %}
-                            <!-- This line will only show if your database returned zero rows -->
-                            <option value="">[No records found or column name error]</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div id="bottom_chart">
-
-                        <p>Temperature: <span id="temp-display" class="val">--</span> °C</p>
-                        <p>Humidity: <span id="humidity-display" class="val">--</span> %</p>
-                        <p>PM2.5: <span id="pm25-display" class="val">--</span> µg/m³</p>
-                        <p>CO: <span id="co-display" class="val">--</span> ppm</p>
-
-                    </div>
-
+            <!-- Live Sensor Readings Grid with Dynamic Animated Progress Bars -->
+            <div>
+                <div style="margin-bottom: 0.75rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0;">Live Sensor Readings</h3>
+                    <p style="font-size: 0.82rem; color: var(--text-secondary); margin: 0.15rem 0 0 0;">Topic: <code>Aurae_test_data_sensor</code> • Updates every 5 seconds</p>
                 </div>
 
-                <div class="sidepanel">
-
-                    <div class="contacts">
-                        <h4>Contact Team</h4>
-
-                        <div class="contact-item">
-                            <div class="avatar-small"></div>
-                            <div>
-                                <p>Sofia</p>
-                                <span>sofia@gmail.com</span>
-                            </div>
+                <div id="bottom_chart">
+                    <!-- Temperature Box -->
+                    <div class="sensor-box">
+                        <div class="sensor-box-top">
+                            <p>Temperature</p>
+                            <i class="fa-solid fa-temperature-half" style="color: var(--accent-green);"></i>
                         </div>
-
-                        <div class="contact-item">
-                            <div class="avatar-small"></div>
-                            <div>
-                                <p>Jollibee</p>
-                                <span>jollibee@gmail.com</span>
-                            </div>
+                        <div class="sensor-metric-row">
+                            <span id="temp-display" class="val">--</span>
+                            <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">°C</span>
                         </div>
-
-                        <div class="contact-item">
-                            <div class="avatar-small"></div>
-                            <div>
-                                <p>Dora</p>
-                                <span>dora@gmail.com</span>
-                            </div>
+                        <div class="dynamic-progress-bar">
+                            <div id="temp-bar" class="dynamic-progress-fill"></div>
                         </div>
-
-                        <div class="contact-item">
-                            <div class="avatar-small"></div>
-                            <div>
-                                <p>Mickey</p>
-                                <span>mickey@gmail.com</span>
-                            </div>
+                        <div class="sensor-box-footer">
+                            <span>Range: 15–40 °C</span>
+                            <span id="temp-status" style="color: var(--accent-green);"><i class="fa-solid fa-arrow-up"></i> Stable</span>
                         </div>
-
-
-
                     </div>
 
-        </main>
+                    <!-- Humidity Box -->
+                    <div class="sensor-box">
+                        <div class="sensor-box-top">
+                            <p>Humidity</p>
+                            <i class="fa-solid fa-droplet" style="color: var(--accent-green);"></i>
+                        </div>
+                        <div class="sensor-metric-row">
+                            <span id="humidity-display" class="val">--</span>
+                            <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">%</span>
+                        </div>
+                        <div class="dynamic-progress-bar">
+                            <div id="humidity-bar" class="dynamic-progress-fill"></div>
+                        </div>
+                        <div class="sensor-box-footer">
+                            <span>Range: 0–100 %</span>
+                            <span id="humidity-status" style="color: var(--accent-green);"><i class="fa-solid fa-check"></i> Optimal</span>
+                        </div>
+                    </div>
 
-    </div>
+                    <!-- PM2.5 Box -->
+                    <div class="sensor-box">
+                        <div class="sensor-box-top">
+                            <p>PM2.5</p>
+                            <i class="fa-solid fa-smog" style="color: var(--accent-orange);"></i>
+                        </div>
+                        <div class="sensor-metric-row">
+                            <span id="pm25-display" class="val">--</span>
+                            <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">µg/m³</span>
+                        </div>
+                        <div class="dynamic-progress-bar">
+                            <div id="pm25-bar" class="dynamic-progress-fill" style="background-color: var(--accent-orange);"></div>
+                        </div>
+                        <div class="sensor-box-footer">
+                            <span>WHO Limit: 15 µg/m³</span>
+                            <span id="pm25-status" style="color: var(--accent-orange);"><i class="fa-solid fa-triangle-exclamation"></i> Moderate</span>
+                        </div>
+                    </div>
 
-    <script src="{% static 'js/toggle_sidebar.js' %}">
+                    <!-- Ozone (O3) Box - Matches your MQTT simulation payload -->
+                    <div class="sensor-box">
+                        <div class="sensor-box-top">
+                            <p>Ozone (O₃)</p>
+                            <i class="fa-solid fa-cloud" style="color: var(--accent-green);"></i>
+                        </div>
+                        <div class="sensor-metric-row">
+                            <span id="o3-display" class="val">--</span>
+                            <span style="color: var(--text-secondary); font-weight: 600; font-size: 0.85rem;">ppb</span>
+                        </div>
+                        <div class="dynamic-progress-bar">
+                            <div id="o3-bar" class="dynamic-progress-fill"></div>
+                        </div>
+                        <div class="sensor-box-footer">
+                            <span>Safe Limit: 60 ppb</span>
+                            <span id="o3-status" style="color: var(--accent-green);"><i class="fa-solid fa-shield-halved"></i> Good</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    </script>
+            <!-- Lower Dashboard Panels (Recent Alerts & Zone Status) -->
+            <div class="analytics-grid-lower">
+                <div class="dashboard-panel">
+                    <div class="panel-header">
+                        <h3>Recent System Alerts</h3>
+                        <span style="font-size: 0.72rem; background: #fef3c7; color: #b45309; padding: 2px 8px; border-radius: 6px; font-weight: 600;">4 open</span>
+                    </div>
+                    <div class="alert-item">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: var(--accent-orange); margin-top: 3px;"></i>
+                        <div>
+                            <strong style="font-size: 0.85rem;">PM2.5 above threshold for 20 minutes</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Zone C • Riverside • 2 min ago</div>
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <i class="fa-solid fa-battery-quarter" style="color: var(--accent-orange); margin-top: 3px;"></i>
+                        <div>
+                            <strong style="font-size: 0.85rem;">Sensor battery below 15%</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Zone A • North Gate • 18 min ago</div>
+                        </div>
+                    </div>
+                    <div class="alert-item">
+                        <i class="fa-solid fa-wind" style="color: var(--accent-orange); margin-top: 3px;"></i>
+                        <div>
+                            <strong style="font-size: 0.85rem;">Ozone level fluctuating</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-secondary);">Zone D • Warehouse 2 • 42 min ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-panel">
+                    <div class="panel-header">
+                        <h3>Network Status</h3>
+                        <span style="font-size: 0.82rem; color: var(--accent-green); font-weight: 600;">85% Online</span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 0.6rem; font-size: 0.85rem; margin-top: 0.5rem;">
+                        <div style="display: flex; justify-content: space-between;"><span><i class="fa-solid fa-circle" style="color: #059669; font-size: 8px;"></i> Online Nodes</span> <strong>41</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span><i class="fa-solid fa-circle" style="color: #d97706; font-size: 8px;"></i> Offline Nodes</span> <strong>5</strong></div>
+                        <div style="display: flex; justify-content: space-between;"><span><i class="fa-solid fa-circle" style="color: #64748b; font-size: 8px;"></i> Maintenance</span> <strong>2</strong></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Scripts -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
-
     <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const profileTrigger = document.getElementById("profileTrigger");
+            const profilePopup = document.getElementById("profilePopup");
+            const chevron = document.querySelector(".profile-chevron");
+
+            if (profileTrigger && profilePopup) {
+                profileTrigger.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    profilePopup.classList.toggle("show");
+                    if (profilePopup.classList.contains("show") && chevron) {
+                        chevron.style.transform = "rotate(180deg)";
+                    } else if (chevron) {
+                        chevron.style.transform = "rotate(0deg)";
+                    }
+                });
+
+                document.addEventListener("click", function (e) {
+                    if (!profileTrigger.contains(e.target) && !profilePopup.contains(e.target)) {
+                        profilePopup.classList.remove("show");
+                        if (chevron) chevron.style.transform = "rotate(0deg)";
+                    }
+                });
+            }
+        });
+
+        // MQTT Telemetry Connection & Dynamic Bar Updaters
         const host = 'wss://c2717182.ala.eu-central-1.emqxsl.com:8084/mqtt';
-
-
         const options = {
-            username: 'Esp-sensor-Trial', // Replace with your actual username
-            password: '12345678', // Replace with your actual password
-            clientId: 'aurae_dashboard_' + Math.random().toString(16).substr(2, 8) // Prevents conflicts if multiple tabs are open
+            username: 'Esp-sensor-Trial',
+            password: '12345678',
+            clientId: 'aurae_dashboard_' + Math.random().toString(16).substr(2, 8)
         };
 
         const client = mqtt.connect(host, options);
-
         let latestData = null;
         let lastUpdateTime = 0;
 
@@ -163,18 +1100,49 @@
             const currentTime = Date.now();
 
             if (currentTime - lastUpdateTime >= 5000) {
-                document.getElementById('temp-display').innerText = latestData.temperature;
-                document.getElementById('humidity-display').innerText = latestData.humidity;
-                document.getElementById('pm25-display').innerText = latestData.pm25;
-                document.getElementById('co-display').innerText = latestData.co;
+                // 1. Temperature Update
+                if (latestData.temperature !== undefined) {
+                    const temp = parseFloat(latestData.temperature);
+                    document.getElementById('temp-display').innerText = temp;
+                    let tempPercent = Math.min(Math.max(((temp - 15) / 25) * 100, 5), 100);
+                    const tempBar = document.getElementById('temp-bar');
+                    tempBar.style.width = tempPercent + '%';
+                    tempBar.style.backgroundColor = temp > 32 ? '#d97706' : '#059669';
+                }
+
+                // 2. Humidity Update
+                if (latestData.humidity !== undefined) {
+                    const hum = parseFloat(latestData.humidity);
+                    document.getElementById('humidity-display').innerText = hum;
+                    let humPercent = Math.min(Math.max(hum, 5), 100);
+                    document.getElementById('humidity-bar').style.width = humPercent + '%';
+                }
+
+                // 3. PM2.5 Update
+                if (latestData.pm25 !== undefined) {
+                    const pm25 = parseFloat(latestData.pm25);
+                    document.getElementById('pm25-display').innerText = pm25;
+                    let pmPercent = Math.min(Math.max((pm25 / 100) * 100, 5), 100);
+                    const pmBar = document.getElementById('pm25-bar');
+                    pmBar.style.width = pmPercent + '%';
+                    pmBar.style.backgroundColor = pm25 > 15 ? '#d97706' : '#059669';
+                }
+
+                // 4. Ozone (O3) Update (Matches MQTTX simulation payload)
+                if (latestData.o3 !== undefined) {
+                    const o3 = parseFloat(latestData.o3);
+                    document.getElementById('o3-display').innerText = o3;
+                    // Scale O3 up to 100 ppb max scale
+                    let o3Percent = Math.min(Math.max((o3 / 100) * 100, 5), 100);
+                    const o3Bar = document.getElementById('o3-bar');
+                    o3Bar.style.width = o3Percent + '%';
+                    o3Bar.style.backgroundColor = o3 > 60 ? '#dc2626' : '#059669';
+                }
 
                 lastUpdateTime = currentTime;
             }
         });
     </script>
 
-
-
-
-
 </body>
+</html>
