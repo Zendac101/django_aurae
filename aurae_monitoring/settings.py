@@ -28,8 +28,10 @@ ENVIRONMENT = env('ENVIRONMENT', default='production')
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
-ENCRYPT_KEY = env('ENCRYPT_KEY')
+SECRET_KEY = env('SECRET_KEY', default='temporary-build-key-for-vercel')
+ENCRYPT_KEY = env(
+    'ENCRYPT_KEY', default='temporary-build-encrypt-key-for-vercel')
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
@@ -127,7 +129,6 @@ POSTGRES_LOCALLY = True
 AUTH_USER_MODEL = 'accounts.Core_userProfile'
 LOGIN_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-
 
 
 # Password validation
