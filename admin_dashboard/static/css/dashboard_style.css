@@ -243,22 +243,3 @@
     font-size: 11.5px;
     color: #7b8f84;
 }
-
-
-.green {
-    background-color: var(--dash-btn-primary);
-    color: #ffffff;
-}
-
-.green:hover {
-    background-color: var(--dash-btn-primary-hover);
-}
-
-.light {
-    background-color: var(--dash-btn-secondary);
-    color: #234031;
-}
-
-.light:hover {
-    background-color: var(--dash-btn-secondary-hover);
-}

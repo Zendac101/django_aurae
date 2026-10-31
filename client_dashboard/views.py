@@ -4,8 +4,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .models import locationData, pollutant_data
 from django.http import JsonResponse
-
+import environ
 from django.contrib.auth import authenticate, login, get_user_model
+
+env = environ.Env()
+environ.Env.read_env(env_file='aurae_monitoring/.env')
 
 
 @login_required
@@ -20,7 +23,10 @@ def home_view(request):
 
     context = {
         "data_count": data_count,
-        'location_options': dropdown_options}
+        'location_options': dropdown_options,
+        'mqtt_username': env('EMQX_USERNAME'),
+        'mqtt_password': env('EMQX_PASSWORD'),
+    }
 
     return render(request, 'home.html', context)
 

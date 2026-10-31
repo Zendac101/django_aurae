@@ -78,7 +78,7 @@
                         <p>Temperature: <span id="temp-display" class="val">--</span> °C</p>
                         <p>Humidity: <span id="humidity-display" class="val">--</span> %</p>
                         <p>PM2.5: <span id="pm25-display" class="val">--</span> µg/m³</p>
-                        <p>CO: <span id="co-display" class="val">--</span> ppm</p>
+                        <p>O3: <span id="o3-display" class="val">--</span> ppb</p>
 
                     </div>
 
@@ -134,44 +134,98 @@
     </script>
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
+
+    </script>
+    <!-- Load MQTT.js directly in the browser -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
     <script>
         const host = 'wss://c2717182.ala.eu-central-1.emqxsl.com:8084/mqtt';
-
-
         const options = {
-            username: 'Esp-sensor-Trial', // Replace with your actual username
-            password: '12345678', // Replace with your actual password
-            clientId: 'aurae_dashboard_' + Math.random().toString(16).substr(2, 8) // Prevents conflicts if multiple tabs are open
+            username: '{{ mqtt_username }}',
+            password: '{{ mqtt_password }}',
+            clientId: 'aurae_dashboard_' + Math.random().toString(16).substr(2, 8)
         };
-
         const client = mqtt.connect(host, options);
 
-        let latestData = null;
+        function setupSubscription() {
+            const selectedDeviceText = devices.options[devices.selectedIndex].text;
+
+
+            const newTopic = `Aurae_test_data_sensor/${selectedDeviceText}`;
+
+            if (!client.connected) return;
+
+
+            if (currentSubscribedTopic && currentSubscribedTopic !== newTopic) {
+                client.unsubscribe(currentSubscribedTopic);
+
+            }
+
+
+            client.subscribe(newTopic, function (err) {
+                if (!err) {
+
+                    currentSubscribedTopic = newTopic;
+                } else {
+                    console.error(`Subscription failed for ${newTopic}:`, err);
+                }
+            });
+        }
+
+
+
+        let currentSubscribedTopic = null;
         let lastUpdateTime = 0;
 
         client.on('connect', function () {
-            console.log("Connected to EMQX directly from browser");
-            client.subscribe('Aurae_test_data_sensor');
+            console.log("Connected to EMQX Broker via WebSockets.");
+
+            setupSubscription();
         });
 
         client.on('error', function (err) {
             console.error("Connection error: ", err);
         });
 
+
         client.on('message', function (topic, message) {
-            latestData = JSON.parse(message.toString());
-            const currentTime = Date.now();
+            try {
+                const latestData = JSON.parse(message.toString());
+                const currentTime = Date.now();
 
-            if (currentTime - lastUpdateTime >= 5000) {
-                document.getElementById('temp-display').innerText = latestData.temperature;
-                document.getElementById('humidity-display').innerText = latestData.humidity;
-                document.getElementById('pm25-display').innerText = latestData.pm25;
-                document.getElementById('co-display').innerText = latestData.co;
+                if (currentTime - lastUpdateTime >= 1000) {
 
-                lastUpdateTime = currentTime;
+
+                    if (String(latestData.device_id) === String(devices.value)) {
+                        document.getElementById('temp-display').innerText = latestData.temperature ?? '--';
+                        document.getElementById('humidity-display').innerText = latestData.humidity ?? '--';
+                        document.getElementById('pm25-display').innerText = latestData.pm25 ?? '--';
+                        document.getElementById('o3-display').innerText = latestData.o3 ?? '--';
+
+                        lastUpdateTime = currentTime;
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to parse incoming payload JSON", e);
             }
         });
+
+
+        devices.addEventListener('change', function (event) {
+
+            document.getElementById('temp-display').innerText = '--';
+            document.getElementById('humidity-display').innerText = '--';
+            document.getElementById('pm25-display').innerText = '--';
+            document.getElementById('o3-display').innerText = '--';
+
+            setupSubscription();
+        });
+
+
+
     </script>
+
 
 
 

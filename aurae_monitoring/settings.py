@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'preventconcurrentlogins',
-    "django_htmx",
+
     'accounts',
     'client_dashboard',
     'admin_dashboard',
@@ -109,35 +109,26 @@ WSGI_APPLICATION = 'aurae_monitoring.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'Aurae_user_database',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
+        'NAME': 'postgres',
+        'USER': 'postgres.lpdlkrmhknmablomlgnm',
+        'PASSWORD': env('DATABASE_PASSWORD'),
+        'HOST': 'aws-0-ap-southeast-2.pooler.supabase.com',
+        'PORT': '6543',
         'OPTIONS': {
             'options': '-c search_path=public,pollutant_data'
         }
-    },
-    'sensor_data_db': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'aurae_database',
-        'USER': 'postgres',
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-
     }
 }
+
+# web server database
+POSTGRES_LOCALLY = True
+
 
 AUTH_USER_MODEL = 'accounts.Core_userProfile'
 LOGIN_URL = '/'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
-# web server database
-POSTGRES_LOCALLY = True
 
-if ENVIRONMENT == 'production' or POSTGRES_LOCALLY == False:
-    DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'))
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -193,10 +184,11 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# resend
+# resend TEMPORARY
 ANYMAIL = {
     "RESEND_API_KEY": env('RESEND_API'),
 }
+
 
 # if want to use email verification
 LOGIN_REDIRECT_URL = '/'
@@ -260,3 +252,4 @@ MQTT_SERVER = env('EMQX_ADDRESS')
 MQTT_PORT = 8883
 MQTT_USER = env('EMQX_USERNAME')
 MQTT_PASSWORD = env('EMQX_PASSWORD')
+MQTT_TOPIC = env('EMQX_TOPIC')

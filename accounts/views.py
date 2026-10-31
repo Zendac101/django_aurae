@@ -22,15 +22,11 @@ User = get_user_model()
 
 @ensure_csrf_cookie
 def LogRes(request):
-    # --- FIX: Check if the user is ALREADY logged in ---
-    # If Google OAuth successfully logs them in and redirects them to '/',
-    # we need to catch them here and send them to the dashboard,
-    # otherwise they will just stare at the login form again!
+    # redirect user when loged in
     if request.user.is_authenticated:
         if hasattr(request.user, 'roles') and (request.user.roles.is_superuser or request.user.roles.is_staff):
             return redirect('/admin_dashboard/admin_home')
         return redirect('/client_dashboard/home')
-    # ---------------------------------------------------
 
     storage = get_messages(request)
     for _ in storage:

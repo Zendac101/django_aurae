@@ -1,4 +1,6 @@
 from django.apps import AppConfig
+import os
+import threading
 
 
 class SensorsConfig(AppConfig):

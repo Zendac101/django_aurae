@@ -22,17 +22,14 @@ class locationData(models.Model):
     zipcode = models.IntegerField(
         primary_key=True, db_column='zipcode', unique=True)
 
-    loc_name = models.CharField(max_length=255, db_column='location_name')
+    loc_name = models.CharField(
+        max_length=255, db_column='location_name', null=True)
 
-    loc_type = models.CharField(max_length=45, db_column='loc_type')
+    loc_type = models.CharField(max_length=45, db_column='loc_type', null=True)
 
     class Meta:
         managed = False
         db_table = 'pollutant_data"."locations'
-
-
-class zipcode(models.Model):
-    zipcode = models.CharField(max_length=100)
 
 
 class pollutant_data(models.Model):
