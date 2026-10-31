@@ -1,77 +1,131 @@
-#activity_table {
-
-    border-radius: 5px;
-    width: 100%;
+@import "variables.css";
 
 
-    border-collapse: separate;
-    border-spacing: 0;
-    background-color: #AFCBBA;
-    border: #11522b 2px solid;
+.main {
+    padding: 24px 32px;
+    box-sizing: border-box;
 }
+
+
+.header {
+    margin-bottom: 8px;
+}
+
+.header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 4px 0;
+}
+
+.header-left p {
+    font-size: 13.5px;
+    color: #4a5c52;
+    margin: 0;
+}
+
+
+#logs {
+    background-color: transparent;
+    border: none;
+    font-size: 18px;
+    font-weight: 700;
+    color: #12291d;
+    cursor: pointer;
+    outline: none;
+    padding: 4px 0;
+    margin: 16px 0 16px 0;
+}
+
+#logs option {
+    font-size: 14px;
+    font-weight: 500;
+    background-color: #ffffff;
+    color: #111;
+}
+
 
 #table_useractivity {
     width: 100%;
-    max-height: 400px;
-
-    overflow-y: scroll;
-
+    max-height: 60vh;
+    min-height: 380px;
+    background-color: #AFCBBA;
+    border-radius: 14px;
+    overflow-y: auto;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-html {
-
-    scrollbar-color: #728175 #AFCBBA;
-
-
-    scrollbar-width: thin;
-
+.act_log_table {
+    width: 100%;
 }
 
 
-th,
-td {
-
-    width: 20%;
-    padding: 20px;
+#activity_table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: transparent;
 }
-
 
 thead th {
     position: sticky;
-    background-color: #649479;
-
     top: 0;
-    z-index: 1;
-    border: 2px #436e54 solid;
-
-}
-    
-th {
+    background-color: #649479;
+    color: #0f2719;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 14px 16px;
     text-align: center;
-    font-weight: 600;
-
-
-
+    border-bottom: 2px solid #436e54;
+    border-right: 1px solid rgba(67, 110, 84, 0.35);
+    z-index: 2;
+    white-space: nowrap;
 }
+
+thead th:last-child {
+    border-right: none;
+}
+
 
 td {
-    border: 2px #528065 solid;
+    padding: 14px 16px;
+    font-size: 13px;
+    text-align: center;
+    color: #1a1a1a;
+    border-bottom: 1px solid rgba(67, 110, 84, 0.25);
+    border-right: 1px solid rgba(67, 110, 84, 0.25);
 }
 
-tr:nth-child(odd) {
-    background: #a1bfaa;
+td:last-child {
+    border-right: none;
 }
 
-option {
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
+tbody tr:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
-#logs {
+tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
 
-    background-color: #f3f4f6;
-    margin-bottom: 15px;
-    border: none;
-    font-size: x-large;
+#table_useractivity::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+#table_useractivity::-webkit-scrollbar-track {
+    background: #AFCBBA;
+    border-radius: 12px;
+}
+
+#table_useractivity::-webkit-scrollbar-thumb {
+    background: #649479;
+    border-radius: 10px;
+}
+
+#table_useractivity::-webkit-scrollbar-thumb:hover {
+    background: #436e54;
 }
 
 .hidden {

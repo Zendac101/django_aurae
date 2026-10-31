@@ -7,9 +7,14 @@
 }
 
 .report-card {
-    background: #AFCBBA;
+    background: var(--dash-sage-card);
     padding: 22px;
     border-radius: 12px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+}
+
+.report-card:hover {
+    background-color: var(--dash-sage-hover);
+    transform: translateY(-2px);
 }

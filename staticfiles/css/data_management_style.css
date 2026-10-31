@@ -1,38 +1,79 @@
 @import "variables.css";
 
-.data-table {
-
-    background-color: #bad3c4;
-    border: 1px;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    height: 62%;
-    overflow-y: scroll;
+/* Main Layout Padding */
+.main {
+    padding: 24px 32px;
 }
 
+/* Header Section */
+.header {
+    margin-bottom: 20px;
+}
 
+.header-left h1 {
+    font-size: 26px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 6px 0;
+}
 
+.header-left p {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
 
+/* Table Wrapper Card */
+.data-table {
+    background-color: #AFCBBA;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    max-height: 65vh;
+    min-height: 420px;
+    overflow-y: auto;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+#table_div {
+    width: 100%;
+}
+
+/* Status Indicators */
 .good {
-    color: green;
+    color: #1e7e34;
     font-weight: bold;
 }
 
 .moderate {
-    color: orange;
+    color: #d39e00;
     font-weight: bold;
 }
 
+/* Action Buttons Bar */
+.table-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
 
 .table-actions button {
-    padding: 8px 15px;
+    padding: 9px 20px;
     border-radius: 20px;
     border: none;
     cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.table-actions button:active {
+    transform: scale(0.98);
 }
 
 .green {
-    background-color: var(--dash-btn-primary)
+    background-color: var(--dash-btn-primary);
+    color: #ffffff;
 }
 
 .green:hover {
@@ -41,6 +82,7 @@
 
 .light {
     background-color: var(--dash-btn-secondary);
+    color: #1b1b1b;
 }
 
 .light:hover {
