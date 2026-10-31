@@ -185,12 +185,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# resend TEMPORARY
-ANYMAIL = {
-    "RESEND_API_KEY": env('RESEND_API'),
-}
-
-
 # if want to use email verification
 LOGIN_REDIRECT_URL = '/'
 # logout
