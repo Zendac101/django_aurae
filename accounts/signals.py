@@ -1,3 +1,4 @@
+from allauth.socialaccount.signals import pre_social_login, social_account_added
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
 from django.contrib.sessions.models import Session
@@ -29,3 +30,22 @@ def remove_other_sessions(sender, user, request, **kwargs):
     except UserSession.DoesNotExist:
         # create new session
         UserSession.objects.create(user=user, session_key=current_session_key)
+
+
+@receiver(social_account_added)
+def auto_activate_social_user(request, sociallogin, **kwargs):
+
+    user = sociallogin.user
+    if not user.is_active:
+        user.is_active = True
+        user.save()
+
+
+@receiver(pre_social_login)
+def auto_activate_on_social_login(request, sociallogin, **kwargs):
+    user = sociallogin.user
+    if user.pk and not user.is_active:
+        user.is_active = True
+        user.save()
+    elif not user.pk:
+        user.is_active = True
