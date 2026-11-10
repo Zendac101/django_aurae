@@ -77,6 +77,7 @@
                         <p><b>Temperature:</b> <span id="temp-display" class="val">--</span> °C</p>
                         <p><b>Humidity:</b> <span id="humidity-display" class="val">--</span> %</p>
                         <p><b>PM2.5:</b> <span id="pm25-display" class="val">--</span> µg/m³</p>
+                        <p><b>PM10:</b> <span id="pm10-display" class="val">--</span> µg/m³</p>
                         <p><b>O3:</b> <span id="o3-display" class="val">--</span> ppb</p>
 
 
@@ -197,6 +198,7 @@
                         document.getElementById('temp-display').innerText = latestData.temperature ?? '--';
                         document.getElementById('humidity-display').innerText = latestData.humidity ?? '--';
                         document.getElementById('pm25-display').innerText = latestData.pm25 ?? '--';
+                        document.getElementById('pm10-display').innerText = latestData.pm10 ?? '--';
                         document.getElementById('o3-display').innerText = latestData.o3 ?? '--';
 
                         lastUpdateTime = currentTime;
