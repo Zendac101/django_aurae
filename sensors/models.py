@@ -40,15 +40,32 @@ class pollutant_data(models.Model):
 
 class SensorReading(models.Model):
     zipcode = models.ForeignKey(
-        location, on_delete=models.CASCADE)
+        location, on_delete=models.CASCADE, db_column='zipcode')
+    aqi = models.FloatField(null=True, blank=True)
 
     temperature = models.FloatField(null=True, blank=True)
     humidity = models.FloatField(null=True, blank=True)
     pm25 = models.FloatField(null=True, blank=True)
+    pm10 = models.FloatField(null=True, blank=True)
     co = models.FloatField(null=True, blank=True)
+    no2 = models.FloatField(null=True, blank=True)
+
+    classification = models.CharField(max_length=50, null=True, blank=True)
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         managed = True
         db_table = 'pollutant_data"."unverified_readings'
+
+
+class SavedModel(models.Model):
+    model_name = models.CharField(max_length=100, unique=True)
+    model_data = models.BinaryField()
+
+    def __str__(self):
+        return self.model_name
+
+    class Meta:
+        managed = True
+        db_table = 'pollutant_data"."machine_learning_model'

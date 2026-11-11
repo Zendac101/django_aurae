@@ -74,11 +74,15 @@
                     </div>
 
                     <div id="bottom_chart">
+                        <p><b>Temperature:</b> <span id="temp-display" class="val">--</span> °C</p>
+                        <p><b>Humidity:</b> <span id="humidity-display" class="val">--</span> %</p>
+                        <p><b>PM2.5:</b> <span id="pm25-display" class="val">--</span> µg/m³</p>
+                        <p><b>PM10:</b> <span id="pm10-display" class="val">--</span> µg/m³</p>
+                        <p><b>O3:</b> <span id="o3-display" class="val">--</span> ppb</p>
+                        <p><b>NO2:</b> <span id="no2-display" class="val">--</span> ppb</p>
+                        <p>AQI: <span id="aqi-display" class="val">--</span></p>
+                        <p>Status: <span id="classification-display" class="val">--</span></p>
 
-                        <p>Temperature: <span id="temp-display" class="val">--</span> °C</p>
-                        <p>Humidity: <span id="humidity-display" class="val">--</span> %</p>
-                        <p>PM2.5: <span id="pm25-display" class="val">--</span> µg/m³</p>
-                        <p>O3: <span id="o3-display" class="val">--</span> ppb</p>
 
                     </div>
 
@@ -136,6 +140,8 @@
 
 
     </script>
+
+    </script>
     <!-- Load MQTT.js directly in the browser -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
@@ -149,10 +155,10 @@
         const client = mqtt.connect(host, options);
 
         function setupSubscription() {
-            const selectedDeviceText = devices.options[devices.selectedIndex].text;
+            const selectedDeviceText = document.getElementById('devices');
 
 
-            const newTopic = `Aurae_test_data_sensor/${selectedDeviceText}`;
+            const newTopic = `Aurae_test_data_sensor/${selectedDeviceText.value}/processed`;
 
             if (!client.connected) return;
 
@@ -201,7 +207,11 @@
                         document.getElementById('temp-display').innerText = latestData.temperature ?? '--';
                         document.getElementById('humidity-display').innerText = latestData.humidity ?? '--';
                         document.getElementById('pm25-display').innerText = latestData.pm25 ?? '--';
+                        document.getElementById('pm10-display').innerText = latestData.pm10 ?? '--';
                         document.getElementById('o3-display').innerText = latestData.o3 ?? '--';
+                        document.getElementById('no2-display').innerText = latestData.no2 ?? '--';
+                        document.getElementById('aqi-display').innerText = latestData.aqi ?? '--';
+                        document.getElementById('classification-display').innerText = latestData.classification ?? '--';
 
                         lastUpdateTime = currentTime;
                     }
@@ -217,7 +227,12 @@
             document.getElementById('temp-display').innerText = '--';
             document.getElementById('humidity-display').innerText = '--';
             document.getElementById('pm25-display').innerText = '--';
+            document.getElementById('pm10-display').innerText = '--';
             document.getElementById('o3-display').innerText = '--';
+            document.getElementById('no2-display').innerText = '--';
+            document.getElementById('aqi-display').innerText = '--';
+            document.getElementById('classification-display').innerText = '--';
+
 
             setupSubscription();
         });
@@ -225,3 +240,6 @@
 
 
     </script>
+
+
+</body>

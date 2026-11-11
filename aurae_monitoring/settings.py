@@ -108,14 +108,15 @@ WSGI_APPLICATION = 'aurae_monitoring.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres.lpdlkrmhknmablomlgnm',
-        'PASSWORD': env('DATABASE_PASSWORD'),
-        'HOST': 'aws-0-ap-southeast-2.pooler.supabase.com',
-        'PORT': '6543',
+        'NAME': 'Aurae_user_database',
+        'USER': 'postgres',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
         'OPTIONS': {
             'options': '-c search_path=public,pollutant_data'
         }
@@ -172,6 +173,20 @@ STATIC_URL = 'static/'
 # render static files in production render.com
 if ENVIRONMENT == 'production':
     MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'postgres',
+            'USER': 'postgres.lpdlkrmhknmablomlgnm',
+            'PASSWORD': env('DATABASE_PASSWORD'),
+            'HOST': 'aws-0-ap-southeast-2.pooler.supabase.com',
+            'PORT': '6543',
+            'OPTIONS': {
+                'options': '-c search_path=public,pollutant_data'
+            }
+        }
+    }
 
 
 # The directory where static files are collected for production (Do not map this inside STATICFILES_DIRS)
