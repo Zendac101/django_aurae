@@ -179,12 +179,12 @@ def on_message(client, userdata, msg):
             try:
                 raw_class = int(cls_pred[0])
                 status_mapping = {
-                    1: "Good",
-                    2: "Fair",
-                    3: "Unhealthy for Sensitive Groups",
-                    4: "Very Unhealthy",
-                    5: "Acutely Unhealthy (Local suspension discretion / shifting to distance learning)",
-                    6: "Emergency (Automatic suspension of classes and work)"
+                    0: "Good",
+                    1: "Fair",
+                    2: "Unhealthy for Sensitive Groups",
+                    3: "Very Unhealthy",
+                    4: "Acutely Unhealthy (Local suspension discretion / shifting to distance learning)",
+                    5: "Emergency (Automatic suspension of classes and work)"
                 }
                 classification = status_mapping.get(
                     raw_class, str(cls_pred[0]))
