@@ -25,16 +25,12 @@ class pollutant_data(models.Model):
     o3 = models.DecimalField(max_digits=6, decimal_places=2, db_column='o3')
     pm10 = models.DecimalField(
         max_digits=6, decimal_places=2, db_column='pm10')
-    nox = models.DecimalField(max_digits=6, decimal_places=2, db_column='nox')
-    aqi_pm25 = models.DecimalField(
-        max_digits=6, decimal_places=2, db_column='aqi_pm2.5')
-    aqi_pm10 = models.DecimalField(
-        max_digits=6, decimal_places=2, db_column='aqi_pm10')
+    no2 = models.DecimalField(max_digits=6, decimal_places=2, db_column='no2')
     pm25 = models.DecimalField(
         max_digits=6, decimal_places=2, db_column='pm2.5')
 
     class Meta:
-        managed = False
+        managed = True
         db_table = 'pollutant_data"."pollutant_values'
 
 
@@ -49,6 +45,7 @@ class SensorReading(models.Model):
     pm10 = models.FloatField(null=True, blank=True)
     co = models.FloatField(null=True, blank=True)
     no2 = models.FloatField(null=True, blank=True)
+    o3 = models.FloatField(null=True, blank=True)
 
     classification = models.CharField(max_length=50, null=True, blank=True)
 
@@ -57,6 +54,9 @@ class SensorReading(models.Model):
     class Meta:
         managed = True
         db_table = 'pollutant_data"."unverified_readings'
+
+    def __str__(self):
+        return f'{self.zipcode} - {self.timestamp}'
 
 
 class SavedModel(models.Model):

@@ -2,7 +2,9 @@ from .forms import EditProfileForm, DeactivateAccount
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import locationData, pollutant_data
+
+
+from sensors.models import location, pollutant_data
 from django.http import JsonResponse
 import environ
 from django.contrib.auth import authenticate, login, get_user_model
@@ -17,7 +19,7 @@ def home_view(request):
 
         return redirect('/')
     data_count = pollutant_data.objects.count()
-    dropdown_options = locationData.objects \
+    dropdown_options = location.objects \
         .values_list('zipcode', 'loc_name') \
         .order_by('loc_name')
 
@@ -36,7 +38,7 @@ def analysis_view(request):
 
         return redirect('/')
 
-    dropdown_options = locationData.objects \
+    dropdown_options = location.objects \
         .values_list('zipcode', 'loc_name') \
         .order_by('loc_name')
 
@@ -49,7 +51,7 @@ def analysis_view(request):
         maxdate = request.GET.get('maxdate', "%Y-%m-%d").strip()
 
         fields = ['date', 'zipcode', 'aqi', 'so2',
-                  'co', 'o3', 'nox', 'pm25', 'pm10']
+                  'co', 'o3', 'no2', 'pm25', 'pm10']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
                 .filter(zipcode=selected_location)
@@ -80,7 +82,7 @@ def data_management_view(request):
 
         return redirect('/')
 
-    dropdown_options = locationData.objects \
+    dropdown_options = location.objects \
         .values_list('zipcode', 'loc_name') \
         .order_by('loc_name')
 
@@ -88,7 +90,7 @@ def data_management_view(request):
         selected_location = request.GET.get('locations', '')
 
         fields = ['date', 'zipcode', 'aqi', 'so2',
-                  'co', 'o3', 'nox', 'pm25', 'pm10']
+                  'co', 'o3', 'no2', 'pm25', 'pm10']
         if selected_location and selected_location != 'Select Location':
             pollutant_values_show = pollutant_data.objects \
                 .filter(zipcode=selected_location)
