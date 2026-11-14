@@ -20,6 +20,8 @@ class pollutant_data(models.Model):
 
     aqi = models.IntegerField(db_column='aqi')
 
+    classification = models.CharField(max_length=50, null=True, blank=True)
+
     so2 = models.DecimalField(max_digits=6, decimal_places=2, db_column='so2')
     co = models.DecimalField(max_digits=6, decimal_places=2, db_column='co')
     o3 = models.DecimalField(max_digits=6, decimal_places=2, db_column='o3')

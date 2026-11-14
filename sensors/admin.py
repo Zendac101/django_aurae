@@ -28,3 +28,28 @@ class SensorReadings(admin.ModelAdmin):
         'zipcode',
         'classification'
     )
+
+
+@admin.register(pollutant_data)
+class PollutantData(admin.ModelAdmin):
+    list_display = (
+        'zipcode',
+        'date',
+        'aqi',
+        'classification',
+        'pm25',
+        'pm10',
+        'co',
+        'no2',
+        'o3'
+    )
+
+    search_fields = (
+        'date',
+        'classification'
+    )
+
+    list_filter = (
+        'zipcode',
+        'classification'
+    )

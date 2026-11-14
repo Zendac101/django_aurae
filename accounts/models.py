@@ -115,6 +115,9 @@ class ActivityHistory(models.Model):
         managed = True
         db_table = 'user_activityhistory'
 
+    def __str__(self):
+        return f'{self.activity_log} - {self.user}'
+
 
 @receiver(post_save, sender=Core_userProfile)
 def create_user_dependent_profiles(sender, instance, created, **kwargs):

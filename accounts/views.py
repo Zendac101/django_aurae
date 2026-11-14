@@ -246,7 +246,7 @@ def password_reset_confirm(request, uidb64, token):
                 )
 
             user.set_password(new_password)
-            user.is_active = True  # Optional: activate account if they reset password
+            user.is_active = True
             user.save()
 
             ActivityHistory.objects.create(
@@ -269,14 +269,12 @@ def send_google_activation_email(sender, request, user, **kwargs):
     # Check if the signup came from a third-party social provider (like Google)
     if 'sociallogin' in kwargs:
 
-        # 1. Generate the unique activation link
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = account_activation_token.make_token(user)
         activation_url = request.build_absolute_uri(
             reverse('activate', kwargs={'uidb64': uid, 'token': token})
         )
 
-        # 2. Send the verification email
         try:
             send_mail(
                 subject="Activate Your Aurae Account (Google Sign-Up)",
@@ -286,10 +284,9 @@ def send_google_activation_email(sender, request, user, **kwargs):
                 fail_silently=False,
             )
 
-            # 3. Log the activity in your history table
             ActivityHistory.objects.create(
                 user=user,
-                activity_log="Account initialized via Google Sign-Up. Activation email sent."
+                activity_log="Account initialized via Google Sign-Up."
             )
         except Exception as e:
             print(f"--- FAILED TO SEND EMAIL: {e} ---")
